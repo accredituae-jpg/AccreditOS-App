@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import { CustomPagination } from "@/components/ui/custom-pagination";
-import { FileText, Users } from "lucide-react";
+import { FileText, Users, CheckCircle2, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { InvoiceTable } from "./InvoiceTable";
 import { InvoiceCard } from "./InvoiceCard";
@@ -147,25 +147,29 @@ export function InvoicesTab({
 
   return (
     <TabsContent value="invoices" className="mt-0 space-y-4">
-      {/* 1. Sleek Sub-Tab Navigation Switcher */}
-      <div className="px-4 md:px-6 pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/70 pb-3">
-        <div className="flex items-center gap-1.5 p-1 bg-muted/40 rounded-xl border border-border/60 self-start">
+      {/* 1. Sleek Modern Sub-Tab Navigation & Micro-KPI Bar */}
+      <div className="px-4 md:px-6 pt-3 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-3.5">
+        <div className="flex items-center gap-1.5 p-1 bg-muted/50 dark:bg-muted/30 rounded-2xl border border-border/70 shadow-xs self-start">
           <button
             type="button"
             onClick={() => setSubTab("accounts")}
             className={cn(
-              "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all",
+              "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer",
               subTab === "accounts"
-                ? "bg-background text-foreground shadow-xs border border-border/60"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
+                : "text-muted-foreground hover:text-foreground hover:bg-background/40"
             )}
           >
-            <Users className="w-3.5 h-3.5" />
-            <span>Client Accounts ({clients.length})</span>
+            <Users className={cn("w-3.5 h-3.5 transition-colors", subTab === "accounts" ? "text-primary" : "text-muted-foreground")} />
+            <span>Client Accounts</span>
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground font-semibold">
+              {clients.length}
+            </span>
             {pendingClientsCount > 0 && (
-              <Badge className="bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/20 text-[10px] px-1.5 py-0 h-4 font-mono font-bold">
+              <span className="inline-flex items-center gap-1 bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold animate-pulse">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
                 {pendingClientsCount} Due
-              </Badge>
+              </span>
             )}
           </button>
 
@@ -173,36 +177,65 @@ export function InvoicesTab({
             type="button"
             onClick={() => setSubTab("invoices")}
             className={cn(
-              "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all",
+              "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer",
               subTab === "invoices"
-                ? "bg-background text-foreground shadow-xs border border-border/60"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
+                : "text-muted-foreground hover:text-foreground hover:bg-background/40"
             )}
           >
-            <FileText className="w-3.5 h-3.5" />
-            <span>Official Invoices ({invoices.length})</span>
+            <FileText className={cn("w-3.5 h-3.5 transition-colors", subTab === "invoices" ? "text-primary" : "text-muted-foreground")} />
+            <span>Official Invoices</span>
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground font-semibold">
+              {invoices.length}
+            </span>
           </button>
         </div>
 
-        {/* Global AR KPI Badge */}
+        {/* Global AR KPI Cards */}
         {totals && (
-          <div className="flex items-center gap-3 bg-muted/30 border border-border/60 px-3 py-1.5 rounded-xl text-xs font-mono self-end sm:self-auto">
-            <div>
-              <span className="text-[10px] text-muted-foreground block font-sans">
-                Total Collected
-              </span>
-              <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                {formatAED(totals.totalPaid)}
-              </span>
+          <div className="flex flex-wrap items-center gap-2.5 self-stretch sm:self-auto">
+            {/* Collected Card */}
+            <div className="flex-1 sm:flex-initial flex items-center gap-3 px-3.5 py-1.5 rounded-2xl bg-gradient-to-br from-emerald-500/[0.08] via-emerald-500/[0.02] to-transparent dark:from-emerald-950/25 dark:via-emerald-900/5 border border-emerald-500/20 shadow-2xs hover:border-emerald-500/40 transition-all">
+              <div className="w-7 h-7 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 ring-1 ring-emerald-500/20">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/90">
+                    Collected
+                  </span>
+                  {totals.totalInvoiced > 0 && (
+                    <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1 py-0.2 rounded">
+                      {Math.round((totals.totalPaid / totals.totalInvoiced) * 100)}%
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs sm:text-[13px] font-bold font-mono text-emerald-600 dark:text-emerald-400 leading-tight mt-0.5">
+                  {formatAED(totals.totalPaid)}
+                </div>
+              </div>
             </div>
-            <div className="h-6 w-px bg-border/60" />
-            <div>
-              <span className="text-[10px] text-muted-foreground block font-sans">
-                Need to Collect
-              </span>
-              <span className="font-bold text-rose-600 dark:text-rose-400">
-                {formatAED(totals.totalOutstanding)}
-              </span>
+
+            {/* Need to Collect Card */}
+            <div className="flex-1 sm:flex-initial flex items-center gap-3 px-3.5 py-1.5 rounded-2xl bg-gradient-to-br from-rose-500/[0.08] via-rose-500/[0.02] to-transparent dark:from-rose-950/25 dark:via-rose-900/5 border border-rose-500/20 shadow-2xs hover:border-rose-500/40 transition-all">
+              <div className="w-7 h-7 rounded-xl bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 ring-1 ring-rose-500/20">
+                <Clock className="w-3.5 h-3.5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/90">
+                    Outstanding Due
+                  </span>
+                  {totals.pendingClientsCount > 0 && (
+                    <span className="text-[9px] font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded">
+                      {totals.pendingClientsCount} clients
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs sm:text-[13px] font-bold font-mono text-rose-600 dark:text-rose-400 leading-tight mt-0.5">
+                  {formatAED(totals.totalOutstanding)}
+                </div>
+              </div>
             </div>
           </div>
         )}

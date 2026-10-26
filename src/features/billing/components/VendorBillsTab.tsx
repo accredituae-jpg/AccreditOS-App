@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { TabsContent } from "@/components/ui/tabs";
-import { Building2, Plus, DollarSign, Wallet, AlertCircle, FileText, Receipt } from "lucide-react";
+import { Building2, Plus, DollarSign, Wallet, AlertCircle, FileText, Receipt, CheckCircle2, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CustomPagination } from "@/components/ui/custom-pagination";
@@ -83,25 +83,29 @@ export function VendorBillsTab({
 
   return (
     <TabsContent value="vendor-bills" className="mt-0 space-y-4">
-      {/* 1. Sleek Sub-Tab Navigation Switcher */}
-      <div className="px-4 md:px-6 pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/70 pb-3">
-        <div className="flex items-center gap-1.5 p-1 bg-muted/40 rounded-xl border border-border/60 self-start">
+      {/* 1. Sleek Modern Sub-Tab Navigation & Micro-KPI Bar */}
+      <div className="px-4 md:px-6 pt-3 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-3.5">
+        <div className="flex items-center gap-1.5 p-1 bg-muted/50 dark:bg-muted/30 rounded-2xl border border-border/70 shadow-xs self-start">
           <button
             type="button"
             onClick={() => setSubTab("accounts")}
             className={cn(
-              "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all",
+              "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer",
               subTab === "accounts"
-                ? "bg-background text-foreground shadow-xs border border-border/60"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
+                : "text-muted-foreground hover:text-foreground hover:bg-background/40"
             )}
           >
-            <Building2 className="w-3.5 h-3.5" />
-            <span>Vendor Accounts ({vendors.length})</span>
+            <Building2 className={cn("w-3.5 h-3.5 transition-colors", subTab === "accounts" ? "text-primary" : "text-muted-foreground")} />
+            <span>Vendor Accounts</span>
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground font-semibold">
+              {vendors.length}
+            </span>
             {pendingVendorsCount > 0 && (
-              <Badge className="bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/20 text-[10px] px-1.5 py-0 h-4 font-mono font-bold">
+              <span className="inline-flex items-center gap-1 bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold animate-pulse">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                 {pendingVendorsCount} Due
-              </Badge>
+              </span>
             )}
           </button>
 
@@ -109,32 +113,65 @@ export function VendorBillsTab({
             type="button"
             onClick={() => setSubTab("bills")}
             className={cn(
-              "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all",
+              "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer",
               subTab === "bills"
-                ? "bg-background text-foreground shadow-xs border border-border/60"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
+                : "text-muted-foreground hover:text-foreground hover:bg-background/40"
             )}
           >
-            <FileText className="w-3.5 h-3.5" />
-            <span>Official Bills & Invoices ({bills.length})</span>
+            <FileText className={cn("w-3.5 h-3.5 transition-colors", subTab === "bills" ? "text-primary" : "text-muted-foreground")} />
+            <span>Official Bills & Invoices</span>
+            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground font-semibold">
+              {bills.length}
+            </span>
           </button>
         </div>
 
-        {/* Global AP KPI Badge */}
+        {/* Global AP KPI Cards */}
         {totals && (
-          <div className="flex items-center gap-3 bg-muted/30 border border-border/60 px-3 py-1.5 rounded-xl text-xs font-mono self-end sm:self-auto">
-            <div>
-              <span className="text-[10px] text-muted-foreground block font-sans">Total Paid</span>
-              <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                {formatAED(totals.totalPaid)}
-              </span>
+          <div className="flex flex-wrap items-center gap-2.5 self-stretch sm:self-auto">
+            {/* Total Settled Card */}
+            <div className="flex-1 sm:flex-initial flex items-center gap-3 px-3.5 py-1.5 rounded-2xl bg-gradient-to-br from-emerald-500/[0.08] via-emerald-500/[0.02] to-transparent dark:from-emerald-950/25 dark:via-emerald-900/5 border border-emerald-500/20 shadow-2xs hover:border-emerald-500/40 transition-all">
+              <div className="w-7 h-7 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 ring-1 ring-emerald-500/20">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/90">
+                    Total Settled
+                  </span>
+                  {totals.totalIncurred > 0 && (
+                    <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1 py-0.2 rounded">
+                      {Math.round((totals.totalPaid / totals.totalIncurred) * 100)}%
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs sm:text-[13px] font-bold font-mono text-emerald-600 dark:text-emerald-400 leading-tight mt-0.5">
+                  {formatAED(totals.totalPaid)}
+                </div>
+              </div>
             </div>
-            <div className="h-6 w-px bg-border/60" />
-            <div>
-              <span className="text-[10px] text-muted-foreground block font-sans">Need to Pay</span>
-              <span className="font-bold text-amber-600 dark:text-amber-400">
-                {formatAED(totals.totalPending)}
-              </span>
+
+            {/* Need to Pay Card */}
+            <div className="flex-1 sm:flex-initial flex items-center gap-3 px-3.5 py-1.5 rounded-2xl bg-gradient-to-br from-amber-500/[0.08] via-amber-500/[0.02] to-transparent dark:from-amber-950/25 dark:via-amber-900/5 border border-amber-500/20 shadow-2xs hover:border-amber-500/40 transition-all">
+              <div className="w-7 h-7 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 ring-1 ring-amber-500/20">
+                <Clock className="w-3.5 h-3.5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/90">
+                    Need to Pay
+                  </span>
+                  {totals.pendingVendorsCount > 0 && (
+                    <span className="text-[9px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-1 py-0.2 rounded">
+                      {totals.pendingVendorsCount} vendors
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs sm:text-[13px] font-bold font-mono text-amber-600 dark:text-amber-400 leading-tight mt-0.5">
+                  {formatAED(totals.totalPending)}
+                </div>
+              </div>
             </div>
           </div>
         )}
