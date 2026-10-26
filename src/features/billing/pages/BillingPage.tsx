@@ -331,14 +331,34 @@ export default function BillingPage() {
     setShowAddReceipt(true);
   };
 
+  const [downloadDialogInvoice, setDownloadDialogInvoice] = useState<Invoice | null>(null);
+  const [downloadDialogReceipt, setDownloadDialogReceipt] = useState<Receipt | null>(null);
+
   const [downloadingInvoice, setDownloadingInvoice] = useState<{
     invoice: Invoice;
     showSeal: boolean;
+    groupBy?: InvoiceItemGrouping;
+    showAwardingBody?: boolean;
   } | null>(null);
 
-  const handleDownloadInvoicePdf = (invoice: Invoice, showSeal: boolean = true) => {
+  const [downloadingReceipt, setDownloadingReceipt] = useState<{
+    receipt: Receipt;
+    showSeal: boolean;
+  } | null>(null);
+
+  const handleDownloadInvoicePdf = (
+    invoice: Invoice,
+    showSeal: boolean = true,
+    groupBy: InvoiceItemGrouping = "itemized",
+    showAwardingBody: boolean = false
+  ) => {
     if (downloadingInvoice) return;
-    setDownloadingInvoice({ invoice, showSeal });
+    setDownloadingInvoice({ invoice, showSeal, groupBy, showAwardingBody });
+  };
+
+  const handleDownloadReceiptPdf = (receipt: Receipt, showSeal: boolean = true) => {
+    if (downloadingReceipt) return;
+    setDownloadingReceipt({ receipt, showSeal });
   };
 
   useEffect(() => {
