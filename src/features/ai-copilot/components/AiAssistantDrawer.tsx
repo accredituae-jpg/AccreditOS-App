@@ -351,7 +351,7 @@ export function AiAssistantDrawer() {
           type="button"
           onClick={() => setIsOpen(true)}
           className={cn(
-            "relative flex items-center gap-2.5 px-4 py-2.5 rounded-full shadow-2xl transition-all duration-300",
+            "relative flex items-center gap-2.5 px-3 py-3 rounded-full shadow-2xl transition-all duration-300",
             "bg-gradient-to-r from-violet-600 via-indigo-600 to-primary text-white",
             "hover:scale-105 hover:shadow-primary/30 active:scale-95",
             "border border-white/20 backdrop-blur-md cursor-pointer",
@@ -369,15 +369,15 @@ export function AiAssistantDrawer() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
               </span>
             </div>
-            <span className="text-xs font-bold tracking-tight text-white drop-shadow-xs">
+            <span className="hidden sm:block text-xs font-bold tracking-tight text-white drop-shadow-xs">
               AI Copilot
             </span>
-            <Badge
+            {/* <Badge
               variant="secondary"
               className="text-[9px] font-bold bg-white/20 hover:bg-white/30 text-white px-1.5 py-0 border-none uppercase tracking-wider backdrop-blur-xs"
             >
               Dev
-            </Badge>
+            </Badge> */}
           </div>
         </button>
       </div>
@@ -394,11 +394,11 @@ export function AiAssistantDrawer() {
           )}
         >
           {/* Header */}
-          <SheetHeader className="p-3.5 px-4 border-b border-border/60 bg-muted/30 backdrop-blur-md flex flex-row items-center justify-between space-y-0">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-primary text-white flex items-center justify-center shadow-md border border-white/20">
-                  <Bot className="w-5 h-5 text-white" />
+          <SheetHeader className="p-3 sm:p-3.5 px-3.5 sm:px-4 border-b border-border/60 bg-muted/30 backdrop-blur-md flex flex-row items-center justify-between space-y-0">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+              <div className="relative shrink-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-primary text-white flex items-center justify-center shadow-md border border-white/20">
+                  <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
                 {/* Live Surveillance Indicator Dot */}
                 <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5">
@@ -407,33 +407,33 @@ export function AiAssistantDrawer() {
                 </span>
               </div>
 
-              <div>
-                <SheetTitle className="text-sm font-bold flex items-center gap-2 text-foreground tracking-tight">
+              <div className="min-w-0">
+                <SheetTitle className="text-xs sm:text-sm font-bold flex items-center gap-2 text-foreground tracking-tight whitespace-nowrap">
                   <span>AccreditOS Copilot</span>
                   <Badge
                     variant="outline"
-                    className="text-[9px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 px-1.5 py-0"
+                    className="hidden sm:inline-flex text-[9px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 px-1.5 py-0 whitespace-nowrap"
                   >
                     Live DB Surveillance
                   </Badge>
                 </SheetTitle>
-                <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground mt-0.5">
-                  <span className="inline-block w-1 h-1 rounded-full bg-muted-foreground/50" />
-                  <span>Google Gemini 2.5 Flash</span>
-                  <span className="inline-block w-1 h-1 rounded-full bg-muted-foreground/50" />
-                  <span className="font-mono text-emerald-600 dark:text-emerald-400">
-                    Prisma Live
-                  </span>
+                <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground mt-0.5 whitespace-nowrap">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">Live</span>
+                  <span className="hidden sm:inline-block w-1 h-1 rounded-full bg-muted-foreground/50" />
+                  <span className="hidden sm:inline">Google Gemini AI</span>
+                  <span className="hidden sm:inline-block w-1 h-1 rounded-full bg-muted-foreground/50" />
+                  <span className="hidden sm:inline font-mono text-muted-foreground">Prisma Live</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 shrink-0">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsExpanded((prev) => !prev)}
-                className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                className="hidden sm:flex h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
                 title={isExpanded ? "Standard width" : "Expand drawer"}
               >
                 {isExpanded ? (
