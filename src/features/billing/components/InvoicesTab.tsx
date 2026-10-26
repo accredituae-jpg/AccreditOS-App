@@ -148,26 +148,27 @@ export function InvoicesTab({
   return (
     <TabsContent value="invoices" className="mt-0 space-y-4">
       {/* 1. Sleek Modern Sub-Tab Navigation & Micro-KPI Bar */}
-      <div className="px-4 md:px-6 pt-3 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-3.5">
-        <div className="flex items-center gap-1.5 p-1 bg-muted/50 dark:bg-muted/30 rounded-2xl border border-border/70 shadow-xs self-start">
+      <div className="px-4 md:px-6 pt-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-border/50 pb-3">
+        {/* Navigation Switcher */}
+        <div className="flex items-center gap-1 p-1 bg-muted/40 dark:bg-muted/20 rounded-xl border border-border/60 shadow-2xs self-start overflow-x-auto max-w-full">
           <button
             type="button"
             onClick={() => setSubTab("accounts")}
             className={cn(
-              "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer",
+              "flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0",
               subTab === "accounts"
-                ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
+                ? "bg-background text-foreground shadow-2xs ring-1 ring-border/60"
                 : "text-muted-foreground hover:text-foreground hover:bg-background/40"
             )}
           >
-            <Users className={cn("w-3.5 h-3.5 transition-colors", subTab === "accounts" ? "text-primary" : "text-muted-foreground")} />
+            <Users className={cn("w-3.5 h-3.5 shrink-0", subTab === "accounts" ? "text-primary" : "text-muted-foreground")} />
             <span>Client Accounts</span>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground font-semibold">
+            <span className="text-[11px] font-mono px-1.5 py-0.2 rounded bg-muted text-muted-foreground font-semibold">
               {clients.length}
             </span>
             {pendingClientsCount > 0 && (
-              <span className="inline-flex items-center gap-1 bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold animate-pulse">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+              <span className="inline-flex items-center gap-1 bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25 text-[10px] px-2 py-0.2 rounded-full font-mono font-bold whitespace-nowrap animate-pulse">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
                 {pendingClientsCount} Due
               </span>
             )}
@@ -177,62 +178,62 @@ export function InvoicesTab({
             type="button"
             onClick={() => setSubTab("invoices")}
             className={cn(
-              "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer",
+              "flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0",
               subTab === "invoices"
-                ? "bg-background text-foreground shadow-sm ring-1 ring-border/60"
+                ? "bg-background text-foreground shadow-2xs ring-1 ring-border/60"
                 : "text-muted-foreground hover:text-foreground hover:bg-background/40"
             )}
           >
-            <FileText className={cn("w-3.5 h-3.5 transition-colors", subTab === "invoices" ? "text-primary" : "text-muted-foreground")} />
+            <FileText className={cn("w-3.5 h-3.5 shrink-0", subTab === "invoices" ? "text-primary" : "text-muted-foreground")} />
             <span>Official Invoices</span>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground font-semibold">
+            <span className="text-[11px] font-mono px-1.5 py-0.2 rounded bg-muted text-muted-foreground font-semibold">
               {invoices.length}
             </span>
           </button>
         </div>
 
-        {/* Global AR KPI Cards */}
+        {/* Global AR KPI Cards - Side-by-side even on mobile */}
         {totals && (
-          <div className="flex flex-wrap items-center gap-2.5 self-stretch sm:self-auto">
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 self-stretch sm:self-auto">
             {/* Collected Card */}
-            <div className="flex-1 sm:flex-initial flex items-center gap-3 px-3.5 py-1.5 rounded-2xl bg-gradient-to-br from-emerald-500/[0.08] via-emerald-500/[0.02] to-transparent dark:from-emerald-950/25 dark:via-emerald-900/5 border border-emerald-500/20 shadow-2xs hover:border-emerald-500/40 transition-all">
-              <div className="w-7 h-7 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 ring-1 ring-emerald-500/20">
+            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-emerald-500/[0.06] dark:bg-emerald-950/20 border border-emerald-500/20 shadow-2xs">
+              <div className="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 ring-1 ring-emerald-500/20">
                 <CheckCircle2 className="w-3.5 h-3.5" />
               </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/90">
+              <div className="min-w-0">
+                <div className="flex items-center gap-1">
+                  <span className="text-[9px] font-semibold tracking-wider uppercase text-muted-foreground whitespace-nowrap">
                     Collected
                   </span>
                   {totals.totalInvoiced > 0 && (
-                    <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1 py-0.2 rounded">
+                    <span className="text-[8px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1 py-0.2 rounded whitespace-nowrap">
                       {Math.round((totals.totalPaid / totals.totalInvoiced) * 100)}%
                     </span>
                   )}
                 </div>
-                <div className="text-xs sm:text-[13px] font-bold font-mono text-emerald-600 dark:text-emerald-400 leading-tight mt-0.5">
+                <div className="text-xs font-bold font-mono text-emerald-600 dark:text-emerald-400 truncate leading-tight mt-0.5">
                   {formatAED(totals.totalPaid)}
                 </div>
               </div>
             </div>
 
             {/* Need to Collect Card */}
-            <div className="flex-1 sm:flex-initial flex items-center gap-3 px-3.5 py-1.5 rounded-2xl bg-gradient-to-br from-rose-500/[0.08] via-rose-500/[0.02] to-transparent dark:from-rose-950/25 dark:via-rose-900/5 border border-rose-500/20 shadow-2xs hover:border-rose-500/40 transition-all">
-              <div className="w-7 h-7 rounded-xl bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 ring-1 ring-rose-500/20">
+            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-rose-500/[0.06] dark:bg-rose-950/20 border border-rose-500/20 shadow-2xs">
+              <div className="w-6 h-6 rounded-lg bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 ring-1 ring-rose-500/20">
                 <Clock className="w-3.5 h-3.5" />
               </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-semibold tracking-wider uppercase text-muted-foreground/90">
-                    Outstanding Due
+              <div className="min-w-0">
+                <div className="flex items-center gap-1">
+                  <span className="text-[9px] font-semibold tracking-wider uppercase text-muted-foreground whitespace-nowrap">
+                    Outstanding
                   </span>
                   {totals.pendingClientsCount > 0 && (
-                    <span className="text-[9px] font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded">
-                      {totals.pendingClientsCount} clients
+                    <span className="text-[8px] font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded whitespace-nowrap">
+                      {totals.pendingClientsCount} Due
                     </span>
                   )}
                 </div>
-                <div className="text-xs sm:text-[13px] font-bold font-mono text-rose-600 dark:text-rose-400 leading-tight mt-0.5">
+                <div className="text-xs font-bold font-mono text-rose-600 dark:text-rose-400 truncate leading-tight mt-0.5">
                   {formatAED(totals.totalOutstanding)}
                 </div>
               </div>
