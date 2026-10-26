@@ -16,5 +16,6 @@ export async function apiSendAiChatMessage(
   return fetchApi("/api/ai/chat", {
     method: "POST",
     body: JSON.stringify({ messages }),
+    timeout: 120000,
   });
 }
