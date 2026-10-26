@@ -56,6 +56,7 @@ import {
   AwardingBodyDialog,
 } from "../dialogs";
 import { MODULE_HIERARCHY } from "../constants/settings.constants";
+import { DeveloperStorageWidget } from "@/features/dashboard/components/DeveloperStorageWidget";
 import type { Training } from "@/features/trainings/types/trainings.types";
 import type { Certificate } from "@/features/certificates/types/certificates.types";
 function SettingsTabSkeleton() {

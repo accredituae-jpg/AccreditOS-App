@@ -27,4 +27,5 @@ export const qk = {
   invoiceTypes: ["invoice-types"] as const,
   nextInvoiceNumber: ["invoices", "next-number"] as const,
   pendingClientsSummary: ["finance", "pending-clients-summary"] as const,
+  systemStorage: ["system", "storage"] as const,
 } as const;

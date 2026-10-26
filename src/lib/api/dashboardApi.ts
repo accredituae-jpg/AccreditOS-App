@@ -38,3 +38,29 @@ export async function apiGetDashboardStats(
 
   return fetchApi<DashboardStats>(query);
 }
+
+export interface SystemTableFootprint {
+  tableName: string;
+  sizePretty: string;
+  bytes: number;
+  approxRows: number;
+}
+
+export interface SystemStorageMetrics {
+  usedBytes: number;
+  usedMb: number;
+  usedPretty: string;
+  quotaMb: number;
+  freeMb: number;
+  usedPercent: number;
+  freePercent: number;
+  databaseName: string;
+  provider: string;
+  status: "healthy" | "warning" | "critical";
+  tables: SystemTableFootprint[];
+  timestamp: string;
+}
+
+export async function apiGetSystemStorage(): Promise<ApiResponse<SystemStorageMetrics>> {
+  return fetchApi<SystemStorageMetrics>("/api/dashboard/system-storage");
+}

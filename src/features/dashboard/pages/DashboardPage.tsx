@@ -70,6 +70,7 @@ import {
   CustomDateRange,
 } from "../components/SectionPeriodFilter";
 import { MasterDashboardPeriodFilter } from "../components/MasterDashboardPeriodFilter";
+import { DeveloperStorageWidget } from "../components/DeveloperStorageWidget";
 import { ExpenseOperationsAnalytics } from "../components/ExpenseOperationsAnalytics";
 import { ExpensePieChartCard } from "../components/ExpensePieChartCard";
 import { VendorBillsPieChartCard } from "../components/VendorBillsPieChartCard";
@@ -185,6 +186,11 @@ export default function DashboardPage() {
     return () =>
       window.removeEventListener("accreditOS_role_changed", handleRoleChange);
   }, []);
+
+  const isDeveloper = useMemo(
+    () => activeRole === "super_admin" || (activeRole as string) === "developer",
+    [activeRole],
+  );
 
   const hasFinance = useMemo(
     () => checkFeaturePermission(activeRole, "finance"),
@@ -899,6 +905,9 @@ export default function DashboardPage() {
           />
         </div>
       </motion.div>
+
+      {/* Developer Cloud Database & Storage Telemetry */}
+      {isDeveloper && <DeveloperStorageWidget />}
 
       {/* 4. Analytics & Charts Section (Left: Financial Velocity, Right: Two Stacked Pie Charts) */}
       {hasFinance && (
