@@ -1,0 +1,434 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Safety Training Institute TMS - Refined Design System
+   Color Palette: Deep Slate + Teal Primary + Orange Accent
+   Modern, Clean, Professional
+*/
+
+
+@layer base {
+  :root {
+    /* Light Mode - Enterprise ERP Design System (Audit v2) */
+
+    /* Background: very light cool-blue — cards (white) sit clearly on top */
+    --background: 210 40% 98%;
+    --foreground: 222.2 84% 4.9%;
+
+    /* Cards are pure white — clearly visible above the near-white background */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    /* Company Blue Primary (#04a0db / rgb(4, 160, 219)) */
+    --primary: 196.5 96.4% 43.7%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    /* Muted: #64748B slate — accessible, not too light */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 40%;
+
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --success: 142.1 76.2% 36.3%;
+    --success-foreground: 210 20% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    /* Border: #E2E8F0 — clear but gentle */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 196.5 96.4% 43.7%;
+
+    /* Enterprise ERP: 14px radius — less bubbly, more professional */
+    --radius: 0.875rem;
+
+    /* Sidebar: white unified with background — no jarring contrast */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222.2 47.4% 11.2%;
+    --sidebar-primary: 196.5 96.4% 43.7%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 196.5 96.4% 43.7%;
+    --sidebar-muted: 215 20.2% 45%;
+
+    /* Chart Colors */
+    --chart-1: 196.5 96.4% 43.7%;
+    --chart-2: 38 92% 50%;
+    --chart-3: 142.1 76.2% 36.3%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(220 25% 10% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(220 25% 10% / 0.09), 0 2px 4px -2px hsl(220 25% 10% / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(220 25% 10% / 0.10), 0 4px 6px -4px hsl(220 25% 10% / 0.06);
+    --shadow-xl: 0 20px 25px -5px hsl(220 25% 10% / 0.10), 0 8px 10px -6px hsl(220 25% 10% / 0.06);
+    --shadow-card: 0 1px 3px 0 hsl(220 25% 10% / 0.08), 0 1px 2px -1px hsl(220 25% 10% / 0.05);
+    --shadow-elevated: 0 25px 50px -12px hsl(220 25% 10% / 0.15);
+  }
+
+  .dark {
+    --background: 215 32% 9%;
+    --foreground: 213 31% 95%;
+
+    --card: 215 28% 13%;
+    --card-foreground: 213 31% 95%;
+
+    --popover: 215 28% 12%;
+    --popover-foreground: 213 31% 95%;
+
+    --primary: 196.5 96.4% 43.7%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 215 25% 18%;
+    --secondary-foreground: 210 20% 92%;
+
+    --muted: 215 22% 16%;
+    --muted-foreground: 217 15% 65%;
+
+    --accent: 215 25% 18%;
+    --accent-foreground: 210 20% 92%;
+
+    --warning: 38 95% 58%;
+    --warning-foreground: 38 95% 10%;
+
+    --success: 142 65% 50%;
+    --success-foreground: 142 65% 95%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 210 20% 98%;
+
+    --info: 196.5 96.4% 43.7%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 215 22% 20%;
+    --input: 215 22% 18%;
+    --ring: 196.5 96.4% 43.7%;
+
+    --sidebar-background: 215 35% 7%;
+    --sidebar-foreground: 240 4.8% 90%;
+    --sidebar-primary: 196.5 96.4% 43.7%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 30% 15%;
+    --sidebar-accent-foreground: 240 4.8% 90%;
+    --sidebar-border: 215 25% 18%;
+    --sidebar-ring: 196.5 96.4% 43.7%;
+    --sidebar-muted: 217 15% 55%;
+
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.4), 0 2px 4px -2px hsl(0 0% 0% / 0.3);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.4), 0 4px 6px -4px hsl(0 0% 0% / 0.3);
+    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.4), 0 8px 10px -6px hsl(0 0% 0% / 0.3);
+    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.3), 0 1px 2px -1px hsl(0 0% 0% / 0.2);
+    --shadow-elevated: 0 25px 50px -12px hsl(0 0% 0% / 0.5);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  /* WebKit Browsers (Chrome, Safari, Edge, Opera) */
+  ::-webkit-scrollbar {
+    display: none;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Dirham-Sans', 'Dirham', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #F8FAFC;
+    background-image:
+      radial-gradient(ellipse at 0% 0%, hsla(196.5, 96.4%, 43.7%, 0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 100% 100%, hsla(196.5, 96.4%, 43.7%, 0.03) 0%, transparent 50%);
+    background-attachment: fixed;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  /* Input & Select base — explicit bg/border so they're visible on F8FAFC background */
+  input,
+  textarea,
+  select {
+    @apply bg-white dark:bg-card border border-border text-foreground;
+    color: hsl(var(--foreground));
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: hsl(var(--foreground));
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+    opacity: 0.7;
+  }
+
+  /* Dark mode body background override */
+  .dark body {
+    background: hsl(215, 32%, 9%);
+    background-image:
+      radial-gradient(ellipse at 0% 0%, hsla(196.5, 96.4%, 43.7%, 0.10) 0%, transparent 50%),
+      radial-gradient(ellipse at 100% 100%, hsla(196.5, 96.4%, 43.7%, 0.06) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  /* Card Styles - white surface with crisp shadow on near-white background */
+  .card-elevated {
+    @apply bg-card rounded-2xl border border-border;
+    box-shadow: 0 1px 3px hsl(222 84% 5% / 0.06), 0 4px 16px hsl(222 84% 5% / 0.05);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+  }
+
+  .card-elevated:hover {
+    box-shadow: 0 4px 8px hsl(222 84% 5% / 0.08), 0 16px 40px hsl(222 84% 5% / 0.07);
+    transform: translateY(-1px);
+  }
+
+  /* KPI Card - Unified across all pages */
+  .kpi-card {
+    @apply bg-card rounded-xl border border-border p-3 sm:p-4;
+    box-shadow: var(--shadow-card);
+    transition: all 0.2s ease;
+  }
+
+  .kpi-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+
+  /* Glass Effect */
+  .glass {
+    @apply bg-card/80 backdrop-blur-xl border border-border/50;
+  }
+
+  /* Status Badges */
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .status-active {
+    @apply bg-success/15 text-success;
+  }
+
+  .status-pending {
+    @apply bg-warning/15 text-warning;
+  }
+
+  .status-inactive {
+    @apply bg-muted text-muted-foreground;
+  }
+
+  .status-overdue {
+    @apply bg-destructive/15 text-destructive;
+  }
+
+  /* Input Focus States */
+  .input-focus {
+    @apply focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200;
+  }
+
+  /* Button Hover Effects */
+  .btn-hover {
+    @apply transition-all duration-200 hover:shadow-md active:scale-[0.98];
+  }
+
+  /* Table Styles - Unified */
+  .data-table {
+    @apply w-full;
+  }
+
+  .data-table th {
+    @apply px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider bg-muted/30 first:rounded-tl-lg last:rounded-tr-lg;
+  }
+
+  .data-table td {
+    @apply px-4 py-3 text-sm;
+  }
+
+  .data-table tr {
+    @apply border-b border-border transition-colors duration-150;
+  }
+
+  .data-table tbody tr:hover {
+    @apply bg-muted/30 cursor-pointer;
+  }
+
+  .data-table tbody tr:last-child {
+    @apply border-b-0;
+  }
+
+  /* Grid Card - Unified */
+  .grid-card {
+    @apply bg-card rounded-xl border border-border p-4 transition-all duration-200;
+    box-shadow: var(--shadow-card);
+  }
+
+  .grid-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  /* View Toggle - Clearly visible on white background */
+  .view-toggle {
+    @apply flex items-center bg-card border border-border rounded-lg p-1 gap-0.5 shadow-sm;
+  }
+
+  .view-toggle-btn {
+    @apply flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-150;
+  }
+
+  .view-toggle-btn.active {
+    @apply bg-primary text-primary-foreground shadow-sm;
+  }
+
+  .view-toggle-btn:not(.active) {
+    @apply text-muted-foreground hover:text-foreground hover:bg-muted;
+  }
+
+  /* Page Container - Desktop spacing */
+  .page-container {
+    @apply p-4 md:p-6 lg:p-8 max-w-[1700px] mx-auto space-y-4 md:space-y-6;
+  }
+
+  /* Text Gradient Utility */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary/80 to-primary/60;
+  }
+
+  /* Section Header */
+  .section-title {
+    @apply text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary/80 to-primary/60;
+  }
+
+  /* Animations */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out forwards;
+  }
+}
+
+@layer utilities {
+  /* Scrollbar Styling */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Accredit ERP Brand Styling */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@layer components {
+  .accredit-gradient {
+    @apply bg-gradient-to-r from-teal-600 via-blue-600 to-cyan-600;
+  }
+
+  .accredit-glow {
+    box-shadow: 0 0 30px rgba(173, 216, 230, 0.3);
+  }
+
+  .logo-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .accredit-brand-bg {
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(0, 180, 160, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(173, 216, 230, 0.08) 0%, transparent 50%);
+  }
+}

@@ -1,0 +1,32 @@
+export interface Certificate {
+  id: string;
+  participantName: string;
+  course: string;
+  certificateNumber: string;
+  issueDate: string;
+  regDate?: string;
+  trainingRegDate?: string;
+  trainingIssueDate?: string;
+  expiryDate: string;
+  renewalStatus: "valid" | "expiring-soon" | "expired";
+  daysUntilExpiry: number;
+  company: string;
+  customCompany?: string | null;
+  certificateType: "Specific" | "General" | "Duration" | "License" | string;
+  clientId?: string;
+  trainingId?: string;
+  serviceType?: string;
+  quantity?: number | null;
+  invoiceIssued?: boolean;
+  status?: "created" | "sent" | "printed" | "distributed";
+  awardingBodyFee?: number;
+  awardingBodyId?: string;
+  awardingBodyName?: string;
+  isSystemIssued?: boolean;
+  durationDays?: number;
+  drivingLicenseNo?: string | null;
+  drivingLicenseType?: string | null;
+  participantPhone?: string;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+}
