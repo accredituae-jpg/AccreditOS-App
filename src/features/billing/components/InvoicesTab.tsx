@@ -155,20 +155,20 @@ export function InvoicesTab({
             type="button"
             onClick={() => setSubTab("accounts")}
             className={cn(
-              "flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0",
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0",
               subTab === "accounts"
                 ? "bg-background text-foreground shadow-2xs ring-1 ring-border/60"
                 : "text-muted-foreground hover:text-foreground hover:bg-background/40"
             )}
           >
-            <Users className={cn("w-3.5 h-3.5 shrink-0", subTab === "accounts" ? "text-primary" : "text-muted-foreground")} />
+            <Users className={cn("w-3.5 h-3.5 shrink-0 hidden sm:inline-block", subTab === "accounts" ? "text-primary" : "text-muted-foreground")} />
             <span>Client Accounts</span>
             <span className="text-[11px] font-mono px-1.5 py-0.2 rounded bg-muted text-muted-foreground font-semibold">
               {clients.length}
             </span>
             {pendingClientsCount > 0 && (
-              <span className="inline-flex items-center gap-1 bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25 text-[10px] px-2 py-0.2 rounded-full font-mono font-bold whitespace-nowrap animate-pulse">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+              <span className="inline-flex items-center gap-1 bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25 text-[10px] px-2 py-0.2 rounded-full font-mono font-bold whitespace-nowrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0 hidden sm:inline-block animate-pulse" />
                 {pendingClientsCount} Due
               </span>
             )}
@@ -178,13 +178,13 @@ export function InvoicesTab({
             type="button"
             onClick={() => setSubTab("invoices")}
             className={cn(
-              "flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0",
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0",
               subTab === "invoices"
                 ? "bg-background text-foreground shadow-2xs ring-1 ring-border/60"
                 : "text-muted-foreground hover:text-foreground hover:bg-background/40"
             )}
           >
-            <FileText className={cn("w-3.5 h-3.5 shrink-0", subTab === "invoices" ? "text-primary" : "text-muted-foreground")} />
+            <FileText className={cn("w-3.5 h-3.5 shrink-0 hidden sm:inline-block", subTab === "invoices" ? "text-primary" : "text-muted-foreground")} />
             <span>Official Invoices</span>
             <span className="text-[11px] font-mono px-1.5 py-0.2 rounded bg-muted text-muted-foreground font-semibold">
               {invoices.length}
@@ -192,12 +192,12 @@ export function InvoicesTab({
           </button>
         </div>
 
-        {/* Global AR KPI Cards - Side-by-side even on mobile */}
+        {/* Global AR KPI Cards - Side-by-side on mobile, icons & extra badges hidden on mobile */}
         {totals && (
           <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 self-stretch sm:self-auto">
             {/* Collected Card */}
             <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-emerald-500/[0.06] dark:bg-emerald-950/20 border border-emerald-500/20 shadow-2xs">
-              <div className="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 ring-1 ring-emerald-500/20">
+              <div className="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 hidden sm:flex items-center justify-center shrink-0 ring-1 ring-emerald-500/20">
                 <CheckCircle2 className="w-3.5 h-3.5" />
               </div>
               <div className="min-w-0">
@@ -206,7 +206,7 @@ export function InvoicesTab({
                     Collected
                   </span>
                   {totals.totalInvoiced > 0 && (
-                    <span className="text-[8px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1 py-0.2 rounded whitespace-nowrap">
+                    <span className="hidden sm:inline-block text-[8px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1 py-0.2 rounded whitespace-nowrap">
                       {Math.round((totals.totalPaid / totals.totalInvoiced) * 100)}%
                     </span>
                   )}
@@ -219,7 +219,7 @@ export function InvoicesTab({
 
             {/* Need to Collect Card */}
             <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-rose-500/[0.06] dark:bg-rose-950/20 border border-rose-500/20 shadow-2xs">
-              <div className="w-6 h-6 rounded-lg bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 ring-1 ring-rose-500/20">
+              <div className="w-6 h-6 rounded-lg bg-rose-500/15 text-rose-600 dark:text-rose-400 hidden sm:flex items-center justify-center shrink-0 ring-1 ring-rose-500/20">
                 <Clock className="w-3.5 h-3.5" />
               </div>
               <div className="min-w-0">
@@ -228,7 +228,7 @@ export function InvoicesTab({
                     Outstanding
                   </span>
                   {totals.pendingClientsCount > 0 && (
-                    <span className="text-[8px] font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded whitespace-nowrap">
+                    <span className="hidden sm:inline-block text-[8px] font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 px-1 py-0.2 rounded whitespace-nowrap">
                       {totals.pendingClientsCount} Due
                     </span>
                   )}
