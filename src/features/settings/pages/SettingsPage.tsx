@@ -7,6 +7,7 @@ import {
   Settings as SettingsIcon,
   Building2,
   GraduationCap,
+  Database,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -745,6 +746,16 @@ export default function SettingsPage() {
                 >
                   <Award className="w-4 h-4 text-primary" />
                   Certificate Types
+                </TabsTrigger>
+              )}
+              {(activeRole === "super_admin" ||
+                (activeRole as string) === "developer") && (
+                <TabsTrigger
+                  value="storage"
+                  className="bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none px-1 pb-3 pt-1 shadow-none transition-all gap-2 text-muted-foreground data-[state=active]:text-foreground font-semibold text-sm shrink-0 whitespace-nowrap"
+                >
+                  <Database className="w-4 h-4 text-emerald-500 shrink-0" />
+                  Database & Storage
                 </TabsTrigger>
               )}
             </TabsList>
