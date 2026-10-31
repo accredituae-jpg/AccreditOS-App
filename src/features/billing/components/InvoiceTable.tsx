@@ -339,7 +339,7 @@ export const InvoiceTable = memo(function InvoiceTable({
                               <FileText className="w-4 h-4 mr-2 text-primary" />{" "}
                               Download Options (Format & Seal)...
                               </DropdownMenuItem>
-                              <DropdownMenuItem disabled={isDownloadingPdf} onClick={() => actions.onDownloadPdf ? actions.onDownloadPdf(invoice, true) : actions.onPreview(invoice)}>
+                              <DropdownMenuItem disabled={downloadingInvoiceId === invoice.id} onClick={() => actions.onDownloadPdf ? actions.onDownloadPdf(invoice, true) : actions.onPreview(invoice)}>
                                 Download PDF (With Seal)
                             </DropdownMenuItem>
                             <DropdownMenuItem
