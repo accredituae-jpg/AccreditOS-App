@@ -364,7 +364,7 @@ export const InvoiceTable = memo(function InvoiceTable({
                             <FileCheck className="w-4 h-4 mr-2 text-blue-500" /> Mark as Sent
                           </DropdownMenuItem>
                         )}
-                        {(invoice.status === "issued" || invoice.status === "partially_paid") && actions.onRecordPayment && (
+                        {invoice.status !== "draft" && (invoice.status === "issued" || invoice.status === "partially_paid") && actions.onRecordPayment && (
                           <DropdownMenuItem
                             onClick={() => actions.onRecordPayment!(invoice)}
                             className="text-emerald-600 dark:text-emerald-400 font-medium cursor-pointer"

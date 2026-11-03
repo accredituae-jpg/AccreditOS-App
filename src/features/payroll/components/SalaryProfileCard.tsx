@@ -26,25 +26,24 @@ export function SalaryProfileCard({ profile, index, onEdit, onView }: SalaryProf
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.03 * index }}
-      className="grid-card relative flex flex-col justify-between cursor-pointer"
+      className="grid-card group relative flex h-full min-w-0 cursor-pointer flex-col justify-between gap-3 overflow-hidden p-3.5 transition-all hover:border-primary/30 hover:shadow-md sm:p-4 sm:hover:-translate-y-0.5"
       onClick={() => onView(profile)}
     >
-      <div>
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <User className="w-4 h-4 text-primary" />
+      <div className="space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/15">
+              <User className="h-4 w-4 text-primary" />
             </div>
             <div className="min-w-0">
-              <h3 className="font-semibold text-sm truncate text-primary">
-                {nameFallback}
-              </h3>
+              <h3 className="truncate text-sm font-semibold text-foreground">{nameFallback}</h3>
+              <p className="mt-0.5 text-xs text-muted-foreground">Monthly salary</p>
             </div>
           </div>
           <Badge
             variant={profile.isActive ? "outline" : "secondary"}
             className={cn(
-              "capitalize text-[9px] font-bold px-1.5 py-0.5 shrink-0",
+              "shrink-0 px-2 py-0.5 text-[10px] font-semibold capitalize",
               profile.isActive
                 ? "bg-success/15 text-success border-success/20 hover:bg-success/15"
                 : "bg-muted/15 text-muted-foreground border-muted-foreground/20 hover:bg-muted/15"
@@ -54,48 +53,40 @@ export function SalaryProfileCard({ profile, index, onEdit, onView }: SalaryProf
           </Badge>
         </div>
 
-        <div className="space-y-2 text-sm pt-1 border-t border-border/40">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Basic Salary</span>
-            <span className="font-medium text-foreground">
-              {formatAED(profile.basicSalary, true)}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Housing Allowance</span>
-            <span className="font-medium text-foreground">
-              {formatAED(profile.housingAllowance || 0, true)}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Transport Allowance</span>
-            <span className="font-medium text-foreground">
-              {formatAED(profile.transportAllowance || 0, true)}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Food Allowance</span>
-            <span className="font-medium text-foreground">
-              {formatAED(profile.foodAllowance || 0, true)}
-            </span>
-          </div>
-          <div className="flex justify-between font-semibold pt-2 border-t border-border">
-            <span className="text-muted-foreground font-semibold">Gross Baseline</span>
-            <span className="text-foreground font-bold font-mono">
-              {formatAED(profile.grossSalary, true)}
-            </span>
+        <div className="rounded-lg border border-primary/10 bg-primary/[0.035] p-3">
+          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Gross monthly baseline</p>
+          <p className="mt-0.5 break-words text-lg font-bold leading-tight tracking-tight text-foreground [font-variant-numeric:tabular-nums] sm:text-xl">
+            {formatAED(profile.grossSalary, true)}
+          </p>
+          <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-2 border-t border-border/60 pt-2 text-xs">
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <span className="text-muted-foreground">Basic salary</span>
+              <span className="break-words font-semibold leading-tight text-foreground">{formatAED(profile.basicSalary, true)}</span>
+            </div>
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <span className="text-muted-foreground">Housing</span>
+              <span className="break-words font-semibold leading-tight text-foreground">{formatAED(profile.housingAllowance || 0, true)}</span>
+            </div>
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <span className="text-muted-foreground">Transport</span>
+              <span className="break-words font-semibold leading-tight text-foreground">{formatAED(profile.transportAllowance || 0, true)}</span>
+            </div>
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <span className="text-muted-foreground">Food</span>
+              <span className="break-words font-semibold leading-tight text-foreground">{formatAED(profile.foodAllowance || 0, true)}</span>
+            </div>
           </div>
         </div>
       </div>
 
       <div
-        className="mt-3 pt-3 border-t border-border flex items-center gap-2"
+        className="flex items-center gap-2 border-t border-border/70 pt-2.5"
         onClick={(e) => e.stopPropagation()}
       >
         <Button
           variant="outline"
           size="sm"
-          className="flex-1 rounded-lg"
+          className="h-8 min-w-0 flex-1 rounded-md px-2 text-xs"
           onClick={() => onView(profile)}
         >
           <Eye className="w-3.5 h-3.5 mr-1" />
@@ -106,7 +97,7 @@ export function SalaryProfileCard({ profile, index, onEdit, onView }: SalaryProf
             <Button
               variant="outline"
               size="sm"
-              className="h-9 w-9 p-0 rounded-lg shrink-0 text-muted-foreground hover:text-foreground"
+              className="h-8 w-8 shrink-0 rounded-md p-0 text-muted-foreground hover:text-foreground"
             >
               <MoreHorizontal className="w-4 h-4" />
             </Button>

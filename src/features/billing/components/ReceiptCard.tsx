@@ -57,8 +57,19 @@ export function ReceiptCard({
   permissions,
 }: ReceiptCardProps) {
   const formattedDate = formatDateDDMMYYYY(receipt.date);
+  const isDraft = !receipt.receiptNumber || receipt.status?.toLowerCase() === "draft";
 
   const getStatusBadge = (status: Receipt["status"]) => {
+    if (isDraft) {
+      return (
+        <Badge
+          variant="outline"
+          className="bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20 gap-1 text-[11px] font-semibold px-2 py-0.5"
+        >
+          <Clock className="w-3 h-3" /> Draft
+        </Badge>
+      );
+    }
     switch (status.toLowerCase()) {
       case "paid":
         return (
@@ -132,7 +143,7 @@ export function ReceiptCard({
           </div>
 
           <div onClick={(e) => e.stopPropagation()} className="shrink-0">
-            {permissions.canEdit && receipt.status === "issued" ? (
+            {permissions.canEdit && !isDraft && receipt.status === "issued" ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="cursor-pointer focus:outline-none flex items-center gap-1 hover:opacity-80 transition-opacity">
@@ -406,7 +417,7 @@ export function ReceiptCard({
               </>
             )}
 
-            {permissions.canEdit && receipt.status === "issued" && (
+            {permissions.canEdit && !isDraft && receipt.status === "issued" && (
               <DropdownMenuItem
                 onClick={() =>
                   actions.onConfirmIssue(
@@ -421,13 +432,13 @@ export function ReceiptCard({
               </DropdownMenuItem>
             )}
 
-            {permissions.canEdit && receipt.status === "issued" && (
+            {permissions.canEdit && (isDraft || receipt.status === "issued") && (
               <DropdownMenuItem onClick={() => actions.onEditDraft(receipt)}>
                 <Edit className="w-4 h-4 mr-2" /> Edit Receipt
               </DropdownMenuItem>
             )}
 
-            {(receipt.status === "issued" || receipt.status === "paid") &&
+            {!isDraft && (receipt.status === "issued" || receipt.status === "paid") &&
               permissions.canEdit && (
                 <>
                   <DropdownMenuSeparator />
@@ -440,7 +451,7 @@ export function ReceiptCard({
                 </>
               )}
 
-            {permissions.canDelete && receipt.status === "issued" && (
+            {permissions.canDelete && (isDraft || receipt.status === "issued") && (
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem

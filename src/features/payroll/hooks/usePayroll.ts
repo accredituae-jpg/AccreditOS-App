@@ -226,8 +226,14 @@ export function usePayroll() {
       const pendingPayroll = records
         .filter((r) => r.status === "draft")
         .reduce((sum, r) => sum + r.netSalary, 0);
+      const now = new Date();
+      const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
       const paidPayroll = records
-        .filter((r) => r.status === "paid")
+        .filter((r) => {
+          if (r.status !== "paid") return false;
+          const paidDate = r.paymentDate || r.paidAt;
+          return paidDate?.slice(0, 7) === currentMonth;
+        })
         .reduce((sum, r) => sum + r.netSalary, 0);
 
       return [
@@ -260,7 +266,7 @@ export function usePayroll() {
           value: formatAED(paidPayroll),
           icon: Clock,
           color: "success",
-          description: "Disbursed payroll salaries for the period.",
+          description: "Payroll with an actual payment date in the current month.",
           loading,
         },
       ];

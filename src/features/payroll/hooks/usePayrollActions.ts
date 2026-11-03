@@ -23,31 +23,44 @@ export function usePayrollActions({ onRefresh }: UsePayrollActionsProps) {
   const isOnline = useOnlineStatus();
   const confirm = useConfirm();
 
-  const handleGeneratePayroll = useCallback(async (month: number, year: number) => {
+  const handleGeneratePayroll = useCallback(async (
+    month: number,
+    year: number,
+    userId?: string,
+    notes?: string,
+  ): Promise<boolean> => {
     if (!isOnline) {
       toast({
         title: "Connection Offline",
         description: "You must be online to generate payroll.",
         variant: "destructive",
       });
-      return;
+      return false;
     }
 
     try {
-      const response = await apiGeneratePayroll(month, year);
+      const response = await apiGeneratePayroll({ month, year, userId, notes });
       if (response.success) {
         await onRefresh(true);
         toast({
           title: "Payroll Generated",
           description: `Payroll draft records created for ${month}/${year}.`,
         });
+        return true;
       }
+      toast({
+        title: "Generation Failed",
+        description: response.message || response.errors?.[0] || "Unable to generate payroll records.",
+        variant: "destructive",
+      });
+      return false;
     } catch (err: any) {
       toast({
         title: "Generation Failed",
         description: err.message || "Unable to generate payroll records.",
         variant: "destructive",
       });
+      return false;
     }
   }, [isOnline, onRefresh, toast]);
 
@@ -79,84 +92,84 @@ export function usePayrollActions({ onRefresh }: UsePayrollActionsProps) {
     }
   }, [isOnline, onRefresh, toast]);
 
-  const handleApprovePayroll = useCallback(async (record: PayrollRecord) => {
+  const handleApprovePayroll = useCallback(async (record: PayrollRecord, scheduledPaymentDate: string): Promise<boolean> => {
     if (!isOnline) {
       toast({
         title: "Connection Offline",
         description: "You must be online to approve payroll.",
         variant: "destructive",
       });
-      return;
+      return false;
     }
 
     const employeeName = record.userName || record.user?.name || "this employee";
+    try {
+      const result = await apiApprovePayrollRecord(record.id, scheduledPaymentDate);
+      if (result.success) {
+        await onRefresh(true);
+        toast({
+          title: "Payroll Approved",
+          description: `${employeeName}'s payroll is approved. Payment is planned for ${scheduledPaymentDate}.`,
+        });
+        return true;
+      }
+      toast({
+        title: "Approval Failed",
+        description: result.message || result.errors?.[0] || "Unable to approve payroll record.",
+        variant: "destructive",
+      });
+      return false;
+    } catch (err: any) {
+      toast({
+        title: "Approval Failed",
+        description: err.message || "Unable to approve payroll record.",
+        variant: "destructive",
+      });
+      return false;
+    }
+  }, [isOnline, onRefresh, toast]);
 
-    await confirm({
-      title: "Approve Payroll Record",
-      description: `Are you sure you want to approve the payroll of ${employeeName} for ${record.month}/${record.year}?`,
-      type: "confirm",
-      onConfirm: async () => {
-        try {
-          const result = await apiApprovePayrollRecord(record.id);
-          if (result.success) {
-            await onRefresh(true);
-            toast({
-              title: "Payroll Approved",
-              description: `${employeeName}'s payroll has been approved.`,
-            });
-          }
-        } catch (err: any) {
-          toast({
-            title: "Approval Failed",
-            description: err.message || "Unable to approve payroll record.",
-            variant: "destructive",
-          });
-        }
-      },
-    });
-  }, [isOnline, onRefresh, toast, confirm]);
-
-  const handlePayPayroll = useCallback(async (record: PayrollRecord) => {
+  const handlePayPayroll = useCallback(async (
+    record: PayrollRecord,
+    paymentReference: string,
+    paymentDate: string,
+    notes: string,
+  ): Promise<boolean> => {
     if (!isOnline) {
       toast({
         title: "Connection Offline",
         description: "You must be online to record payment.",
         variant: "destructive",
       });
-      return;
+      return false;
     }
 
     const employeeName = record.userName || record.user?.name || "this employee";
-
-    await confirm({
-      title: "Mark Payroll as Paid",
-      description: `Confirm payment of AED ${record.netSalary.toFixed(2)} to ${employeeName}? This will mark the record as paid and create corresponding expense accounts.`,
-      type: "confirm",
-      onConfirm: async () => {
-        try {
-          const paymentReference = `PAY-${employeeName.replace(/\s+/g, "_").toUpperCase()}-${record.month}-${record.year}`;
-          const result = await apiPayPayrollRecord(
-            record.id,
-            paymentReference,
-            new Date().toISOString().split("T")[0]
-          );
-          if (result.success) {
-            await onRefresh(true);
-            toast({
-              title: "Payroll Paid",
-              description: `${employeeName}'s payroll has been paid.`,
-            });
-          }
-        } catch (err: any) {
-          toast({
-            title: "Payment Failed",
-            description: err.message || "Unable to pay payroll record.",
-            variant: "destructive",
-          });
-        }
-      },
-    });
-  }, [isOnline, onRefresh, toast, confirm]);
+    try {
+      const result = await apiPayPayrollRecord(record.id, paymentReference, paymentDate, notes);
+      if (result.success) {
+        await onRefresh(true);
+        toast({
+          title: "Payroll Paid",
+          description: `${employeeName}'s payroll has been marked paid.`,
+        });
+        return true;
+      }
+      toast({
+        title: "Payment Failed",
+        description: result.message || result.errors?.[0] || "Unable to record payroll payment.",
+        variant: "destructive",
+      });
+      return false;
+    } catch (err: any) {
+      toast({
+        title: "Payment Failed",
+        description: err.message || "Unable to pay payroll record.",
+        variant: "destructive",
+      });
+      return false;
+    }
+  }, [isOnline, onRefresh, toast]);
 
   const handleCancelPayroll = useCallback(async (record: PayrollRecord, cancellationReason?: string) => {
     if (!isOnline) {

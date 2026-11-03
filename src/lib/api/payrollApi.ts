@@ -22,17 +22,26 @@ export async function apiUpdatePayrollRecord(id: string, data: any): Promise<Api
   });
 }
 
-export async function apiApprovePayrollRecord(id: string, approvalNote?: string | null): Promise<ApiResponse<any>> {
+export async function apiApprovePayrollRecord(
+  id: string,
+  scheduledPaymentDate?: string,
+  approvalNote?: string | null,
+): Promise<ApiResponse<any>> {
   return fetchApi(`/api/payroll/records/${id}/approve`, {
     method: "POST",
-    body: JSON.stringify({ approvalNote }),
+    body: JSON.stringify({ scheduledPaymentDate, approvalNote }),
   });
 }
 
-export async function apiPayPayrollRecord(id: string, paymentReference?: string, paymentDate?: string): Promise<ApiResponse<any>> {
+export async function apiPayPayrollRecord(
+  id: string,
+  paymentReference?: string,
+  paymentDate?: string,
+  notes?: string,
+): Promise<ApiResponse<any>> {
   return fetchApi(`/api/payroll/records/${id}/pay`, {
     method: "POST",
-    body: JSON.stringify({ paymentReference, paymentDate }),
+    body: JSON.stringify({ paymentReference, paymentDate, notes }),
   });
 }
 
@@ -49,10 +58,15 @@ export async function apiDeletePayrollRecord(id: string): Promise<ApiResponse<an
   });
 }
 
-export async function apiGeneratePayroll(month: number, year: number, periodStart?: string, periodEnd?: string): Promise<ApiResponse<any[]>> {
+export async function apiGeneratePayroll(payload: {
+  month: number;
+  year: number;
+  userId?: string;
+  notes?: string;
+}): Promise<ApiResponse<any[]>> {
   return fetchApi("/api/payroll/records/generate", {
     method: "POST",
-    body: JSON.stringify({ month, year, periodStart, periodEnd }),
+    body: JSON.stringify(payload),
   });
 }
 

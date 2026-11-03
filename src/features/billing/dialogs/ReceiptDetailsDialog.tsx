@@ -50,7 +50,15 @@ export function ReceiptDetailsDialog({
     : allocations.reduce((sum, a) => sum + Number(a.amount || 0), 0);
   const unallocatedAmount = Math.max(0, Number(receipt.amount) - allocatedSum);
 
+  const isDraft = !receipt.receiptNumber || receipt.status?.toLowerCase() === "draft";
+
   const getStatusBadge = () => {
+    if (isDraft) {
+      return {
+        label: "Draft",
+        variant: "default" as const,
+      };
+    }
     switch (receipt.status) {
       case "paid":
         return {
@@ -86,13 +94,13 @@ export function ReceiptDetailsDialog({
       className="w-[95vw] sm:w-full max-w-3xl"
       actions={
         <div className="flex gap-2 w-full sm:w-auto">
-          {receipt.status === "issued" && canEdit && onEditClick && (
+          {(isDraft || receipt.status === "issued") && canEdit && onEditClick && (
             <Button variant="outline" size="sm" onClick={() => onEditClick(receipt)}>
               <Edit className="w-4 h-4 mr-1.5" />
               Edit Receipt
             </Button>
           )}
-          {(receipt.status === "issued" || receipt.status === "paid") && canEdit && onVoidClick && (
+          {!isDraft && (receipt.status === "issued" || receipt.status === "paid") && canEdit && onVoidClick && (
             <Button variant="destructive" size="sm" onClick={() => onVoidClick(receipt)}>
               <AlertCircle className="w-4 h-4 mr-1.5" />
               Void Voucher

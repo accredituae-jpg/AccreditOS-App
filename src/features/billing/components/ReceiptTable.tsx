@@ -56,7 +56,17 @@ export const ReceiptTable = memo(function ReceiptTable({
   permissions,
   loading = false,
 }: ReceiptTableProps) {
-  const getStatusBadge = (status: Receipt["status"]) => {
+  const getStatusBadge = (status: Receipt["status"], isDraft: boolean = false) => {
+    if (isDraft) {
+      return (
+        <Badge
+          variant="outline"
+          className="bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20 gap-1 text-[11px] font-semibold px-2 py-0.5"
+        >
+          <Clock className="w-3 h-3" /> Draft
+        </Badge>
+      );
+    }
     switch (status.toLowerCase()) {
       case "paid":
         return (
@@ -158,7 +168,9 @@ export const ReceiptTable = memo(function ReceiptTable({
               </td>
             </tr>
           ) : (
-            receipts.map((receipt) => (
+            receipts.map((receipt) => {
+              const isDraft = !receipt.receiptNumber || receipt.status?.toLowerCase() === "draft";
+              return (
               <tr
                 key={receipt.id}
                 onClick={() =>
@@ -249,11 +261,11 @@ export const ReceiptTable = memo(function ReceiptTable({
 
                 {/* Status Dropdown */}
                 <td onClick={(e) => e.stopPropagation()}>
-                  {permissions.canEdit && receipt.status === "issued" ? (
+                  {permissions.canEdit && !isDraft && receipt.status === "issued" ? (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button className="cursor-pointer focus:outline-none flex items-center gap-1.5 hover:opacity-80 transition-opacity">
-                          {getStatusBadge(receipt.status)}
+                          {getStatusBadge(receipt.status, isDraft)}
                           <ChevronDown className="w-3 h-3 text-muted-foreground opacity-60" />
                         </button>
                       </DropdownMenuTrigger>
@@ -276,7 +288,7 @@ export const ReceiptTable = memo(function ReceiptTable({
                       </DropdownMenuContent>
                     </DropdownMenu>
                   ) : (
-                    getStatusBadge(receipt.status)
+                    getStatusBadge(receipt.status, isDraft)
                   )}
                 </td>
 
@@ -318,7 +330,7 @@ export const ReceiptTable = memo(function ReceiptTable({
                           </>
                         )}
 
-                        {permissions.canEdit && receipt.status === "issued" && (
+                        {permissions.canEdit && !isDraft && receipt.status === "issued" && (
                           <DropdownMenuItem
                             onClick={() =>
                               actions.onConfirmIssue(
@@ -333,7 +345,7 @@ export const ReceiptTable = memo(function ReceiptTable({
                           </DropdownMenuItem>
                         )}
 
-                        {permissions.canEdit && receipt.status === "issued" && (
+                        {permissions.canEdit && (isDraft || receipt.status === "issued") && (
                           <DropdownMenuItem
                             onClick={() => actions.onEditDraft(receipt)}
                           >
@@ -341,7 +353,8 @@ export const ReceiptTable = memo(function ReceiptTable({
                           </DropdownMenuItem>
                         )}
 
-                        {(receipt.status === "issued" ||
+                        {!isDraft &&
+                          (receipt.status === "issued" ||
                           receipt.status === "paid") &&
                           permissions.canEdit && (
                             <>
@@ -356,7 +369,7 @@ export const ReceiptTable = memo(function ReceiptTable({
                           )}
 
                         {permissions.canDelete &&
-                          receipt.status === "issued" && (
+                          (isDraft || receipt.status === "issued") && (
                             <>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
@@ -375,7 +388,8 @@ export const ReceiptTable = memo(function ReceiptTable({
                   </div>
                 </td>
               </tr>
-            ))
+            );
+          })
           )}
         </tbody>
       </table>

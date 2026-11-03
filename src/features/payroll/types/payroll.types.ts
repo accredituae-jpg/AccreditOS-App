@@ -39,6 +39,7 @@ export interface PayrollRecord {
   status: "draft" | "approved" | "paid" | "cancelled";
   periodStart?: string | null;
   periodEnd?: string | null;
+  scheduledPaymentDate?: string | null;
   paymentReference?: string | null;
   paymentDate?: string | null;
   notes?: string | null;
@@ -70,8 +71,13 @@ export interface PayrollActions {
   onGenerate: () => Promise<void>;
   onRefresh: () => Promise<void>;
   onUpdateNotes: (payrollId: string, notes: string) => Promise<void>;
-  onApprove: (record: PayrollRecord, approvalNote?: string) => Promise<void>;
-  onPay: (record: PayrollRecord, paymentReference?: string, paymentDate?: string) => Promise<void>;
+  onApprove: (record: PayrollRecord, scheduledPaymentDate: string) => Promise<boolean>;
+  onPay: (
+    record: PayrollRecord,
+    paymentReference: string,
+    paymentDate: string,
+    notes: string,
+  ) => Promise<boolean>;
   onCancel: (record: PayrollRecord, cancellationReason?: string) => Promise<void>;
   onDelete: (payrollId: string) => Promise<void>;
   onCreateSalaryProfile: (payload: SalaryProfilePayload) => Promise<void>;

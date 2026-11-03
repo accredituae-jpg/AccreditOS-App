@@ -301,10 +301,14 @@ export function EditInvoiceDialog({
       ];
     }
     if (original === "issued") {
-      return [
+      const options = [
         { value: "issued", label: "Sent / Issued" },
         { value: "cancelled", label: "Cancelled" },
       ];
+      if (Number(invoice?.paidAmount ?? 0) === 0) {
+        options.unshift({ value: "draft", label: "Draft (reopen for editing)" });
+      }
+      return options;
     }
     if (original === "partially_paid") {
       return [{ value: "partially_paid", label: "Partially Paid" }];

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { formatAED, cn } from "@/lib/utils";
 import type { PayrollRecord } from "../types/payroll.types";
+import { formatPayrollDate } from "../utils/date";
 
 const MONTH_NAMES = [
   "January",
@@ -53,6 +54,7 @@ export const PayrollTable = memo(function PayrollTable({
             <th className="px-4 py-3">Period</th>
             <th className="px-4 py-3">Gross Salary</th>
             <th className="px-4 py-3">Net Salary</th>
+            <th className="px-4 py-3">Pay Date</th>
             <th className="px-4 py-3">Status</th>
             <th className="px-4 py-3 text-right">Actions</th>
           </tr>
@@ -60,7 +62,7 @@ export const PayrollTable = memo(function PayrollTable({
         <tbody className="divide-y divide-border/40">
           {records.length === 0 ? (
             <tr>
-              <td colSpan={6} className="text-center py-8 text-muted-foreground text-xs">
+              <td colSpan={7} className="text-center py-8 text-muted-foreground text-xs">
                 No payroll records found.
               </td>
             </tr>
@@ -85,6 +87,11 @@ export const PayrollTable = memo(function PayrollTable({
                 </td>
                 <td className="px-4 py-3 font-mono font-bold text-foreground">
                   {formatAED(record.netSalary, true)}
+                </td>
+                <td className="px-4 py-3 text-muted-foreground">
+                  {record.status === "paid"
+                    ? formatPayrollDate(record.paymentDate || record.paidAt)
+                    : formatPayrollDate(record.scheduledPaymentDate)}
                 </td>
                 <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                   {permissions.canManage && (record.status === "draft" || record.status === "approved") ? (

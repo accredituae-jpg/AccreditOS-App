@@ -539,12 +539,13 @@ export function AddReceiptDialog({
       });
 
       if (!response.success || !response.data) {
-        throw new Error(response.message || "Failed to save receipt draft.");
+        throw new Error(response.message || "Failed to record receipt voucher.");
       }
 
+      const isDraftSaved = !response.data.receiptNumber || response.data.status === "draft";
       toast({
-        title: receiptToEdit ? "Draft Updated" : "Draft Saved",
-        description: `Receipt Voucher #${response.data.receiptNumber || ""} draft successfully recorded.`,
+        title: receiptToEdit ? (isDraftSaved ? "Draft Updated" : "Receipt Updated") : (isDraftSaved ? "Draft Saved" : "Receipt Recorded"),
+        description: `Receipt Voucher #${response.data.receiptNumber || "Draft"} successfully recorded.`,
       });
 
       await queryClient.invalidateQueries({ queryKey: ["billing"] });

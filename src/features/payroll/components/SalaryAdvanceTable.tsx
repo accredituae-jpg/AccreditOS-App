@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatAED, cn } from "@/lib/utils";
 import type { SalaryAdvance } from "../types/payroll.types";
+import { formatPayrollDate } from "../utils/date";
 
 interface SalaryAdvanceTableProps {
   advances: SalaryAdvance[];
@@ -75,7 +76,7 @@ export function SalaryAdvanceTable({ advances, onDelete, canManage }: SalaryAdva
             advances.map((adv) => {
               const nameFallback = adv.employeeName || "Unknown Employee";
               const periodStr = `${MONTH_NAMES[adv.deductionMonth - 1]} ${adv.deductionYear}`;
-              const formattedDate = new Date(adv.paymentDate).toLocaleDateString();
+              const formattedDate = formatPayrollDate(adv.paymentDate);
 
               return (
                 <tr key={adv.id} className="hover:bg-muted/10 transition-colors">

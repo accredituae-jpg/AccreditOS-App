@@ -37,6 +37,8 @@ import {
   PayrollDetailsDialog,
   SalaryAdvanceDialog,
   GeneratePayrollDialog,
+  RecordPayrollPaymentDialog,
+  ApprovePayrollDialog,
 } from "../dialogs";
 import type { PayrollRecord, SalaryProfile } from "../types/payroll.types";
 
@@ -99,8 +101,18 @@ export default function PayrollPage() {
   const [selectedProfile, setSelectedProfile] = useState<SalaryProfile | null>(null);
   const [viewProfileDetails, setViewProfileDetails] = useState<SalaryProfile | null>(null);
   const [viewPayrollDetails, setViewPayrollDetails] = useState<PayrollRecord | null>(null);
+  const [paymentPayroll, setPaymentPayroll] = useState<PayrollRecord | null>(null);
+  const [approvalPayroll, setApprovalPayroll] = useState<PayrollRecord | null>(null);
   const [advanceDialogOpen, setAdvanceDialogOpen] = useState(false);
   const [generateDialogOpen, setGenerateDialogOpen] = useState(false);
+
+  const handleOpenApprovalDialog = (record: PayrollRecord) => {
+    setApprovalPayroll(record);
+  };
+
+  const handleOpenPaymentDialog = (record: PayrollRecord) => {
+    setPaymentPayroll(record);
+  };
 
   const handleOpenNotesDialog = (record: PayrollRecord) => {
     setSelectedPayroll(record);
@@ -427,8 +439,8 @@ export default function PayrollPage() {
                   canManage: canManagePayroll,
                 }}
                 actions={{
-                  onApprove: handleApprovePayroll,
-                  onPay: handlePayPayroll,
+                  onApprove: handleOpenApprovalDialog,
+                  onPay: handleOpenPaymentDialog,
                   onCancel: handleCancelPayroll,
                   onDelete: handleDeletePayroll,
                 }}
@@ -436,7 +448,7 @@ export default function PayrollPage() {
                 openNotesDialog={handleOpenNotesDialog}
               />
             ) : (
-              <div className="p-4 md:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 md:gap-5 md:p-6 xl:grid-cols-3">
                 {pageRecords.map((record, idx) => (
                   <PayrollCard
                     key={record.id}
@@ -447,8 +459,8 @@ export default function PayrollPage() {
                       canManage: canManagePayroll,
                     }}
                     actions={{
-                      onApprove: handleApprovePayroll,
-                      onPay: handlePayPayroll,
+                      onApprove: handleOpenApprovalDialog,
+                      onPay: handleOpenPaymentDialog,
                       onCancel: handleCancelPayroll,
                       onDelete: handleDeletePayroll,
                     }}
@@ -495,7 +507,7 @@ export default function PayrollPage() {
                 onView={setViewProfileDetails}
               />
             ) : (
-              <div className="p-4 md:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 md:gap-5 md:p-6 xl:grid-cols-3">
                 {pageProfiles.map((profile, idx) => (
                   <SalaryProfileCard
                     key={profile.id}
@@ -539,7 +551,7 @@ export default function PayrollPage() {
                 canManage={canManagePayroll}
               />
             ) : (
-              <div className="p-4 md:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 md:gap-5 md:p-6 xl:grid-cols-3">
                 {pageAdvances.map((adv, idx) => (
                   <SalaryAdvanceCard
                     key={adv.id}
@@ -617,8 +629,8 @@ export default function PayrollPage() {
           canManage: canManagePayroll,
         }}
         actions={{
-          onApprove: handleApprovePayroll,
-          onPay: handlePayPayroll,
+          onApprove: handleOpenApprovalDialog,
+          onPay: handleOpenPaymentDialog,
           onCancel: handleCancelPayroll,
           onDelete: handleDeletePayroll,
         }}
@@ -629,6 +641,29 @@ export default function PayrollPage() {
         isOpen={generateDialogOpen}
         onClose={() => setGenerateDialogOpen(false)}
         onGenerate={handleGeneratePayroll}
+        employees={salaryProfiles.flatMap((profile) =>
+          profile.isActive && profile.userId
+            ? [{ id: profile.userId, name: profile.userName || profile.user?.name || "Unknown Employee" }]
+            : []
+        )}
+      />
+
+      <RecordPayrollPaymentDialog
+        open={!!paymentPayroll}
+        onOpenChange={(open) => {
+          if (!open) setPaymentPayroll(null);
+        }}
+        record={paymentPayroll}
+        onPay={handlePayPayroll}
+      />
+
+      <ApprovePayrollDialog
+        open={!!approvalPayroll}
+        onOpenChange={(open) => {
+          if (!open) setApprovalPayroll(null);
+        }}
+        record={approvalPayroll}
+        onApprove={handleApprovePayroll}
       />
     </div>
   );

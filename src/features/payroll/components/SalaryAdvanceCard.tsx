@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatAED } from "@/lib/utils";
 import type { SalaryAdvance } from "../types/payroll.types";
+import { formatPayrollDate } from "../utils/date";
 
 const MONTH_NAMES = [
   "January",
@@ -35,7 +36,7 @@ export function SalaryAdvanceCard({
 }: SalaryAdvanceCardProps) {
   const nameFallback = advance.employeeName || "Unknown Employee";
   const periodStr = `${MONTH_NAMES[advance.deductionMonth - 1]} ${advance.deductionYear}`;
-  const formattedDate = new Date(advance.paymentDate).toLocaleDateString();
+  const formattedDate = formatPayrollDate(advance.paymentDate);
 
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
@@ -65,58 +66,54 @@ export function SalaryAdvanceCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.03 * index }}
-      className="grid-card relative flex flex-col justify-between"
+      className="grid-card relative flex h-full min-w-0 flex-col justify-between gap-3 overflow-hidden p-3.5 transition-all hover:border-primary/30 hover:shadow-md sm:p-4 sm:hover:-translate-y-0.5"
     >
-      <div>
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <User className="w-4 h-4 text-primary" />
+      <div className="space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/15">
+              <User className="h-4 w-4 text-primary" />
             </div>
             <div className="min-w-0">
-              <h3 className="font-semibold text-sm truncate text-primary">
-                {nameFallback}
-              </h3>
-              <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
-                <Calendar className="w-3 h-3 shrink-0" />
+              <h3 className="truncate text-sm font-semibold text-foreground">{nameFallback}</h3>
+              <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Calendar className="h-3 w-3 shrink-0" />
                 {formattedDate}
               </p>
             </div>
           </div>
-          {getStatusBadge(advance.status)}
+          <div className="shrink-0">{getStatusBadge(advance.status)}</div>
         </div>
 
-        <div className="space-y-2 text-sm pt-2 border-t border-border/40">
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground text-xs">Amount Advanced</span>
-            <span className="font-bold text-foreground font-mono">
-              {formatAED(advance.amount, true)}
-            </span>
-          </div>
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-muted-foreground">Deduction Period</span>
-            <span className="font-medium text-foreground">{periodStr}</span>
-          </div>
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-muted-foreground">Payment Method</span>
-            <span className="font-medium uppercase text-muted-foreground">
-              {advance.paymentMethod.replace("_", " ")}
-            </span>
-          </div>
-          {advance.notes && (
-            <div className="text-xs text-muted-foreground pt-1 border-t border-border/40 italic">
-              "{advance.notes}"
+        <div className="rounded-lg border border-primary/10 bg-primary/[0.035] p-3">
+          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Amount advanced</p>
+          <p className="mt-0.5 break-words text-lg font-bold leading-tight tracking-tight text-foreground [font-variant-numeric:tabular-nums] sm:text-xl">
+            {formatAED(advance.amount, true)}
+          </p>
+          <div className="mt-2 space-y-1.5 border-t border-border/60 pt-2 text-xs">
+            <div className="flex items-start justify-between gap-3">
+              <span className="text-muted-foreground">Deduction period</span>
+              <span className="text-right font-medium text-foreground">{periodStr}</span>
             </div>
-          )}
+            <div className="flex items-start justify-between gap-3">
+              <span className="text-muted-foreground">Payment method</span>
+              <span className="text-right font-medium capitalize text-foreground">
+                {advance.paymentMethod.replace("_", " ").toLowerCase()}
+              </span>
+            </div>
+          </div>
         </div>
+        {advance.notes && (
+          <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">{advance.notes}</p>
+        )}
       </div>
 
       {canManage && advance.status === "Paid" && (
-        <div className="mt-3 pt-3 border-t border-border flex justify-end">
+        <div className="flex justify-end border-t border-border/70 pt-2.5">
           <Button
             variant="outline"
             size="sm"
-            className="text-destructive hover:text-destructive hover:bg-destructive/10 rounded-lg gap-1 text-xs"
+            className="h-8 rounded-md text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
             onClick={() => onDelete(advance.id)}
           >
             <Trash2 className="w-3.5 h-3.5" />
