@@ -545,7 +545,7 @@ export function CertificatesReportTab() {
               {summaryStats.totalCertificates.toLocaleString()}
             </span>
             <p className="text-[11px] text-muted-foreground mt-0.5">
-              Issued in {dateBounds?.label || "This Month"}
+              Registered in {dateBounds?.label || "This Month"}
             </p>
           </div>
         </Card>
