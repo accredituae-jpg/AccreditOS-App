@@ -24,6 +24,7 @@ export interface Quotation {
   discountType?: "percentage" | "amount";
   discountRate?: number;
   discountAmount?: number;
+  taxMode?: "exclusive" | "inclusive";
   vatRate: number;
   vatAmount: number;
   totalAmount: number;

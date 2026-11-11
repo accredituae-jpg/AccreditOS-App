@@ -110,6 +110,7 @@ export const AddQuotationDialog = memo(function AddQuotationDialog({
     "percentage",
   );
   const [discountValue, setDiscountValue] = useState<string>("");
+  const [taxMode, setTaxMode] = useState<"exclusive" | "inclusive">("exclusive");
 
   const [availableCourseNames, setAvailableCourseNames] = useState<string[]>(
     DEFAULT_FALLBACK_COURSES,
@@ -151,6 +152,7 @@ export const AddQuotationDialog = memo(function AddQuotationDialog({
       );
       setDiscountType("percentage");
       setDiscountValue("");
+      setTaxMode("exclusive");
       setItems([]);
 
       // Fetch client options for existing client dropdown
@@ -186,7 +188,8 @@ export const AddQuotationDialog = memo(function AddQuotationDialog({
     items.length > 0 && items.every((i) => i.rateType === "text");
   const hasTextItems = items.some((i) => i.rateType === "text");
 
-  const subtotal = items.reduce(
+  // Total sum of entered amounts for priced items
+  const enteredSum = items.reduce(
     (sum, item) =>
       item.rateType === "text"
         ? sum
@@ -197,28 +200,63 @@ export const AddQuotationDialog = memo(function AddQuotationDialog({
   const parsedDiscountVal = parseFloat(discountValue) || 0;
   let calculatedDiscountAmount = 0;
   let effectiveDiscountRate: number | undefined = undefined;
-
-  if (parsedDiscountVal > 0 && subtotal > 0 && !isAllText) {
-    if (discountType === "percentage") {
-      const percentage = Math.min(100, Math.max(0, parsedDiscountVal));
-      effectiveDiscountRate = percentage;
-      calculatedDiscountAmount = (subtotal * percentage) / 100;
-    } else {
-      calculatedDiscountAmount = Math.min(
-        subtotal,
-        Math.max(0, parsedDiscountVal),
-      );
-      effectiveDiscountRate =
-        subtotal > 0
-          ? Number(((calculatedDiscountAmount / subtotal) * 100).toFixed(2))
-          : 0;
-    }
-  }
-
-  const taxableAmount = Math.max(0, subtotal - calculatedDiscountAmount);
+  let subtotal = 0;
+  let taxableAmount = 0;
   const vatRate = 5;
-  const vatAmount = taxableAmount * (vatRate / 100);
-  const totalAmount = taxableAmount + vatAmount;
+  let vatAmount = 0;
+  let totalAmount = 0;
+
+  if (taxMode === "inclusive") {
+    // INCLUSIVE MODE: Entered rates already include 5% VAT
+    const grossSum = enteredSum;
+    let grossDiscount = 0;
+
+    if (parsedDiscountVal > 0 && grossSum > 0 && !isAllText) {
+      if (discountType === "percentage") {
+        const percentage = Math.min(100, Math.max(0, parsedDiscountVal));
+        effectiveDiscountRate = percentage;
+        grossDiscount = (grossSum * percentage) / 100;
+      } else {
+        grossDiscount = Math.min(grossSum, Math.max(0, parsedDiscountVal));
+        effectiveDiscountRate =
+          grossSum > 0
+            ? Number(((grossDiscount / grossSum) * 100).toFixed(2))
+            : 0;
+      }
+    }
+
+    const grossTotal = Math.max(0, grossSum - grossDiscount);
+    // Net figures: Gross / 1.05
+    taxableAmount = Number((grossTotal / 1.05).toFixed(2));
+    vatAmount = Number((grossTotal - taxableAmount).toFixed(2));
+    totalAmount = Number(grossTotal.toFixed(2));
+    subtotal = Number((grossSum / 1.05).toFixed(2));
+    calculatedDiscountAmount = Number((subtotal - taxableAmount).toFixed(2));
+  } else {
+    // EXCLUSIVE MODE: 5% VAT added on top of amount
+    subtotal = enteredSum;
+
+    if (parsedDiscountVal > 0 && subtotal > 0 && !isAllText) {
+      if (discountType === "percentage") {
+        const percentage = Math.min(100, Math.max(0, parsedDiscountVal));
+        effectiveDiscountRate = percentage;
+        calculatedDiscountAmount = (subtotal * percentage) / 100;
+      } else {
+        calculatedDiscountAmount = Math.min(
+          subtotal,
+          Math.max(0, parsedDiscountVal),
+        );
+        effectiveDiscountRate =
+          subtotal > 0
+            ? Number(((calculatedDiscountAmount / subtotal) * 100).toFixed(2))
+            : 0;
+      }
+    }
+
+    taxableAmount = Math.max(0, subtotal - calculatedDiscountAmount);
+    vatAmount = Number((taxableAmount * (vatRate / 100)).toFixed(2));
+    totalAmount = Number((taxableAmount + vatAmount).toFixed(2));
+  }
 
   const displayAmountInWords = isAllText
     ? "Upon Request — Subject to final confirmation"
@@ -360,6 +398,7 @@ export const AddQuotationDialog = memo(function AddQuotationDialog({
           calculatedDiscountAmount > 0
             ? Number(calculatedDiscountAmount.toFixed(2))
             : 0,
+        taxMode,
         vatRate,
         vatAmount: Number(vatAmount.toFixed(2)),
         totalAmount: Number(totalAmount.toFixed(2)),
@@ -743,8 +782,13 @@ export const AddQuotationDialog = memo(function AddQuotationDialog({
 
                       <div className="col-span-8 space-y-1">
                         <div className="flex items-center justify-between">
-                          <Label className="text-[11px] font-semibold text-muted-foreground">
-                            Pricing / Rate
+                          <Label className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1">
+                            <span>Pricing / Rate</span>
+                            <span className="text-[9.5px] font-normal text-muted-foreground/80">
+                              {taxMode === "exclusive"
+                                ? "(+5% VAT)"
+                                : "(incl. 5% VAT)"}
+                            </span>
                           </Label>
                           {/* Direct 2-option switcher */}
                           <div className="inline-flex rounded-md border p-0.5 bg-muted/60 shrink-0">
@@ -837,7 +881,14 @@ export const AddQuotationDialog = memo(function AddQuotationDialog({
                   <div className="bg-muted/60 px-3 py-2 grid grid-cols-12 gap-2 text-[11px] font-bold text-muted-foreground uppercase border-b">
                     <div className="col-span-5">Training Course Name</div>
                     <div className="col-span-2 text-center">QTY</div>
-                    <div className="col-span-4 text-right">Pricing / Rate</div>
+                    <div className="col-span-4 text-right">
+                      <span>Pricing / Rate</span>
+                      <span className="text-[9.5px] font-normal lowercase tracking-normal text-muted-foreground ml-1">
+                        {taxMode === "exclusive"
+                          ? "(+5% VAT)"
+                          : "(incl. 5% VAT)"}
+                      </span>
+                    </div>
                     <div className="col-span-1 text-center">Action</div>
                   </div>
 
@@ -956,6 +1007,62 @@ export const AddQuotationDialog = memo(function AddQuotationDialog({
               </div>
             </>
           )}
+        </div>
+
+        {/* VAT / Tax Calculation Mode */}
+        <div className="p-3 bg-card rounded-xl border border-border/80 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <Percent className="w-3.5 h-3.5 text-primary" />
+              <Label className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                VAT / Tax Calculation
+              </Label>
+            </div>
+            <span className="text-[10px] text-muted-foreground font-medium">
+              {taxMode === "exclusive" && "5% VAT added on top of amount"}
+              {taxMode === "inclusive" && "5% VAT included inside amount"}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setTaxMode("exclusive")}
+              className={`flex items-center justify-center gap-2 p-2 rounded-lg border text-xs font-medium transition-all cursor-pointer ${
+                taxMode === "exclusive"
+                  ? "border-primary bg-primary/10 text-primary font-semibold shadow-xs"
+                  : "border-border hover:bg-muted/40 text-muted-foreground"
+              }`}
+            >
+              <input
+                type="radio"
+                name="quotationTaxMode"
+                checked={taxMode === "exclusive"}
+                onChange={() => setTaxMode("exclusive")}
+                className="w-3.5 h-3.5 text-primary accent-primary cursor-pointer"
+              />
+              <span>+5% Tax Added</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setTaxMode("inclusive")}
+              className={`flex items-center justify-center gap-2 p-2 rounded-lg border text-xs font-medium transition-all cursor-pointer ${
+                taxMode === "inclusive"
+                  ? "border-primary bg-primary/10 text-primary font-semibold shadow-xs"
+                  : "border-border hover:bg-muted/40 text-muted-foreground"
+              }`}
+            >
+              <input
+                type="radio"
+                name="quotationTaxMode"
+                checked={taxMode === "inclusive"}
+                onChange={() => setTaxMode("inclusive")}
+                className="w-3.5 h-3.5 text-primary accent-primary cursor-pointer"
+              />
+              <span>5% Tax Included</span>
+            </button>
+          </div>
         </div>
 
         {/* Payment Terms & Commercial Discount Section */}
@@ -1117,7 +1224,7 @@ export const AddQuotationDialog = memo(function AddQuotationDialog({
           <div className="w-full sm:w-72 bg-card border border-border/80 rounded-xl sm:rounded-2xl overflow-hidden shadow-xs shrink-0">
             <div className="flex justify-between items-center px-3.5 sm:px-4 py-2 sm:py-2.5 text-primary font-bold text-xs">
               <span>
-                {`Subtotal (${items.length} ${items.length === 1 ? "course" : "courses"})`}
+                {`Subtotal (${items.length} ${items.length === 1 ? "course" : "courses"})${taxMode === "inclusive" ? " (Net)" : ""}`}
               </span>
               <span className="font-extrabold text-foreground">
                 {isAllText
@@ -1147,7 +1254,7 @@ export const AddQuotationDialog = memo(function AddQuotationDialog({
               </div>
             )}
             <div className="flex justify-between items-center px-3.5 sm:px-4 py-2 sm:py-2.5 text-primary font-bold text-xs border-t border-border/60">
-              <span>Vat ({vatRate}%)</span>
+              <span>Vat ({vatRate}%{taxMode === "inclusive" ? " Included" : ""})</span>
               <span className="font-extrabold text-foreground">
                 {isAllText ? "Applicable" : `${vatAmount.toFixed(2)} AED`}
               </span>

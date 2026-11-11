@@ -129,6 +129,14 @@ export function ClientQuotationsTab({ client }: ClientQuotationsTabProps) {
                     <DollarSign className="w-3.5 h-3.5 text-emerald-500" />
                     <span>{qtn.totalAmount.toFixed(2)} AED</span>
                   </span>
+                  {qtn.taxMode && (
+                    <Badge
+                      variant="outline"
+                      className="bg-sky-50 text-sky-700 border-sky-200 text-[10px] font-semibold"
+                    >
+                      {qtn.taxMode === "inclusive" ? "5% VAT Incl." : "+5% VAT"}
+                    </Badge>
+                  )}
                   {Boolean(qtn.discountAmount && qtn.discountAmount > 0) && (
                     <Badge
                       variant="outline"
