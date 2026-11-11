@@ -206,7 +206,7 @@ ${itemsText}
 
 ${
   quotation.taxMode === "inclusive"
-    ? `*SUBTOTAL (Net):* AED ${quotation.subtotal.toFixed(2)}\n${quotation.discountAmount && quotation.discountAmount > 0 ? `*DISCOUNT:* -AED ${quotation.discountAmount.toFixed(2)}${quotation.discountType === "percentage" && quotation.discountRate ? ` (${quotation.discountRate}%)` : ""}\n` : ""}*VAT (5% Included):* AED ${quotation.vatAmount.toFixed(2)}\n`
+    ? `*SUBTOTAL:* AED ${quotation.subtotal.toFixed(2)}\n${quotation.discountAmount && quotation.discountAmount > 0 ? `*DISCOUNT:* -AED ${quotation.discountAmount.toFixed(2)}${quotation.discountType === "percentage" && quotation.discountRate ? ` (${quotation.discountRate}%)` : ""}\n` : ""}*VAT (5% Included):* AED ${quotation.vatAmount.toFixed(2)}\n`
     : quotation.discountAmount && quotation.discountAmount > 0
       ? `*SUBTOTAL:* AED ${quotation.subtotal.toFixed(2)}\n*DISCOUNT:* -AED ${quotation.discountAmount.toFixed(2)}${quotation.discountType === "percentage" && quotation.discountRate ? ` (${quotation.discountRate}%)` : ""}\n*VAT (${quotation.vatRate}%):* AED ${quotation.vatAmount.toFixed(2)}\n`
       : `*SUBTOTAL:* AED ${quotation.subtotal.toFixed(2)}\n*VAT (${quotation.vatRate}%):* AED ${quotation.vatAmount.toFixed(2)}\n`
@@ -576,9 +576,7 @@ ${
                 <div className="col-span-2 border border-sky-200/90 rounded-lg overflow-hidden bg-white shadow-2xs flex flex-col justify-between">
                   <div className="px-2.5 py-1.5 space-y-0.5 text-[9.5px]">
                     <div className="flex justify-between items-center text-slate-600">
-                      <span className="font-medium">
-                        Subtotal{quotation.taxMode === "inclusive" ? " (Net)" : ""}:
-                      </span>
+                      <span className="font-medium">Subtotal:</span>
                       <span className="font-bold text-slate-900">
                         {isAllText
                           ? "Upon Request"

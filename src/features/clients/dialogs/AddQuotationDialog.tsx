@@ -206,53 +206,36 @@ export const AddQuotationDialog = memo(function AddQuotationDialog({
   let vatAmount = 0;
   let totalAmount = 0;
 
-  if (taxMode === "inclusive") {
-    // INCLUSIVE MODE: Entered rates already include 5% VAT
-    const grossSum = enteredSum;
-    let grossDiscount = 0;
+  // Subtotal is always the full sum of item totals (e.g. 1200 AED)
+  subtotal = enteredSum;
 
-    if (parsedDiscountVal > 0 && grossSum > 0 && !isAllText) {
-      if (discountType === "percentage") {
-        const percentage = Math.min(100, Math.max(0, parsedDiscountVal));
-        effectiveDiscountRate = percentage;
-        grossDiscount = (grossSum * percentage) / 100;
-      } else {
-        grossDiscount = Math.min(grossSum, Math.max(0, parsedDiscountVal));
-        effectiveDiscountRate =
-          grossSum > 0
-            ? Number(((grossDiscount / grossSum) * 100).toFixed(2))
-            : 0;
-      }
+  if (parsedDiscountVal > 0 && subtotal > 0 && !isAllText) {
+    if (discountType === "percentage") {
+      const percentage = Math.min(100, Math.max(0, parsedDiscountVal));
+      effectiveDiscountRate = percentage;
+      calculatedDiscountAmount = (subtotal * percentage) / 100;
+    } else {
+      calculatedDiscountAmount = Math.min(
+        subtotal,
+        Math.max(0, parsedDiscountVal),
+      );
+      effectiveDiscountRate =
+        subtotal > 0
+          ? Number(((calculatedDiscountAmount / subtotal) * 100).toFixed(2))
+          : 0;
     }
+  }
 
-    const grossTotal = Math.max(0, grossSum - grossDiscount);
-    // Net figures: Gross / 1.05
-    taxableAmount = Number((grossTotal / 1.05).toFixed(2));
-    vatAmount = Number((grossTotal - taxableAmount).toFixed(2));
-    totalAmount = Number(grossTotal.toFixed(2));
-    subtotal = Number((grossSum / 1.05).toFixed(2));
-    calculatedDiscountAmount = Number((subtotal - taxableAmount).toFixed(2));
+  if (taxMode === "inclusive") {
+    // INCLUSIVE MODE: Rates & subtotal already include 5% VAT
+    // Total payable is Subtotal minus Discount directly (e.g. 1200 - 100 = 1100 AED)
+    totalAmount = Math.max(0, subtotal - calculatedDiscountAmount);
+    // Net taxable amount is Total / 1.05
+    taxableAmount = Number((totalAmount / 1.05).toFixed(2));
+    // VAT (5% Included) inside the total payable amount
+    vatAmount = Number((totalAmount - taxableAmount).toFixed(2));
   } else {
     // EXCLUSIVE MODE: 5% VAT added on top of amount
-    subtotal = enteredSum;
-
-    if (parsedDiscountVal > 0 && subtotal > 0 && !isAllText) {
-      if (discountType === "percentage") {
-        const percentage = Math.min(100, Math.max(0, parsedDiscountVal));
-        effectiveDiscountRate = percentage;
-        calculatedDiscountAmount = (subtotal * percentage) / 100;
-      } else {
-        calculatedDiscountAmount = Math.min(
-          subtotal,
-          Math.max(0, parsedDiscountVal),
-        );
-        effectiveDiscountRate =
-          subtotal > 0
-            ? Number(((calculatedDiscountAmount / subtotal) * 100).toFixed(2))
-            : 0;
-      }
-    }
-
     taxableAmount = Math.max(0, subtotal - calculatedDiscountAmount);
     vatAmount = Number((taxableAmount * (vatRate / 100)).toFixed(2));
     totalAmount = Number((taxableAmount + vatAmount).toFixed(2));
@@ -1224,7 +1207,7 @@ export const AddQuotationDialog = memo(function AddQuotationDialog({
           <div className="w-full sm:w-72 bg-card border border-border/80 rounded-xl sm:rounded-2xl overflow-hidden shadow-xs shrink-0">
             <div className="flex justify-between items-center px-3.5 sm:px-4 py-2 sm:py-2.5 text-primary font-bold text-xs">
               <span>
-                {`Subtotal (${items.length} ${items.length === 1 ? "course" : "courses"})${taxMode === "inclusive" ? " (Net)" : ""}`}
+                {`Subtotal (${items.length} ${items.length === 1 ? "course" : "courses"})`}
               </span>
               <span className="font-extrabold text-foreground">
                 {isAllText
