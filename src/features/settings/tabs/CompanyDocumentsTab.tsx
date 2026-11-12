@@ -98,13 +98,13 @@ export function CompanyDocumentsTab() {
     setName("");
     setDriveLink("");
     setExpiryDate("");
-    // Pre-select type based on active filter if not "all", or default to training_material for isTrainingOnlyRole
+    // Pre-select type based on active filter if not "all", or default to company_document for non-sales
     setDocType(
       isTrainingOnlyRole
         ? "training_material"
-        : activeTypeFilter === "company_document"
-          ? "company_document"
-          : "training_material",
+        : activeTypeFilter === "training_material"
+          ? "training_material"
+          : "company_document",
     );
     setEditingDoc(null);
     setShowAddDialog(true);
@@ -126,9 +126,17 @@ export function CompanyDocumentsTab() {
 
     try {
       const updatedList = documents.filter((d) => d.id !== id);
-      await apiSaveCompanyDocuments(updatedList);
+      const saved = await apiSaveCompanyDocuments(updatedList);
 
-      setDocuments(updatedList);
+      if (Array.isArray(saved)) {
+        const normalized: CompanyDocument[] = saved.map((doc: any) => ({
+          ...doc,
+          type: doc.type === "company_document" ? "company_document" : "training_material",
+        }));
+        setDocuments(normalized);
+      } else {
+        setDocuments(updatedList);
+      }
 
       toast({
         title: isTrainingOnlyRole ? "Material Removed" : "Document Removed",
@@ -187,7 +195,14 @@ export function CompanyDocumentsTab() {
     setShowAddDialog(false);
 
     try {
-      await apiSaveCompanyDocuments(updatedList);
+      const saved = await apiSaveCompanyDocuments(updatedList);
+      if (Array.isArray(saved) && saved.length > 0) {
+        const normalized: CompanyDocument[] = saved.map((doc: any) => ({
+          ...doc,
+          type: doc.type === "company_document" ? "company_document" : "training_material",
+        }));
+        setDocuments(normalized);
+      }
       toast({
         title: editingDoc
           ? isTrainingOnlyRole
