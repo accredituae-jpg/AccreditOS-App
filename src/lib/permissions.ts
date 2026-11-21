@@ -312,7 +312,7 @@ const DEFAULT_PERMISSIONS: Record<UserRole, Record<PermissionKey, boolean>> = {
     certificates: true,
     reports: true,
     finance: true,
-    users: false,
+    users: true,
     settings: true,
     // Clients
     create_client: true,
@@ -511,13 +511,11 @@ export function getPermissions(): Record<UserRole, Record<PermissionKey, boolean
         ...(parsed[role] ?? {}),
       };
 
-      // Guarantee admin & trainer roles pick up default access for settings and certificates
+      if (role === "operation_admin") {
+        merged[role].users = true;
+      }
       if (role === "admin") {
-        if (!parsed[role] || parsed[role].settings === undefined || parsed[role].settings === false) {
-          merged[role] = { ...DEFAULT_PERMISSIONS.admin, ...(parsed[role] ?? {}), settings: true, finance: true, users: false };
-        } else {
-          merged[role].users = false;
-        }
+        merged[role].users = true;
       }
       if (role === "trainer") {
         merged[role].reports = true;
