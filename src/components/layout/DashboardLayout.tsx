@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePWA } from "@/hooks/usePWA";
-import { MobileSidebar } from "./MobileSidebar";
+import { MobileBottomNav } from "./MobileBottomNav";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,10 @@ const PageContentLoader = () => (
     {/* Stats Cards Skeleton */}
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {[...Array(4)].map((_, i) => (
-        <div key={i} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-3">
+        <div
+          key={i}
+          className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-3"
+        >
           <div className="flex justify-between items-center">
             <div className="h-4 w-20 rounded bg-slate-200 dark:bg-slate-800 animate-pulse" />
             <div className="h-5 w-5 rounded bg-slate-200 dark:bg-slate-800 animate-pulse" />
@@ -54,7 +57,10 @@ const PageContentLoader = () => (
         <div className="space-y-3 pt-2">
           <div className="h-8 w-full rounded bg-slate-100 dark:bg-slate-900 animate-pulse" />
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="flex justify-between py-3 border-b border-slate-100 dark:border-slate-900">
+            <div
+              key={i}
+              className="flex justify-between py-3 border-b border-slate-100 dark:border-slate-900"
+            >
               <div className="h-4 w-24 rounded bg-slate-200 dark:bg-slate-800 animate-pulse" />
               <div className="h-4 w-32 rounded bg-slate-200 dark:bg-slate-800 animate-pulse" />
               <div className="h-4 w-12 rounded bg-slate-200 dark:bg-slate-800 animate-pulse" />
@@ -88,8 +94,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
 
-  const [impersonatorToken, setImpersonatorToken] = useState<string | null>(() =>
-    localStorage.getItem("accreditOS_impersonator_token")
+  const [impersonatorToken, setImpersonatorToken] = useState<string | null>(
+    () => localStorage.getItem("accreditOS_impersonator_token"),
   );
   const authStore = useAuthStore();
   const { showInstallButton, triggerInstall } = usePWA();
@@ -99,13 +105,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const isDeveloper =
     authStore.activeRole === "super_admin" ||
     Boolean(
-      authStore.userEmail &&
-        authStore.userEmail.toLowerCase().includes("dev"),
+      authStore.userEmail && authStore.userEmail.toLowerCase().includes("dev"),
     );
 
   useEffect(() => {
     const handleRoleChanged = () => {
-      setImpersonatorToken(localStorage.getItem("accreditOS_impersonator_token"));
+      setImpersonatorToken(
+        localStorage.getItem("accreditOS_impersonator_token"),
+      );
     };
     window.addEventListener("accreditOS_role_changed", handleRoleChanged);
     return () => {
@@ -115,9 +122,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const handleReturnToAdmin = () => {
     const adminToken = localStorage.getItem("accreditOS_impersonator_token");
-    const adminName = localStorage.getItem("accreditOS_impersonator_name") || "Developer";
-    const adminRole = (localStorage.getItem("accreditOS_impersonator_role") as UserRole) || "super_admin";
-    const adminEmail = localStorage.getItem("accreditOS_impersonator_email") || "";
+    const adminName =
+      localStorage.getItem("accreditOS_impersonator_name") || "Developer";
+    const adminRole =
+      (localStorage.getItem("accreditOS_impersonator_role") as UserRole) ||
+      "super_admin";
+    const adminEmail =
+      localStorage.getItem("accreditOS_impersonator_email") || "";
 
     if (adminToken) {
       localStorage.removeItem("accreditOS_impersonator_token");
@@ -164,11 +175,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Desktop Sidebar */}
       {!isMobile && <Sidebar collapsed={sidebarCollapsed} />}
 
-      {/* Mobile Sidebar Drawer */}
-      {isMobile && (
-        <MobileSidebar open={mobileOpen} onClose={handleCloseMobileSidebar} />
-      )}
-
       {/* Main content */}
       <div
         className="flex-1 flex flex-col transition-all duration-200 min-w-0"
@@ -181,7 +187,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <span>
                 Developer Impersonation: Viewing as{" "}
                 <strong className="underline underline-offset-2 font-bold">
-                  {authStore.userName || "User"} ({ROLE_LABELS[authStore.activeRole] || authStore.activeRole})
+                  {authStore.userName || "User"} (
+                  {ROLE_LABELS[authStore.activeRole] || authStore.activeRole})
                 </strong>
               </span>
             </div>
@@ -201,9 +208,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           onToggleSidebar={handleToggleSidebar}
           isMobileMenuButton={isMobile}
         />
-        <main className="flex-1 p-4 md:p-6 overflow-auto">
+        <main className="flex-1 p-4 md:p-6 overflow-auto pb-24 md:pb-6">
           <div className="relative z-10">
-            {children ? children : (
+            {children ? (
+              children
+            ) : (
               <Suspense fallback={<PageContentLoader />}>
                 <Outlet />
               </Suspense>
@@ -220,24 +229,29 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <div
           className={cn(
             "fixed right-6 z-40 transition-all duration-300",
-            isDeveloper ? "bottom-20" : "bottom-6",
+            isMobile ? "bottom-20" : isDeveloper ? "bottom-20" : "bottom-6",
           )}
         >
           <button
             type="button"
             onClick={() => triggerInstall()}
-            className="flex items-center gap-2 px-3.5 py-2.5 rounded-full shadow-2xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ring-2 ring-primary/20 backdrop-blur-md"
+            className="flex items-center gap-1.5 p-3 rounded-full shadow-2xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ring-2 ring-primary/20 backdrop-blur-md"
             title="Install AccreditOS ERP App"
             aria-label="Install App"
           >
             <Download className="w-4 h-4 animate-bounce" />
-            <span className="tracking-tight">Install App</span>
+            <span className="hidden md:block tracking-tight">Install App</span>
           </button>
         </div>
       )}
 
       {/* Developer-Only AI Copilot Assistant */}
       <AiAssistantDrawer />
+
+      {/* Mobile Floating Bottom Navigation & Quick Access Drawer */}
+      {isMobile && (
+        <MobileBottomNav isOpen={mobileOpen} onOpenChange={setMobileOpen} />
+      )}
     </div>
   );
 }

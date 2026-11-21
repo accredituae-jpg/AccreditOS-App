@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import { Menu, ChevronDown, Search, Calendar, Activity } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ChevronDown, Search, Calendar, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import accreditLogo from "@/assets/Accredit-Logo_Png.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -61,19 +63,20 @@ export function TopBar({
   return (
     <>
       <header className="sticky top-0 z-30 h-14 md:h-16 bg-background/85 backdrop-blur-xl border-b border-border/50 flex items-center justify-between px-3 md:px-6 shadow-2xs transition-all">
-        {/* Left Section: Mobile menu toggle + Greeting & Live System Indicator */}
-        <div className="flex items-center gap-2 md:gap-3">
-          {isMobileMenuButton && onToggleSidebar && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onToggleSidebar}
-              className="h-9 w-9 hover:bg-muted"
-              aria-label="Open menu"
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
-          )}
+        {/* Left Section: Mobile Logo + Greeting & Live System Indicator */}
+        <div className="flex items-center gap-2.5 md:gap-3">
+          {/* Official Accredit Brand Logo for Mobile */}
+          <Link
+            to="/"
+            className="flex md:hidden w-9 h-9 rounded-xl p-1 bg-white border border-slate-200/90 shadow-2xs items-center justify-center shrink-0 overflow-hidden hover:scale-105 active:scale-95 transition-all"
+            aria-label="AccreditOS Home"
+          >
+            <img
+              src={accreditLogo}
+              alt="Accredit ERP Logo"
+              className="w-full h-full object-contain filter drop-shadow-2xs"
+            />
+          </Link>
 
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
@@ -97,19 +100,20 @@ export function TopBar({
 
         {/* Center / Right Section: Global Quick Search & System Utilities */}
         <div className="flex items-center gap-2 md:gap-3">
-          {/* Quick Search & Command Trigger Bar */}
+          {/* Quick Search & Command Trigger Bar (Enhanced Mobile & Desktop UI) */}
           <button
             type="button"
             onClick={() => setSearchOpen(true)}
-            className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl border border-border/70 bg-card/70 hover:bg-muted/40 hover:border-primary/40 text-muted-foreground hover:text-foreground text-xs transition-all shadow-2xs group cursor-pointer"
-            title="Search modules & operations (⌘K)"
+            className="flex items-center gap-2 h-9 px-3 rounded-full border border-border/80 bg-muted/40 dark:bg-muted/20 hover:bg-muted/70 hover:border-primary/40 text-muted-foreground hover:text-foreground text-xs transition-all shadow-2xs group cursor-pointer"
+            title="Search modules & actions (⌘K)"
             aria-label="Search modules and operations"
           >
-            <Search className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-            <span className="hidden md:inline text-[11px] font-medium text-muted-foreground">
-              Search modules & actions...
+            <Search className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+            <span className="text-[11px] font-medium text-muted-foreground/90 group-hover:text-foreground transition-colors">
+              <span className="inline md:hidden">Search...</span>
+              <span className="hidden md:inline">Search modules & actions...</span>
             </span>
-            <kbd className="ml-1 sm:ml-2 px-1.5 py-0.5 text-[9px] font-mono font-semibold bg-background border border-border/80 rounded text-muted-foreground shadow-2xs">
+            <kbd className="hidden md:inline-flex ml-2 px-1.5 py-0.5 text-[9px] font-mono font-semibold bg-background border border-border/80 rounded text-muted-foreground shadow-2xs">
               ⌘K
             </kbd>
           </button>
