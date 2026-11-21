@@ -4,6 +4,7 @@ import { apiGetInvoices } from "@/lib/api/financeApi";
 import {
   DateRangePreset,
   getDateRangeBounds,
+  getMonthYearDateBounds,
 } from "@/features/certificates/utils/dateRangeUtils";
 import {
   exportGenericReportToExcel,
@@ -13,6 +14,9 @@ import { exportGenericReportToCsv } from "../utils/exportReportCsv";
 import { formatReportDate, parseReportDate } from "../utils/reportDateUtils";
 
 export function useFinancialReport() {
+  const [filterMode, setFilterMode] = useState<"month_select" | "preset" | "custom">("month_select");
+  const [selectedYear, setSelectedYear] = useState<string>("2026");
+  const [selectedMonth, setSelectedMonth] = useState<string>(String(new Date().getMonth()));
   const [datePreset, setDatePreset] = useState<DateRangePreset>("this_month");
   const [customStartDate, setCustomStartDate] = useState<string>("");
   const [customEndDate, setCustomEndDate] = useState<string>("");
@@ -23,11 +27,14 @@ export function useFinancialReport() {
   const [pageSize, setPageSize] = useState(25);
 
   const dateBounds = useMemo(() => {
+    if (filterMode === "month_select") {
+      return getMonthYearDateBounds(parseInt(selectedYear, 10), selectedMonth);
+    }
     return getDateRangeBounds(datePreset, customStartDate, customEndDate);
-  }, [datePreset, customStartDate, customEndDate]);
+  }, [filterMode, selectedYear, selectedMonth, datePreset, customStartDate, customEndDate]);
 
   const { data: rawInvoices = [], isLoading, isFetching, refetch } = useQuery({
-    queryKey: ["reports", "financial", datePreset, dateBounds.startDate, dateBounds.endDate],
+    queryKey: ["reports", "financial", filterMode, selectedYear, selectedMonth, datePreset, dateBounds.startDate, dateBounds.endDate],
     queryFn: async () => {
       const res = await apiGetInvoices(1, 10000);
       return res.data || [];
@@ -214,6 +221,12 @@ export function useFinancialReport() {
   };
 
   return {
+    filterMode,
+    setFilterMode,
+    selectedYear,
+    setSelectedYear,
+    selectedMonth,
+    setSelectedMonth,
     datePreset,
     setDatePreset,
     customStartDate,

@@ -156,3 +156,46 @@ export function getDateRangeBounds(
 
   return { label: "All Time" };
 }
+
+export const MONTH_OPTIONS = [
+  { value: "all", label: "All Months (Full Year)" },
+  { value: "0", label: "January" },
+  { value: "1", label: "February" },
+  { value: "2", label: "March" },
+  { value: "3", label: "April" },
+  { value: "4", label: "May" },
+  { value: "5", label: "June" },
+  { value: "6", label: "July" },
+  { value: "7", label: "August" },
+  { value: "8", label: "September" },
+  { value: "9", label: "October" },
+  { value: "10", label: "November" },
+  { value: "11", label: "December" },
+] as const;
+
+export function getMonthYearDateBounds(
+  year: number,
+  month: string | number,
+): DateRangeBounds {
+  if (month === "all") {
+    const start = new Date(year, 0, 1, 0, 0, 0);
+    const end = new Date(year, 11, 31, 23, 59, 59, 999);
+    return {
+      startDate: start.toISOString(),
+      endDate: end.toISOString(),
+      label: `Full Year ${year}`,
+    };
+  }
+
+  const m = typeof month === "string" ? parseInt(month, 10) : month;
+  const monthItem = MONTH_OPTIONS.find((opt) => opt.value === String(m));
+  const monthName = monthItem ? monthItem.label : `Month ${m + 1}`;
+
+  const start = new Date(year, m, 1, 0, 0, 0);
+  const end = new Date(year, m + 1, 0, 23, 59, 59, 999);
+  return {
+    startDate: start.toISOString(),
+    endDate: end.toISOString(),
+    label: `${monthName} ${year}`,
+  };
+}

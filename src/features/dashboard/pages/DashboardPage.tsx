@@ -31,6 +31,7 @@ import {
   SlidersHorizontal,
   CheckCircle2,
   Zap,
+  Database,
 } from "lucide-react";
 import {
   BarChart,
@@ -74,6 +75,9 @@ import { DeveloperStorageWidget } from "../components/DeveloperStorageWidget";
 import { ExpenseOperationsAnalytics } from "../components/ExpenseOperationsAnalytics";
 import { ExpensePieChartCard } from "../components/ExpensePieChartCard";
 import { VendorBillsPieChartCard } from "../components/VendorBillsPieChartCard";
+import { FinancialCashFlowCard } from "../components/FinancialCashFlowCard";
+import { FinancialProfitabilityCard } from "../components/FinancialProfitabilityCard";
+import { FinancialLiabilitiesCard } from "../components/FinancialLiabilitiesCard";
 import {
   apiGetVendorSummaries,
   apiGetClientsSummary,
@@ -177,6 +181,7 @@ export default function DashboardPage() {
   const [globalCustomRange, setGlobalCustomRange] = useState<
     CustomDateRange | undefined
   >();
+  const [showDbWidget, setShowDbWidget] = useState(false);
 
   useEffect(() => {
     const handleRoleChange = () => {
@@ -188,7 +193,8 @@ export default function DashboardPage() {
   }, []);
 
   const isDeveloper = useMemo(
-    () => activeRole === "super_admin" || (activeRole as string) === "developer",
+    () =>
+      activeRole === "super_admin" || (activeRole as string) === "developer",
     [activeRole],
   );
 
@@ -223,31 +229,39 @@ export default function DashboardPage() {
       );
       return res.data || null;
     },
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
   });
 
-  const isKpiLoading = isStatsLoading || isStatsFetching;
+  const isKpiLoading = isStatsLoading && !stats;
 
   const { data: invoicesData = [], isLoading: isInvoicesLoading } = useQuery<
     Invoice[]
   >({
     queryKey: qk.invoices(),
-    queryFn: async () => (await apiGetInvoices(1, 10000)).data || [],
+    queryFn: async () => (await apiGetInvoices(1, 1000)).data || [],
     enabled: hasFinance,
+    staleTime: 120_000,
+    refetchOnWindowFocus: false,
   });
 
   const { data: expensesData = [], isLoading: isExpensesLoading } = useQuery<
     Expense[]
   >({
     queryKey: qk.expenses(),
-    queryFn: async () => (await apiGetExpenses(1, 10000)).data || [],
+    queryFn: async () => (await apiGetExpenses(1, 1000)).data || [],
     enabled: hasFinance,
+    staleTime: 120_000,
+    refetchOnWindowFocus: false,
   });
 
   const { data: vendorBillsData = [], isLoading: isVendorBillsLoading } =
     useQuery<VendorBill[]>({
       queryKey: qk.vendorBills(),
-      queryFn: async () => (await apiGetVendorBills(1, 10000)).data || [],
+      queryFn: async () => (await apiGetVendorBills(1, 1000)).data || [],
       enabled: hasFinance,
+      staleTime: 120_000,
+      refetchOnWindowFocus: false,
     });
 
   const { data: vendorSummariesData, isLoading: isVendorSummariesLoading } =
@@ -255,6 +269,8 @@ export default function DashboardPage() {
       queryKey: ["vendor-summaries"],
       queryFn: async () => (await apiGetVendorSummaries()).data,
       enabled: hasFinance,
+      staleTime: 120_000,
+      refetchOnWindowFocus: false,
     });
 
   const { data: clientsSummaryData, isLoading: isClientsSummaryLoading } =
@@ -262,21 +278,29 @@ export default function DashboardPage() {
       queryKey: ["clients-summary"],
       queryFn: async () => (await apiGetClientsSummary()).data,
       enabled: hasFinance,
+      staleTime: 120_000,
+      refetchOnWindowFocus: false,
     });
 
   const { data: certificatesData = [] } = useQuery<Certificate[]>({
-    queryKey: qk.certificates({ page: 1, limit: 10000 }),
+    queryKey: qk.certificates({ page: 1, limit: 100 }),
     queryFn: async () => {
-      const res = await apiGetCertificates(1, 10000);
+      const res = await apiGetCertificates(1, 100, "", "expiring");
       return res.data || [];
     },
     enabled: hasCertificates,
+    staleTime: 120_000,
+    refetchOnWindowFocus: false,
   });
 
   const { data: trainingsData = [] } = useQuery<any[]>({
     queryKey: qk.trainings,
     queryFn: async () => (await apiGetTrainings()).data || [],
+    staleTime: 120_000,
+    refetchOnWindowFocus: false,
   });
+
+
 
   const headerTitle = useMemo(() => {
     if (activeRole === "super_admin") return "Developer Dashboard";
@@ -285,10 +309,30 @@ export default function DashboardPage() {
     return "Trainer Dashboard";
   }, [activeRole]);
 
+  const periodLabel = useMemo(() => {
+    if (globalPeriod === "this-month") return "This Month";
+    if (globalPeriod === "last-month") return "Last Month";
+    if (globalPeriod === "this-year") return "This Year";
+    if (globalPeriod === "last-year") return "Last Year";
+    if (globalPeriod === "all-time") return "All Time";
+    if (globalPeriod === "this-week") return "This Week";
+    if (
+      globalPeriod === "custom" &&
+      globalCustomRange?.startDate &&
+      globalCustomRange?.endDate
+    ) {
+      return `${globalCustomRange.startDate} to ${globalCustomRange.endDate}`;
+    }
+    return "Selected Period";
+  }, [globalPeriod, globalCustomRange]);
+
   const kpiData = useMemo<StatsCardItem[]>(() => {
     if (hasFinance) {
-      const profitVal = Number(stats?.finance?.profit ?? 0);
-      const pendingVal = Number(stats?.finance?.pending ?? 0);
+      const netCashMovement = Number(stats?.cashFlow?.netCashMovement ?? 0);
+      const isNetPositive = netCashMovement >= 0;
+      const allTimeAr = Number(
+        stats?.liabilities?.allTimeAccountsReceivable ?? 0,
+      );
 
       return [
         {
@@ -297,54 +341,60 @@ export default function DashboardPage() {
           change: stats?.clients?.change ?? 0,
           icon: Users,
           color: "primary",
-          description: "Total registered client organizations in the system.",
+          description: "Active corporate accounts registered in the system.",
           loading: isKpiLoading,
         },
         {
-          title: "Trainings Conducted",
+          title: "Trainings Completed",
           value: String(stats?.trainings?.completed ?? 0),
           change: stats?.trainings?.change ?? 0,
           icon: GraduationCap,
           color: "info",
-          description: "Completed training batches and sessions conducted.",
+          description: "Training batches and participant sessions conducted.",
           loading: isKpiLoading,
         },
         {
-          title: "Revenue",
-          value: formatAED(stats?.finance?.revenue ?? 0),
-          change: stats?.finance?.revenueChange ?? 0,
+          title: "Cash Collected",
+          value: formatAED(stats?.cashFlow?.realizedCashInflow ?? 0),
+          change: 0,
           icon: DollarSign,
           color: "success",
-          description: "Realized cash and payments collected from clients.",
+          description:
+            "Realized money received from client receipts in period.",
           loading: isKpiLoading,
         },
         {
-          title: "Expenses",
-          value: formatAED(stats?.finance?.expenses ?? 0),
-          change: stats?.finance?.expensesChange ?? 0,
+          title: "Expenses Paid",
+          value: formatAED(
+            stats?.cashFlow?.operatingCashOutflow ??
+              stats?.accrual?.operatingExpenses ??
+              0,
+          ),
+          change: 0,
           icon: Receipt,
           color: "warning",
           description:
-            "Operating expenditures and overheads recorded for the period.",
+            "Everyday operational disbursements paid in this period.",
           loading: isKpiLoading,
         },
         {
-          title: "Profit",
-          value: formatAED(profitVal),
-          change: stats?.finance?.profitChange ?? 0,
+          title: "Net Cash Flow",
+          value: formatAED(netCashMovement),
+          change: 0,
           icon: TrendingUp,
-          color: profitVal >= 0 ? "success" : "destructive",
-          description: "Net operating margin (Revenue minus Expenses).",
+          color: isNetPositive ? "success" : "destructive",
+          description:
+            "Actual net money movement: Cash Collected minus Cash Paid.",
           loading: isKpiLoading,
         },
         {
-          title: "Pending Payments",
-          value: formatAED(pendingVal),
-          change: stats?.finance?.pendingChange ?? 0,
+          title: "Money Clients Owe (AR)",
+          value: formatAED(allTimeAr),
+          change: 0,
           icon: AlertCircle,
-          color: pendingVal > 0 ? "warning" : "success",
+          color: allTimeAr > 0 ? "destructive" : "success",
           description:
-            "Outstanding client invoices awaiting collection (Accounts Receivable).",
+            "Total unpaid client invoice balances across the system.",
           loading: isKpiLoading,
         },
       ];
@@ -892,35 +942,103 @@ export default function DashboardPage() {
               <span>Generate Invoice</span>
             </Button>
           )}
+
+          {/* DB Cloud & Storage Toggle Button */}
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setShowDbWidget((prev) => !prev)}
+            aria-label="Toggle Database Cloud Telemetry Box"
+            className={cn(
+              "h-8 gap-1.5 text-xs font-semibold rounded-xl transition-all px-3 shrink-0 border",
+              showDbWidget
+                ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                : "text-primary bg-primary/8 hover:bg-primary hover:text-primary-foreground border border-primary/20",
+            )}
+          >
+            <Database className="w-3.5 h-3.5" />
+            <span>DB</span>
+          </Button>
         </div>
 
         {/* Master Scope Filter: Exclusively placed inside Quick Action box! */}
         <div className="shrink-0 flex items-center justify-start lg:justify-end border-t lg:border-t-0 pt-2.5 lg:pt-0 border-border/60">
           <MasterDashboardPeriodFilter
             value={globalPeriod}
-            onChange={(p) => {
+            onChange={(p, range) => {
               setGlobalPeriod(p);
-              setGlobalCustomRange(undefined);
+              setGlobalCustomRange(range);
             }}
+            customRange={globalCustomRange}
           />
         </div>
       </motion.div>
 
-      {/* Developer Cloud Database & Storage Telemetry */}
-      {isDeveloper && <DeveloperStorageWidget />}
+      {/* Developer Cloud Database & Storage Telemetry (Toggled via Quick Actions DB button) */}
+      {showDbWidget && <DeveloperStorageWidget />}
 
-      {/* 4. Analytics & Charts Section (Left: Financial Velocity, Right: Two Stacked Pie Charts) */}
+      {/* 4. Unified Financial Architecture (Sections B, C, D, E) */}
+      {hasFinance && stats && (
+        <div className="space-y-4 md:space-y-6">
+          {/* Row 1: Section B (Cash Flow) & Section C (Profitability) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 items-stretch">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.18 }}
+              className="min-w-0 flex flex-col h-full"
+            >
+              <FinancialCashFlowCard
+                cashFlow={stats.cashFlow}
+                periodLabel={periodLabel}
+                loading={isKpiLoading}
+              />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="min-w-0 flex flex-col h-full"
+            >
+              <FinancialProfitabilityCard
+                accrual={stats.accrual}
+                periodLabel={periodLabel}
+                loading={isKpiLoading}
+              />
+            </motion.div>
+          </div>
+
+          {/* Row 2: Section D (Money Owed & Unpaid - Receivables & Vendor Obligations) */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.22 }}
+            className="min-w-0"
+          >
+            <FinancialLiabilitiesCard
+              liabilities={stats.liabilities}
+              periodLabel={periodLabel}
+              loading={isKpiLoading}
+            />
+          </motion.div>
+        </div>
+      )}
+
+      {/* 5. Performance & Financial Velocity (Full Width Executive Chart) */}
       {hasFinance && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 items-stretch">
+        <div className="space-y-4 md:space-y-5">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="lg:col-span-2 min-w-0 flex flex-col"
+            transition={{ delay: 0.26 }}
+            className="min-w-0"
           >
             <ExpenseOperationsAnalytics
               invoices={invoicesData}
               expenses={expensesData}
+              cashFlow={stats?.cashFlow}
+              accrual={stats?.accrual}
               period={globalPeriod}
               customRange={globalCustomRange}
               loading={isInvoicesLoading || isExpensesLoading || isKpiLoading}
@@ -928,13 +1046,13 @@ export default function DashboardPage() {
             />
           </motion.div>
 
-          {/* Right Column: Two Pie Charts Downwards (Expense Outflow + Vendor Obligations) */}
-          <div className="lg:col-span-1 min-w-0 flex flex-col gap-4">
+          {/* 6. Visual Spending & Vendor Obligations (Side-by-Side 2-Column Grid) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 items-stretch">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.23 }}
-              className="flex-1"
+              transition={{ delay: 0.28 }}
+              className="min-w-0 flex flex-col h-full"
             >
               <ExpensePieChartCard
                 expenses={expensesData}
@@ -950,12 +1068,14 @@ export default function DashboardPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.26 }}
-              className="flex-1"
+              transition={{ delay: 0.3 }}
+              className="min-w-0 flex flex-col h-full"
             >
               <VendorBillsPieChartCard
                 vendorBills={vendorBillsData}
                 vendorSummaries={vendorSummariesData}
+                liabilities={stats?.liabilities}
+                cashFlow={stats?.cashFlow}
                 period={globalPeriod}
                 customRange={globalCustomRange}
                 loading={
@@ -972,15 +1092,15 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* 5. Alerts & Operational Surveillance Row - Balanced 2-Column Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+      {/* 7. Alerts & Operational Surveillance Row - Balanced 2-Column Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 items-stretch">
         {/* Card 1: Client Accounts & Receivables (Consolidated Dues) */}
         {hasFinance && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.28 }}
-            className="card-elevated flex flex-col justify-between overflow-hidden border-border/80 shadow-md bg-gradient-to-b from-card via-card to-card/95"
+            className="card-elevated flex flex-col justify-between overflow-hidden border-border/80 shadow-md bg-gradient-to-b from-card via-card to-card/95 h-full"
           >
             <div>
               <div className="p-4 border-b border-border/60 flex items-center justify-between gap-2">
@@ -990,10 +1110,10 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-sm sm:text-base text-foreground truncate">
-                      Client Accounts & Dues
+                      Unpaid Client Accounts
                     </h3>
                     <p className="text-[11px] text-muted-foreground">
-                      Consolidated receivables per client
+                      Clients with outstanding invoice balances
                     </p>
                   </div>
                 </div>
@@ -1098,13 +1218,12 @@ export default function DashboardPage() {
         )}
 
         {/* Card 2: Expiring Certificates (Compliance Watchlist) */}
-
         {hasCertificates ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.32 }}
-            className="card-elevated flex flex-col justify-between overflow-hidden border-border/80 shadow-md bg-gradient-to-b from-card via-card to-card/95"
+            className="card-elevated flex flex-col justify-between overflow-hidden border-border/80 shadow-md bg-gradient-to-b from-card via-card to-card/95 h-full"
           >
             <div>
               <div className="p-4 border-b border-border/60 flex items-center justify-between gap-2">
@@ -1114,10 +1233,10 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-sm sm:text-base text-foreground truncate">
-                      Expiring Certificates
+                      Certificates Expiring Soon
                     </h3>
                     <p className="text-[11px] text-muted-foreground">
-                      Candidate renewal & validity radar
+                      Upcoming renewals and expiring credentials
                     </p>
                   </div>
                 </div>

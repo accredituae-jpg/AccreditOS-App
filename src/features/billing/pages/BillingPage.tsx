@@ -10,7 +10,6 @@ import {
   Building2,
   Calendar,
   X,
-  Coins,
 } from "lucide-react";
 import {
   Select,
@@ -51,12 +50,8 @@ import {
   EditVendorBillDialog,
   RecordVendorPaymentDialog,
   VendorBillDetailsDialog,
-  TopUpPettyCashDialog,
   PayVendorAccountDialog,
 } from "../dialogs";
-import { AddQuotationDialog } from "@/features/clients/dialogs/AddQuotationDialog";
-import { QuotationPreviewDialog } from "@/features/clients/dialogs/QuotationPreviewDialog";
-import type { Quotation } from "@/features/clients/types/quotation.types";
 import { AwardingBodyDialog, type AwardingBodyFormData } from "@/features/settings/dialogs/AwardingBodyDialog";
 import { apiGetAwardingBodies, apiUpdateAwardingBody } from "@/lib/api/settingsApi";
 import {
@@ -188,12 +183,9 @@ export default function BillingPage() {
   const effectiveView = isMobile ? "grid" : view;
 
   const [showAddInvoice, setShowAddInvoice] = useState(false);
-  const [showQuotationDialog, setShowQuotationDialog] = useState(false);
-  const [previewQuotation, setPreviewQuotation] = useState<Quotation | null>(null);
   const [showAddExpense, setShowAddExpense] = useState(false);
   const [showAddReceipt, setShowAddReceipt] = useState(false);
   const [showAddVendorBill, setShowAddVendorBill] = useState(false);
-  const [showTopUpPettyCash, setShowTopUpPettyCash] = useState(false);
 
   const [viewInvoice, setViewInvoice] = useState<Invoice | null>(null);
   const [previewInvoice, setPreviewInvoice] = useState<Invoice | null>(null);
@@ -634,42 +626,22 @@ export default function BillingPage() {
         description="Manage invoices, expenses, receipts, and vendor bills workflows."
         actions={
           (activeTab === "invoices" && canCreateInvoice && (
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <Button
-                variant="outline"
-                onClick={() => setShowQuotationDialog(true)}
-                className="gap-2 w-full sm:w-auto text-primary border-primary/30 hover:bg-primary/5 font-semibold text-xs h-9"
-              >
-                <FileText className="w-4 h-4" />
-                New Quotation
-              </Button>
-              <Button
-                onClick={() => setShowAddInvoice(true)}
-                className="gap-2 w-full sm:w-auto text-xs h-9 font-semibold"
-              >
-                <Plus className="w-4 h-4" />
-                Create Invoice
-              </Button>
-            </div>
+            <Button
+              onClick={() => setShowAddInvoice(true)}
+              className="gap-2 w-full sm:w-auto text-xs h-9 font-semibold"
+            >
+              <Plus className="w-4 h-4" />
+              Create Invoice
+            </Button>
           )) ||
           (activeTab === "expenses" && canCreateInvoice && (
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <Button
-                variant="outline"
-                onClick={() => setShowTopUpPettyCash(true)}
-                className="gap-1.5 w-full sm:w-auto text-amber-600 border-amber-300 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-950/30"
-              >
-                <Coins className="w-4 h-4" />
-                Top Up Petty Cash
-              </Button>
-              <Button
-                onClick={() => setShowAddExpense(true)}
-                className="gap-2 w-full sm:w-auto"
-              >
-                <Plus className="w-4 h-4" />
-                Add Expense
-              </Button>
-            </div>
+            <Button
+              onClick={() => setShowAddExpense(true)}
+              className="gap-2 w-full sm:w-auto"
+            >
+              <Plus className="w-4 h-4" />
+              Add Expense
+            </Button>
           )) ||
           (activeTab === "receipts" && canCreateInvoice && (
             <Button
@@ -1239,27 +1211,7 @@ export default function BillingPage() {
         onConfirm={handleConfirmDeleteVendorBill}
       />
 
-      <TopUpPettyCashDialog
-        open={showTopUpPettyCash}
-        onOpenChange={setShowTopUpPettyCash}
-        onSuccess={refresh}
-      />
 
-      {/* New Quotation Dialog */}
-      <AddQuotationDialog
-        open={showQuotationDialog}
-        onOpenChange={setShowQuotationDialog}
-        onSave={(newQtn) => {
-          setPreviewQuotation(newQtn);
-        }}
-      />
-
-      {/* Quotation Preview & PDF Dialog */}
-      <QuotationPreviewDialog
-        quotation={previewQuotation}
-        open={Boolean(previewQuotation)}
-        onOpenChange={(open) => !open && setPreviewQuotation(null)}
-      />
 
       {/* Hidden container for instant offscreen invoice PDF rendering */}
       {downloadingInvoice && (

@@ -30,6 +30,10 @@ import {
   FileText,
   Shield,
   CheckCircle,
+  Wallet,
+  Truck,
+  Layers,
+  ShieldCheck,
 } from "lucide-react";
 import { DIRHAM_SYMBOL } from "@/lib/utils";
 
@@ -47,86 +51,315 @@ export interface MetricInfoDefinition {
   formula?: string;
   example?: string;
   tips?: string[];
+  metricsBreakdown?: {
+    label: string;
+    description: string;
+    formula?: string;
+    tag?: string;
+  }[];
 }
 
 export const METRIC_INFO_REGISTRY: Record<string, MetricInfoDefinition> = {
-  // 1. Revenue
-  revenue: {
-    title: "Revenue Explained",
-    subtitle: "Realized cash and payments collected from clients",
+  // 0a. Cash Flow & Collections (Card Section B)
+  cash_flow: {
+    title: "Cash Flow & Collections Guide",
+    subtitle: "Realized money received, operational disbursements, and net cash movement",
     badge: {
-      label: "Cash Collected",
-      variantClass: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+      label: "Cash-Basis",
+      variantClass: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25",
     },
-    icon: DollarSign,
+    icon: Wallet,
     iconBgClass: "bg-emerald-500/10",
     iconColorClass: "text-emerald-600 dark:text-emerald-400",
-    whatIsIt: "The actual money your business has received and deposited into your account from clients for training courses, corporate packages, and certified sessions during this period.",
-    formula: "Revenue = Sum of all client invoice payments received in this period",
-    example: "If 5 clients each paid a 2,000 AED invoice, your Revenue is 10,000 AED.",
+    whatIsIt: "Tracks real money deposited into your accounts vs. cash paid out. All figures are recognized strictly when cash actually moves (receipt date or payment date), independent of when invoices or bills were dated.",
+    formula: "Net Cash Movement = Realized Inflow - Operating Outflow - Vendor Outflow",
+    example: "If you received AED 5,489.00 in client payments, spent AED 4,500.00 on rent/supplies, and paid AED 157.50 to awarding bodies, your Net Cash Movement is +AED 831.50.",
+    metricsBreakdown: [
+      {
+        label: "Realized Cash Inflow",
+        description: "Total verified client receipts collected during the chosen period.",
+        formula: "Current Invoices Collected + Old Invoices (AR) Recovered",
+        tag: "Inflow",
+      },
+      {
+        label: "Collections on Current Invoices",
+        description: "Cash collected towards invoices newly issued in this period.",
+        tag: "Current",
+      },
+      {
+        label: "Old Invoices Recovered",
+        description: "Collections from clients settling past-due invoices from previous months.",
+        tag: "AR Recovery",
+      },
+      {
+        label: "Operating Cash Outflow",
+        description: "Everyday business expenses paid in cash (office, rent, stationery, petrol).",
+        tag: "Opex",
+      },
+      {
+        label: "Vendor Cash Outflow",
+        description: "Actual bank/cash payments cleared to suppliers and awarding bodies.",
+        tag: "Vendors",
+      },
+      {
+        label: "Estimated Cash Surplus",
+        description: "Total cash ever accumulated in the business minus all known vendor liabilities.",
+        formula: "Cumulative Net Cash - Total Vendor Obligations",
+        tag: "Cushion",
+      },
+    ],
     tips: [
-      "Only real cash collections are counted here, not unpaid promises.",
-      "Cancelled or voided invoices are strictly excluded.",
+      "Follows actual receipt transaction dates, which may differ from invoice issue dates.",
+      "Voided receipts and cancelled payments are strictly excluded from all figures.",
+      "Unallocated client prepayments are fully preserved and accounted for.",
+    ],
+  },
+
+  // 0b. Revenue & Profitability (Card Section C)
+  profitability: {
+    title: "Revenue & Profitability Guide",
+    subtitle: "Invoiced billing, certificate cost of goods sold (COGS), and operating margins",
+    badge: {
+      label: "Accrual / Management",
+      variantClass: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/25",
+    },
+    icon: TrendingUp,
+    iconBgClass: "bg-purple-500/10",
+    iconColorClass: "text-purple-600 dark:text-purple-400",
+    whatIsIt: "A structured accrual and management view of business performance. It compares sales billed to clients against direct certification costs (awarding body fees) and operational overheads.",
+    formula: "Operating Profit = Billed Revenue - Certificate COGS - Operating Expenses",
+    example: "With AED 4,664.75 Billed Revenue, AED 1,840.00 Certificate costs, and AED 4,500.00 expenses: Gross Profit = AED 2,824.75, Operating Profit = -AED 1,675.25.",
+    metricsBreakdown: [
+      {
+        label: "Billed Revenue",
+        description: "Total value of customer invoices issued in this period.",
+        formula: "Total customer invoices generated",
+        tag: "Revenue",
+      },
+      {
+        label: "Total Certificate COGS",
+        description: "Direct costs owed to awarding bodies (Tatweer, Arbrit, Highfield, etc.) for issued certificates.",
+        formula: "Billed Vendor Bills + Unbilled Pending Certificates",
+        tag: "Direct Cost",
+      },
+      {
+        label: "Gross Profit",
+        description: "Money retained from course sales after covering mandatory awarding body certificate fees.",
+        formula: "Net Invoiced Revenue - Total Certificate COGS",
+        tag: "Gross Margin",
+      },
+      {
+        label: "Operating Expenses (Opex)",
+        description: "Recorded non-deleted operational expenditures marked as paid.",
+        tag: "Overhead",
+      },
+      {
+        label: "Operating Profit / Result",
+        description: "Internal management margin after deducting certificate costs and operational overheads.",
+        formula: "Gross Profit - Operating Expenses",
+        tag: "Result",
+      },
+    ],
+    tips: [
+      "Operating Result is an internal management metric and does not constitute audited statutory net profit.",
+      "Both received vendor bills and unbilled active certificate commitments are factored in so direct costs are never deferred.",
+    ],
+  },
+
+  // 0c. Money Owed & Unpaid / Liabilities (Card Section D)
+  liabilities: {
+    title: "Receivables & Vendor Obligations Guide",
+    subtitle: "Client debts awaiting collection (AR) vs. vendor and awarding body payables (AP)",
+    badge: {
+      label: "Receivables & Payables",
+      variantClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25",
+    },
+    icon: Building2,
+    iconBgClass: "bg-amber-500/10",
+    iconColorClass: "text-amber-600 dark:text-amber-400",
+    whatIsIt: "Tracks outstanding money balances on both sides of your ledger: money clients owe you across all invoices (Accounts Receivable), and money you owe suppliers and certification bodies (Accounts Payable + Commitments).",
+    formula: "Total Vendor Obligations = Billed Vendor Payables (AP) + Unbilled Certificate Commitments",
+    example: "If clients owe AED 3,240.00 in total (AED 2,295.00 from this month, AED 945.00 older), and you owe AED 157.50 on supplier bills plus AED 17,488.00 on 554 unbilled certificates, total obligations are AED 17,645.50.",
+    metricsBreakdown: [
+      {
+        label: "Total Uncollected (All-Time AR)",
+        description: "The global total of all unpaid client invoice balances across entire history.",
+        tag: "Global AR",
+      },
+      {
+        label: "Unpaid This Month (In-Period AR)",
+        description: "Unpaid balances strictly from invoices issued during the selected reporting period.",
+        tag: "Period AR",
+      },
+      {
+        label: "Vendor Bills to Pay (Billed AP)",
+        description: "Outstanding balances on official vendor bills received from suppliers and awarding bodies.",
+        tag: "Billed AP",
+      },
+      {
+        label: "Pending Certificate Fees (Unbilled)",
+        description: "Accrued liabilities for certificates issued to students where the supplier invoice hasn't arrived yet.",
+        formula: "Sum of Awarding Body Fees for Unbilled Certificates",
+        tag: "Commitment",
+      },
+    ],
+    tips: [
+      "All-Time AR and In-Period AR are mutually distinct: one is global lifetime debt, the other is period-specific.",
+      "Unbilled Certificate Commitments prevent surprise costs by reserving awarding body fees as soon as certificates are issued.",
+    ],
+  },
+
+  // 0d. UAE VAT Management Overview (Card Section E)
+  vat_overview: {
+    title: "UAE VAT Management Guide",
+    subtitle: "5% statutory tax obligations under UAE Federal Tax Authority (FTA) rules",
+    badge: {
+      label: "UAE VAT (5%)",
+      variantClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/25",
+    },
+    icon: Receipt,
+    iconBgClass: "bg-blue-500/10",
+    iconColorClass: "text-blue-600 dark:text-blue-400",
+    whatIsIt: "Provides operational visibility into your 5% Value Added Tax position in the UAE. Displays VAT collected on cash receipts vs. VAT invoiced, alongside input VAT on business expenses.",
+    formula: "Net VAT Position = Output VAT (Tax on Sales) - Input VAT (Tax on Purchases)",
+    example: "If you collected AED 261.37 in output VAT from clients and paid AED 7.50 in input VAT to suppliers, your indicative cash-basis tax reserve is AED 253.87.",
+    metricsBreakdown: [
+      {
+        label: "VAT on Cash Collected",
+        description: "Output tax collected in cash from client receipts, minus recoverable tax paid to suppliers.",
+        formula: "Collected Output VAT - Paid Input VAT",
+        tag: "Cash Basis",
+      },
+      {
+        label: "VAT on Invoiced Sales",
+        description: "Accrual tax liability based on the issue date of client invoices.",
+        formula: "Invoiced Output VAT - Billed Input VAT Recorded",
+        tag: "Accrual Basis",
+      },
+      {
+        label: "Invoiced Sales Output VAT",
+        description: "Total 5% VAT charged on client invoices dispatched during this period.",
+        tag: "Sales Tax",
+      },
+      {
+        label: "Cash Collected Output VAT",
+        description: "The 5% tax component received inside client payment receipts.",
+        tag: "Cash Tax",
+      },
+      {
+        label: "Billed Bills Input VAT",
+        description: "5% tax paid on received supplier bills eligible for tax recovery.",
+        tag: "Input Tax",
+      },
+      {
+        label: "Pending Certs Input VAT",
+        description: "Estimated 5% input tax that will appear when unbilled awarding body invoices arrive.",
+        tag: "Estimated",
+      },
+    ],
+    tips: [
+      "Standard UAE VAT rate is 5% under Federal Decree-Law No. 8 of 2017.",
+      "Input VAT recovery requires a valid Tax Invoice with supplier TRN.",
+      "These figures are internal management estimates for cash planning and do not substitute for official FTA quarterly tax returns.",
+    ],
+  },
+  // 1. Invoiced Revenue
+  revenue: {
+    title: "Invoiced Revenue Explained",
+    subtitle: "Total customer billing for issued tax invoices",
+    badge: {
+      label: "Accrual Billings",
+      variantClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+    },
+    icon: DollarSign,
+    iconBgClass: "bg-blue-500/10",
+    iconColorClass: "text-blue-600 dark:text-blue-400",
+    whatIsIt: "The total sales value of all tax invoices issued to clients during this period.",
+    formula: "Invoiced Revenue = Sum of all dispatched client invoices",
+    example: "If you issue invoices totaling AED 10,500, your Invoiced Revenue is AED 10,500.",
+    tips: [
+      "This is an accrual metric based on invoice issue date, not when the cash is received.",
+      "Cancelled invoices are strictly excluded.",
+    ],
+  },
+
+  // 1b. Realized Cash Collected
+  cash_collected: {
+    title: "Actual Cash Collected Explained",
+    subtitle: "Verified money deposited into bank or petty cash in period",
+    badge: {
+      label: "Cash Realized",
+      variantClass: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    },
+    icon: Coins,
+    iconBgClass: "bg-emerald-500/10",
+    iconColorClass: "text-emerald-600 dark:text-emerald-400",
+    whatIsIt: "The real cash received from clients during this reporting period, verified via active customer receipts.",
+    formula: "Realized Cash = Collections on Current Invoices + Collections on Prior-Period Invoices (AR)",
+    example: "If clients paid AED 2,000 towards this month's courses and AED 3,000 for last month's past-due invoices, your Cash Collected is AED 5,000.",
+    tips: [
+      "Follows receipt transaction dates, which can differ from invoice dates.",
+      "Voided receipts are strictly excluded.",
     ],
   },
 
   // 2. Expenses
   expenses: {
-    title: "Expenses Explained",
-    subtitle: "Operating expenditures and everyday business overheads",
+    title: "Operating Expenses (Opex) Explained",
+    subtitle: "Operational expenditures and everyday business overheads",
     badge: {
-      label: "Money Out",
+      label: "Disbursements",
       variantClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
     },
     icon: Receipt,
     iconBgClass: "bg-amber-500/10",
     iconColorClass: "text-amber-600 dark:text-amber-400",
-    whatIsIt: "All the money spent to run day-to-day operations during this period — including stationery, utilities, petty cash, office supplies, refreshments, and internal expenses.",
-    formula: "Expenses = Sum of all valid operational expense logs in this period",
-    example: "If you spent 300 AED on utilities and 700 AED on course stationery, your Expenses are 1,000 AED.",
+    whatIsIt: "All recorded non-deleted operational expenses with status='paid' — including petty cash, utilities, rent, course supplies, and staff reimbursements.",
+    formula: "Expenses = Sum of recorded operational expense records with status='paid' in this period",
+    example: "If you spent AED 300 on utilities and AED 700 on course stationery, your Expenses are AED 1,000.",
     tips: [
-      "Voided or draft expense logs are not counted.",
-      "Check the Expense Distribution pie chart to see which category takes up the most money.",
+      "Represents management cash disbursements, not an audited accrual statement.",
+      "Vendor awarding-body bills are tracked separately under Certificate COGS.",
     ],
   },
 
-  // 3. Profit
+  // 3. Profit / Operating Result
   profit: {
-    title: "Profit Explained",
-    subtitle: "Net cash margin remaining after all operational expenses",
+    title: "Calculated Operating Result Explained",
+    subtitle: "Internal management margin after certificate COGS and recorded opex",
     badge: {
-      label: "Net Margin",
+      label: "Management Margin",
       variantClass: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
     },
     icon: TrendingUp,
     iconBgClass: "bg-purple-500/10",
     iconColorClass: "text-purple-600 dark:text-purple-400",
-    whatIsIt: "The real cash remaining in your business after paying all your operating expenses from your collected revenue.",
-    formula: "Profit = Realized Cash Revenue - Total Operating Expenses",
-    example: "You collected 30,000 AED in revenue and spent 5,000 AED on expenses → Your Net Cash Profit is 25,000 AED.",
+    whatIsIt: "The calculated operating result for internal managerial review, determined by deducting Total Certificate COGS (billed and unbilled) and recorded opex from Net Invoiced Revenue.",
+    formula: "Operating Result = Net Revenue - Total Certificate COGS - Operating Expenses",
+    example: "With AED 50,000 net revenue, AED 20,000 certificate costs, and AED 15,000 opex, your Operating Result is AED 15,000.",
     tips: [
-      "A positive green number means your business is operating profitably.",
-      "If expenses exceed revenue in a slow month, this number turns red to alert you.",
+      "This is an internal management calculation and does not constitute audited net profit.",
+      "Certificate COGS includes both billed vendor bills and unbilled certificate issuance commitments.",
     ],
   },
 
   // 4. Pending Payments
   pending_payments: {
-    title: "Pending Payments (AR) Explained",
+    title: "Accounts Receivable (AR) Explained",
     subtitle: "Outstanding client invoices awaiting collection",
     badge: {
-      label: "Accounts Receivable",
-      variantClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+      label: "Receivables",
+      variantClass: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
     },
     icon: AlertCircle,
-    iconBgClass: "bg-amber-500/10",
-    iconColorClass: "text-amber-600 dark:text-amber-400",
-    whatIsIt: "The total unpaid money that clients still owe your company for invoices you have sent but have not yet received payment for.",
-    formula: "Pending Payments = Total Invoiced Amount - Payments Received so far",
-    example: "You sent a client an invoice for 5,000 AED and they paid 3,000 AED → The Pending Payment balance is 2,000 AED.",
+    iconBgClass: "bg-rose-500/10",
+    iconColorClass: "text-rose-600 dark:text-rose-400",
+    whatIsIt: "The total unpaid client invoice balance across all issued invoices in the system.",
+    formula: "All-Time AR = Total Invoiced Amount - All Collections Received",
+    example: "If clients owe AED 3,240 across active invoices, that amount appears as your outstanding Accounts Receivable.",
     tips: [
-      "Check the Client Accounts & Dues watchlist at the bottom of the dashboard to follow up on pending collections.",
-      "Cancelled invoices are automatically removed so this balance remains 100% accurate.",
+      "Distinct from In-Period AR, which only measures unpaid balances on invoices issued during the selected reporting period.",
+      "Check the Client Accounts & Dues watchlist for a breakdown per client.",
     ],
   },
 
@@ -340,21 +573,7 @@ export const METRIC_INFO_REGISTRY: Record<string, MetricInfoDefinition> = {
     example: "If you issued 3 invoices of 5,000 AED each, your Total Invoiced is 15,000 AED.",
   },
 
-  // 18. Cash Collected
-  cash_collected: {
-    title: "Cash Collected Explained",
-    subtitle: "Actual cash payments received into your company bank account",
-    badge: {
-      label: "Cash Collected",
-      variantClass: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-    },
-    icon: DollarSign,
-    iconBgClass: "bg-emerald-500/10",
-    iconColorClass: "text-emerald-600 dark:text-emerald-400",
-    whatIsIt: "The real money clients have already paid towards their invoices (via Bank Transfer, Card, Cheque, or Cash).",
-    formula: "Sum of all payment receipts applied to client invoices",
-    example: "If a client was billed 10,000 AED and paid 7,000 AED, Cash Collected is 7,000 AED.",
-  },
+
 
   // 19. Total Invoices
   total_invoices: {
@@ -447,7 +666,40 @@ function normalizeKey(key?: string): string {
   if (!key) return "expense_operations";
   const lower = key.toLowerCase().trim().replace(/[\s_-]+/g, "_");
 
-  // Exact / specific matches first:
+  // 4 Unified Financial Architecture Cards:
+  if (
+    lower.includes("cash_flow") ||
+    lower.includes("cashflow") ||
+    lower === "cash_flow_collections" ||
+    (lower.includes("cash") && lower.includes("collection"))
+  ) {
+    return "cash_flow";
+  }
+
+  if (
+    lower.includes("profitab") ||
+    lower.includes("waterfall") ||
+    lower.includes("operating_result") ||
+    (lower.includes("revenue") && lower.includes("profit"))
+  ) {
+    return "profitability";
+  }
+
+  if (
+    lower.includes("liabilit") ||
+    lower.includes("money_owed") ||
+    (lower.includes("owed") && lower.includes("unpaid")) ||
+    lower.includes("receivable_vendor") ||
+    lower.includes("vendor_obligation")
+  ) {
+    return "liabilities";
+  }
+
+  if (lower.includes("vat") || lower.includes("tax")) {
+    return "vat_overview";
+  }
+
+  // Exact / specific matches:
   if (lower.includes("active_client")) return "active_clients";
   if (lower.includes("archive")) return "archived_clients";
   if (lower.includes("client")) return "total_clients";
@@ -470,7 +722,7 @@ function normalizeKey(key?: string): string {
   if (lower.includes("invoiced") || lower === "total_invoiced") return "total_invoiced";
   if (lower.includes("invoice") && (lower.includes("count") || lower.includes("total_invoices") || lower === "total_invoices")) return "total_invoices";
   if (lower.includes("cash_collect") || lower.includes("collected")) return "cash_collected";
-  if (lower.includes("receivable") || lower.includes("pending_pay")) return "pending_payments";
+  if (lower.includes("receivable") || lower.includes("pending_pay") || lower.includes("owe")) return "pending_payments";
 
   if (lower.includes("revenue")) return "revenue";
   if (lower.includes("expense") || lower.includes("outflow")) return "expenses";
@@ -500,7 +752,7 @@ export function ChartCalculationInfoDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl max-h-[85vh] overflow-y-auto border-border/80 bg-card p-5 sm:p-6 shadow-2xl rounded-2xl">
+      <DialogContent className="w-[95vw] sm:max-w-xl md:max-w-2xl max-h-[88vh] overflow-y-auto border-border/80 bg-card p-4 sm:p-6 shadow-2xl rounded-2xl">
         {/* ========================================================================= */}
         {/* 1. EXPENSE DISTRIBUTION (pie_chart)                                      */}
         {/* ========================================================================= */}
@@ -829,14 +1081,54 @@ export function ChartCalculationInfoDialog({
                   <span className="font-bold text-foreground text-xs block">
                     How it's calculated:
                   </span>
-                  <div className="p-2 rounded-lg bg-background/80 border border-border/50 text-[11px] font-mono text-foreground">
+                  <div className="p-2 rounded-lg bg-background/80 border border-border/50 text-[11px] font-mono text-foreground break-words overflow-x-auto">
                     {statusInfo.formula}
                   </div>
                   {statusInfo.example && (
-                    <div className="text-[11px] text-muted-foreground pt-1">
+                    <div className="text-[11px] text-muted-foreground pt-1 leading-relaxed">
                       💡 <em>Example:</em> {statusInfo.example}
                     </div>
                   )}
+                </div>
+              )}
+
+              {statusInfo.metricsBreakdown && statusInfo.metricsBreakdown.length > 0 && (
+                <div className="p-3.5 rounded-xl border border-border/70 bg-muted/20 space-y-2.5">
+                  <span className="font-bold text-foreground text-xs block">
+                    Key Metrics in this Card:
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {statusInfo.metricsBreakdown.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="p-2.5 rounded-lg bg-background/80 border border-border/50 space-y-1 flex flex-col justify-between"
+                      >
+                        <div>
+                          <div className="flex items-center justify-between gap-1.5 mb-0.5">
+                            <strong className="text-foreground text-[11px] font-bold">
+                              {item.label}
+                            </strong>
+                            {item.tag && (
+                              <Badge
+                                variant="outline"
+                                className="text-[9px] px-1.5 py-0 shrink-0 font-mono bg-muted/40"
+                              >
+                                {item.tag}
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-[10.5px] text-muted-foreground leading-relaxed">
+                            {item.description}
+                          </p>
+                        </div>
+                        {item.formula && (
+                          <div className="text-[9.5px] font-mono text-primary pt-1 border-t border-border/30 mt-1">
+                            {item.formula}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 

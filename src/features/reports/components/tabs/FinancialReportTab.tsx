@@ -38,7 +38,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DIRHAM_SYMBOL } from "@/lib/utils";
-import { DateRangePreset } from "@/features/certificates/utils/dateRangeUtils";
+import {
+  DateRangePreset,
+  MONTH_OPTIONS,
+} from "@/features/certificates/utils/dateRangeUtils";
 import { formatReportDate } from "../../utils/reportDateUtils";
 import {
   ExportColumnsDialog,
@@ -75,6 +78,12 @@ export function FinancialReportTab() {
   const [soaData, setSoaData] = React.useState<ClientSoaData | null>(null);
 
   const {
+    filterMode,
+    setFilterMode,
+    selectedYear,
+    setSelectedYear,
+    selectedMonth,
+    setSelectedMonth,
     datePreset,
     setDatePreset,
     customStartDate,
@@ -174,7 +183,7 @@ export function FinancialReportTab() {
             <Filter className="w-4 h-4 text-primary shrink-0" />
             <div className="flex flex-col min-w-0">
               <span className="text-sm font-semibold tracking-tight whitespace-nowrap leading-tight">
-                <span className="hidden sm:inline">Financial </span>Filters
+                <span className="hidden sm:inline">Invoices & Billing </span>Filters
               </span>
               <span className="text-[11px] text-muted-foreground font-medium truncate leading-tight mt-0.5">
                 {dateBounds?.label || "This Month"}
@@ -211,6 +220,9 @@ export function FinancialReportTab() {
               variant="outline"
               size="sm"
               onClick={() => {
+                setFilterMode("month_select");
+                setSelectedYear("2026");
+                setSelectedMonth(String(new Date().getMonth()));
                 setDatePreset("this_month");
                 setStatusFilter("all");
                 setClientId("all");
@@ -226,30 +238,95 @@ export function FinancialReportTab() {
         </div>
 
         <div className={mobileFiltersOpen ? "block" : "hidden sm:block"}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {/* Time Period */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+            {/* Year Selector */}
             <div>
               <label className="text-[11px] font-medium text-muted-foreground mb-1 block">
-                Time Period
+                Select Year
               </label>
               <Select
-                value={datePreset}
-                onValueChange={(val: DateRangePreset) => {
-                  setDatePreset(val);
+                value={selectedYear}
+                onValueChange={(val) => {
+                  setSelectedYear(val);
+                  setFilterMode("month_select");
                   setPage(1);
                 }}
               >
                 <SelectTrigger className="h-9 text-xs">
-                  <SelectValue placeholder="Period" />
+                  <SelectValue placeholder="Year" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="2026">2026</SelectItem>
+                  <SelectItem value="2025">2025</SelectItem>
+                  <SelectItem value="2024">2024</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Month Selector */}
+            <div>
+              <label className="text-[11px] font-medium text-muted-foreground mb-1 block">
+                Select Month
+              </label>
+              <Select
+                value={filterMode === "month_select" ? selectedMonth : "custom"}
+                onValueChange={(val) => {
+                  if (val === "custom") {
+                    setFilterMode("custom");
+                    setDatePreset("custom");
+                  } else {
+                    setFilterMode("month_select");
+                    setSelectedMonth(val);
+                  }
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger className="h-9 text-xs">
+                  <SelectValue placeholder="Month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {MONTH_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="custom">-- Custom Date Range --</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Quick Presets */}
+            <div>
+              <label className="text-[11px] font-medium text-muted-foreground mb-1 block">
+                Quick Ranges
+              </label>
+              <Select
+                value={filterMode === "preset" ? datePreset : "month_mode"}
+                onValueChange={(val: string) => {
+                  if (val === "month_mode") {
+                    setFilterMode("month_select");
+                  } else if (val === "custom") {
+                    setFilterMode("custom");
+                    setDatePreset("custom");
+                  } else {
+                    setFilterMode("preset");
+                    setDatePreset(val as DateRangePreset);
+                  }
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger className="h-9 text-xs">
+                  <SelectValue placeholder="Ranges" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="month_mode">By Month & Year (Above)</SelectItem>
                   <SelectItem value="today">Today</SelectItem>
                   <SelectItem value="this_week">This Week</SelectItem>
-                  <SelectItem value="this_month">This Month</SelectItem>
+                  <SelectItem value="this_month">Current Month</SelectItem>
                   <SelectItem value="last_month">Last Month</SelectItem>
-                  <SelectItem value="this_year">Year-to-Date</SelectItem>
+                  <SelectItem value="this_year">Full Year-to-Date</SelectItem>
                   <SelectItem value="all">All Time</SelectItem>
-                  <SelectItem value="custom">Custom Date Range</SelectItem>
+                  <SelectItem value="custom">Custom Date Pickers</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -354,7 +431,7 @@ export function FinancialReportTab() {
           </div>
 
           {/* Custom Date Range */}
-          {datePreset === "custom" && (
+          {(datePreset === "custom" || filterMode === "custom") && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 pt-3 border-t border-border/40">
               <div>
                 <label className="text-[11px] font-medium text-muted-foreground mb-1 block">

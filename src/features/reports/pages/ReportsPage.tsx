@@ -33,8 +33,8 @@ const REPORT_TABS = [
   },
   {
     key: "financial",
-    label: "Financial & Revenue",
-    icon: Wallet,
+    label: "Invoices & Billing",
+    icon: Receipt,
     iconColor: "text-emerald-600 dark:text-emerald-400",
     badgeBg: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
     developerOnly: false,

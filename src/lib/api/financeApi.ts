@@ -438,11 +438,23 @@ export async function apiGetFinanceTabStats(): Promise<
   return fetchApi<FinanceTabStats>("/api/finance/stats");
 }
 
+export type CashbookTransactionType =
+  | "receipt"
+  | "expense"
+  | "vendor_payment"
+  | "payroll"
+  | "bank_deposit"
+  | "petty_cash_topup"
+  | "petty_cash_deposit"
+  | "cash_deposit"
+  | "petty_cash_transfer"
+  | (string & {});
+
 export interface CashbookTransactionItem {
   id: string;
   date: string;
   flow: "in" | "out";
-  type: "receipt" | "expense" | "vendor_payment" | "payroll";
+  type: CashbookTransactionType;
   category: string;
   refNo: string;
   partyName: string;
@@ -497,15 +509,17 @@ export interface PettyCashSummary {
   pettyCashBalance: number;
   totalTopUps: number;
   totalPettySpent: number;
+  totalPettyDepositsToBank?: number;
   cashInHandBalance: number;
   totalCashReceipts: number;
   totalCashExpenses: number;
   topUpsFromCash: number;
+  cashDepositsToBank?: number;
   recentTopUps: {
     id: string;
     amount: number;
     date: string;
-    source: "cash" | "account";
+    source: "cash" | "account" | "petty_to_bank" | "cash_to_bank";
     notes: string;
     createdByName: string;
   }[];
@@ -520,8 +534,9 @@ export async function apiGetPettyCashSummary(): Promise<
 export async function apiAddPettyCashTopUp(data: {
   amount: number;
   date?: string;
-  source: "cash" | "account";
+  source: "cash" | "account" | "petty_to_bank" | "cash_to_bank";
   notes?: string;
+  type?: "topup" | "deposit";
 }): Promise<ApiResponse<any>> {
   return fetchApi<any>("/api/finance/petty-cash/top-ups", {
     method: "POST",

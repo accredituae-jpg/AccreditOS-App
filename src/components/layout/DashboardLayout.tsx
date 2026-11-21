@@ -2,6 +2,7 @@ import { useState, useEffect, Suspense } from "react";
 import type { ReactNode } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePWA } from "@/hooks/usePWA";
 import { MobileSidebar } from "./MobileSidebar";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
@@ -9,12 +10,12 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/authStore";
 import { ROLE_LABELS, type UserRole } from "@/lib/permissions";
-import { Eye, LogOut } from "lucide-react";
+import { Eye, LogOut, Download } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { AiAssistantDrawer } from "@/features/ai-copilot/components/AiAssistantDrawer";
 
 // Layout Constants
-const SIDEBAR_WIDTH_EXPANDED = 240;
-const SIDEBAR_WIDTH_COLLAPSED = 64;
+const SIDEBAR_DOCK_WIDTH = 88;
 
 interface DashboardLayoutProps {
   children?: ReactNode;
@@ -91,8 +92,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     localStorage.getItem("accreditOS_impersonator_token")
   );
   const authStore = useAuthStore();
+  const { showInstallButton, triggerInstall } = usePWA();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const isDeveloper =
+    authStore.activeRole === "super_admin" ||
+    Boolean(
+      authStore.userEmail &&
+        authStore.userEmail.toLowerCase().includes("dev"),
+    );
 
   useEffect(() => {
     const handleRoleChanged = () => {
@@ -143,12 +152,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const handleCloseMobileSidebar = () => setMobileOpen(false);
 
-  // Desktop left margin based on sidebar state
+  // Desktop left margin based on floating pill sidebar
   const contentStyle = !isMobile
     ? {
-        marginLeft: sidebarCollapsed
-          ? SIDEBAR_WIDTH_COLLAPSED
-          : SIDEBAR_WIDTH_EXPANDED,
+        marginLeft: SIDEBAR_DOCK_WIDTH,
       }
     : undefined;
 
@@ -204,6 +211,30 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </main>
       </div>
+
+      {/* Floating PWA Install App Button:
+          - Floats on top of AI Copilot (bottom-20 right-6) when AI button is active
+          - Floats directly at bottom-6 right-6 for non-developer users (where AI button is not present)
+      */}
+      {showInstallButton && (
+        <div
+          className={cn(
+            "fixed right-6 z-40 transition-all duration-300",
+            isDeveloper ? "bottom-20" : "bottom-6",
+          )}
+        >
+          <button
+            type="button"
+            onClick={() => triggerInstall()}
+            className="flex items-center gap-2 px-3.5 py-2.5 rounded-full shadow-2xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ring-2 ring-primary/20 backdrop-blur-md"
+            title="Install AccreditOS ERP App"
+            aria-label="Install App"
+          >
+            <Download className="w-4 h-4 animate-bounce" />
+            <span className="tracking-tight">Install App</span>
+          </button>
+        </div>
+      )}
 
       {/* Developer-Only AI Copilot Assistant */}
       <AiAssistantDrawer />

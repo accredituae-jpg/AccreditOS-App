@@ -1,6 +1,103 @@
 import { fetchApi } from "./client";
 import { ApiResponse } from "@/types/api";
 
+export interface UnifiedCashFlowMetrics {
+  realizedCashInflow: number;
+  activeReceiptsTotal: number;
+  allocatedReceiptsTotal: number;
+  unallocatedReceiptsTotal: number;
+  operatingCashOutflow: number;
+  vendorCashOutflow: number;
+  totalCashOutflow: number;
+  netCashMovement: number;
+  indicativeNetMovementAfterVendorObligations: number;
+  indicativeCumulativeNetPositionAfterVendorObligations: number;
+  indicativePeriodMovementAfterVendorObligations: number;
+  inPeriodInvoiceCollections: number;
+  priorPeriodArCollections: number;
+}
+
+export interface UnifiedAccrualMetrics {
+  grossInvoicedRevenue: number;
+  netInvoicedRevenueExVat: number;
+  invoicedOutputVat: number;
+  billedCertificateCogs: number;
+  unbilledCertificateCogs: number;
+  totalCertificateCogs: number;
+  grossProfit: number;
+  operatingExpenses: number;
+  operatingResult: number;
+  expenseRecognitionBasis: string;
+  netRevenue?: number;
+  grossProfitMarginPercent?: number;
+  netOperatingProfit?: number;
+  netOperatingMarginPercent?: number;
+}
+
+export interface UnbilledCertificateCommitmentDetail {
+  unbilledCount: number;
+  netFeeSubtotal: number;
+  estimatedInputVat: number;
+  grossCommitment: number;
+}
+
+export interface UnifiedLiabilitiesMetrics {
+  allTimeAccountsReceivable: number;
+  selectedPeriodAccountsReceivable: number;
+  billedVendorPayables: number;
+  unbilledCertificateCommitment: UnbilledCertificateCommitmentDetail;
+  totalVendorObligations: number;
+  billedCertificatesCount: number;
+  unbilledCertificatesCount: number;
+  allTimeReceivables?: number;
+  currentPeriodReceivables?: number;
+}
+
+export interface UnifiedTaxMetrics {
+  invoicedOutputVat: number;
+  estimatedCollectedOutputVat: number;
+  billedInputVatRecorded: number;
+  estimatedPaidInputVat: number;
+  estimatedUnbilledInputVatCommitment: number;
+  indicativeCashBasisVatPosition: number;
+  indicativeAccrualBasisVatPosition: number;
+  taxTreatmentNotice: string;
+}
+
+export interface UnifiedDateBounds {
+  start: string | null;
+  end: string | null;
+}
+
+export interface UnifiedOperationsMetrics {
+  activeInvoicesCount: number;
+  unpaidInvoicesCount: number;
+  trainingsCompletedCount: number;
+  certificatesIssuedCount: number;
+  activeClientsCount: number;
+}
+
+export interface UnifiedFinancialPackage {
+  period: string;
+  dateBounds: UnifiedDateBounds;
+  cashFlow: UnifiedCashFlowMetrics;
+  accrual: UnifiedAccrualMetrics;
+  liabilities: UnifiedLiabilitiesMetrics;
+  tax: UnifiedTaxMetrics;
+  operations: UnifiedOperationsMetrics;
+}
+
+export interface LegacyFinanceStats {
+  revenue: number;
+  revenueChange: number;
+  expenses: number;
+  expensesChange: number;
+  profit: number;
+  profitChange: number;
+  pending: number;
+  pendingChange: number;
+}
+
 export interface DashboardStats {
   clients: {
     total: number;
@@ -12,19 +109,17 @@ export interface DashboardStats {
     upcoming: number;
     pending: number;
   };
-  finance: {
-    revenue: number;
-    revenueChange: number;
-    expenses: number;
-    expensesChange: number;
-    profit: number;
-    profitChange: number;
-    pending: number;
-    pendingChange: number;
-  };
   certificates: {
     expiring: number;
   };
+  // Null when user lacks finance permission
+  finance: LegacyFinanceStats | null;
+  cashFlow: UnifiedCashFlowMetrics | null;
+  accrual: UnifiedAccrualMetrics | null;
+  liabilities: UnifiedLiabilitiesMetrics | null;
+  tax: UnifiedTaxMetrics | null;
+  unifiedFinancial: UnifiedFinancialPackage | null;
+  dateBounds: UnifiedDateBounds;
 }
 
 export async function apiGetDashboardStats(

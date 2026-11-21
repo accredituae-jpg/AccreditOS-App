@@ -192,78 +192,65 @@ export function ExpensePieChartCard({
   // Skeleton Loading State
   if (loading) {
     return (
-      <div className="card-elevated p-3.5 sm:p-4 min-w-0 overflow-hidden relative border-border/80 shadow-md bg-gradient-to-b from-card via-card to-card/95 flex flex-col justify-between h-[365px] sm:h-[375px]">
-        <div>
+      <div className="card-elevated p-3.5 sm:p-4 min-w-0 overflow-hidden relative border-border/80 shadow-md bg-gradient-to-b from-card via-card to-card/95 flex flex-col justify-between h-full min-h-[260px]">
+        <div className="space-y-3">
           {/* Header Skeleton */}
           <div className="flex items-center justify-between pb-2 border-b border-border/60 gap-2">
             <div className="flex items-center gap-2">
               <Skeleton className="w-7 h-7 rounded-lg" />
               <div className="space-y-1">
                 <Skeleton className="w-16 h-2 rounded" />
-                <Skeleton className="w-28 h-4 rounded" />
+                <Skeleton className="w-24 h-3.5 rounded" />
               </div>
             </div>
-            <Skeleton className="w-5 h-5 rounded-full" />
+            <Skeleton className="w-20 h-5 rounded-full" />
           </div>
 
-          {/* Donut Chart Skeleton */}
-          <div className="relative h-36 sm:h-40 w-full mt-1 flex items-center justify-center">
-            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-8 border-muted/50 border-t-cyan-500/40 border-r-purple-500/40 flex flex-col items-center justify-center animate-pulse gap-1">
-              <Skeleton className="w-12 h-2 rounded" />
-              <Skeleton className="w-14 h-4 rounded" />
+          {/* Side by side Skeleton */}
+          <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 items-center">
+            <div className="sm:col-span-5 flex items-center justify-center">
+              <Skeleton className="w-28 h-28 sm:w-32 sm:h-32 rounded-full" />
             </div>
-          </div>
-
-          {/* Categories Progress Breakdown Skeleton */}
-          <div className="mt-1 space-y-1.5 pt-2 border-t border-border/60">
-            {[1, 2].map((i) => (
-              <div key={i} className="space-y-1 p-1">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <Skeleton className="w-2 h-2 rounded-full" />
-                    <Skeleton className="w-20 h-3 rounded" />
-                  </div>
-                  <Skeleton className="w-16 h-3 rounded" />
-                </div>
-                <Skeleton className="w-full h-1 rounded-full" />
-              </div>
-            ))}
+            <div className="sm:col-span-7 space-y-2">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="w-full h-10 rounded-xl" />
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Footer Link Skeleton */}
-        <div className="mt-2 pt-2 border-t border-border/60">
-          <Skeleton className="w-full h-7 rounded-lg" />
+        <div className="mt-3 pt-2.5 border-t border-border/60">
+          <Skeleton className="w-full h-8 rounded-xl" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="card-elevated p-3.5 sm:p-4 min-w-0 overflow-hidden relative border-border/80 shadow-md bg-gradient-to-b from-card via-card to-card/95 flex flex-col justify-between h-[365px] sm:h-[375px]">
-      <div>
+    <div className="card-elevated p-3 sm:p-3.5 min-w-0 overflow-hidden relative border-border/80 shadow-md bg-gradient-to-b from-card via-card to-card/95 flex flex-col justify-between h-full min-h-[220px]">
+      <div className="space-y-2">
         {/* 1. Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-border/60 gap-2">
+        <div className="flex items-center justify-between pb-1.5 border-b border-border/60 gap-2">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold shadow-2xs">
               <PieChartIcon className="w-3.5 h-3.5" />
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1">
                 <span className="text-[9px] font-black uppercase tracking-widest text-cyan-600 dark:text-cyan-400">
-                  ALLOCATION
+                  SPENDING ALLOCATION
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
-                <h3 className="text-sm sm:text-base font-bold text-foreground tracking-tight leading-tight">
-                  Expense Distribution
+                <h3 className="text-xs sm:text-sm font-bold text-foreground tracking-tight leading-tight">
+                  Expense Breakdown
                 </h3>
-                {/* INFORMATION BUTTON (no hover tooltip, click only) */}
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setInfoOpen(true)}
-                  className="h-5 w-5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all focus:outline-none"
+                  className="h-4 w-4 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all focus:outline-none cursor-pointer"
                   aria-label="View expense distribution calculation info"
                 >
                   <Info className="w-3 h-3" />
@@ -271,113 +258,162 @@ export function ExpensePieChartCard({
               </div>
             </div>
           </div>
+
+          {categories.length > 0 && (
+            <Badge
+              variant="outline"
+              className="text-[9px] font-mono font-semibold border-cyan-500/30 text-cyan-600 dark:text-cyan-400 bg-cyan-500/5 px-1.5 py-0 rounded-full"
+            >
+              {categories.length} {categories.length === 1 ? "Cat" : "Cats"}
+            </Badge>
+          )}
         </div>
 
-        {/* 2. Donut Chart with Dynamic Non-colliding Center Callout */}
+        {/* 2. Side-by-Side Visual Donut Chart + Category Breakdown */}
         {totalOutflow === 0 ? (
-          <div className="relative h-36 sm:h-40 w-full mt-1 flex flex-col items-center justify-center text-center p-2">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-dashed border-border/80 flex flex-col items-center justify-center p-2 bg-muted/15">
-              <Layers className="w-4 h-4 text-muted-foreground/60 mb-0.5" />
-              <span className="text-[11px] font-bold text-foreground font-mono">0.00 AED</span>
-              <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-semibold">No Outflow</span>
+          <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 sm:gap-3 items-center my-0.5">
+            <div className="sm:col-span-5 flex flex-col items-center justify-center text-center p-1.5">
+              <div className="w-20 h-20 rounded-full border-2 border-dashed border-border/80 flex flex-col items-center justify-center p-1 bg-muted/15">
+                <Layers className="w-3 h-3 text-muted-foreground/60 mb-0.5" />
+                <span className="text-[9px] font-bold text-foreground font-mono">0.00 AED</span>
+                <span className="text-[7px] uppercase tracking-wider text-muted-foreground font-semibold">No Outflow</span>
+              </div>
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1.5">
-              No expenditures recorded in this period.
-            </p>
+            <div className="sm:col-span-7 space-y-1 text-xs">
+              <div className="flex items-center justify-between p-1.5 rounded-lg bg-muted/15 border border-dashed border-border/60">
+                <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
+                  <span className="w-2 h-2 rounded-full bg-muted-foreground/30" />
+                  Primary Outflow Category
+                </span>
+                <span className="font-mono text-xs text-muted-foreground/60">
+                  0.00 AED (0%)
+                </span>
+              </div>
+            </div>
           </div>
         ) : (
-          <div className="relative h-36 sm:h-40 w-full mt-1 flex items-center justify-center">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={categories}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={46}
-                  outerRadius={66}
-                  paddingAngle={3}
-                  dataKey="value"
-                  onMouseEnter={(_, index) => setActiveIndex(index)}
-                  onMouseLeave={() => setActiveIndex(null)}
-                >
-                  {categories.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={entry.color}
-                      stroke="hsl(var(--card))"
-                      strokeWidth={2}
-                      className="transition-all duration-300 cursor-pointer"
-                      opacity={
-                        activeIndex === null || activeIndex === index ? 1 : 0.45
-                      }
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
+          <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 sm:gap-3 items-center my-0.5">
+            {/* Left: Radiant Donut Chart */}
+            <div className="sm:col-span-5 relative h-28 sm:h-32 w-full flex items-center justify-center">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={categories}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={38}
+                    outerRadius={54}
+                    paddingAngle={3}
+                    dataKey="value"
+                    onMouseEnter={(_, index) => setActiveIndex(index)}
+                    onMouseLeave={() => setActiveIndex(null)}
+                  >
+                    {categories.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={entry.color}
+                        stroke="hsl(var(--card))"
+                        strokeWidth={activeIndex === index ? 3 : 2}
+                        className="transition-all duration-300 cursor-pointer"
+                        opacity={
+                          activeIndex === null || activeIndex === index ? 1 : 0.35
+                        }
+                      />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
 
-            {/* Dynamic Interactive Center Badge */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center px-2 transition-all">
-              {activeIndex !== null && categories[activeIndex] ? (
-                <>
-                  <span className="text-[9px] uppercase font-bold tracking-wider text-muted-foreground truncate max-w-[110px]">
-                    {categories[activeIndex].name}
-                  </span>
-                  <span className="text-base sm:text-lg font-black text-foreground font-mono tracking-tight leading-tight">
-                    {formatAED(categories[activeIndex].value, true)}
-                  </span>
-                  <span className="text-[9px] font-bold text-cyan-600 dark:text-cyan-400 font-mono">
-                    {categories[activeIndex].percentage}% Share
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span className="text-[9px] uppercase font-bold tracking-wider text-muted-foreground">
-                    TOTAL OUTFLOW
-                  </span>
-                  <span className="text-base sm:text-lg font-black text-foreground font-mono tracking-tight leading-tight">
-                    {formatAED(totalOutflow, true)}
-                  </span>
-                </>
-              )}
+              {/* Dynamic Crisp Center Badge */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-[74px] h-[74px] rounded-full bg-card/90 backdrop-blur-md border border-border/80 shadow-md flex flex-col items-center justify-center p-1 text-center transition-all">
+                  {activeIndex !== null && categories[activeIndex] ? (
+                    <div className="space-y-0.5">
+                      <span className="text-[7.5px] uppercase font-bold tracking-wider text-muted-foreground truncate max-w-[64px] block">
+                        {categories[activeIndex].name}
+                      </span>
+                      <span className="text-xs font-black text-foreground font-mono tracking-tight leading-tight block">
+                        {formatAED(categories[activeIndex].value, true)}
+                      </span>
+                      <span
+                        className="text-[7.5px] font-extrabold font-mono px-1 py-0.2 rounded-full inline-block"
+                        style={{
+                          backgroundColor: `${categories[activeIndex].color}25`,
+                          color: categories[activeIndex].color,
+                        }}
+                      >
+                        {categories[activeIndex].percentage}%
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="space-y-0.5">
+                      <span className="text-[7.5px] uppercase font-bold tracking-wider text-muted-foreground block">
+                        TOTAL
+                      </span>
+                      <span className="text-xs font-black text-foreground font-mono tracking-tight leading-tight block">
+                        {formatAED(totalOutflow, true)}
+                      </span>
+                      <span className="text-[7.5px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-1 py-0.2 rounded-full inline-block font-mono">
+                        Spend
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        )}
 
-        {/* 3. Category Allocation Progress Breakdown */}
-        {totalOutflow > 0 ? (
-          <div className="mt-1 space-y-1.5 pt-2 border-t border-border/60">
-            <div className="space-y-1">
-              {categories.slice(0, 2).map((cat) => (
+            {/* Right: Category Breakdown Micro-Cards */}
+            <div className="sm:col-span-7 space-y-1.5 flex flex-col justify-center">
+              <div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-wider text-muted-foreground px-0.5">
+                <span>Top Categories</span>
+                <span>Share</span>
+              </div>
+              {categories.slice(0, 3).map((cat, index) => (
                 <div
                   key={cat.name}
-                  className="space-y-0.5 p-1 rounded hover:bg-muted/30 transition-colors"
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onMouseLeave={() => setActiveIndex(null)}
+                  className={cn(
+                    "group p-1.5 px-2 rounded-lg border transition-all duration-200 cursor-pointer",
+                    activeIndex === index
+                      ? "bg-muted/40 border-cyan-500/50 shadow-xs"
+                      : "bg-muted/15 hover:bg-muted/30 border-border/60 hover:border-border/90",
+                  )}
                 >
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-foreground flex items-center gap-1.5">
+                  <div className="flex items-center justify-between gap-1.5 mb-1">
+                    <div className="flex items-center gap-1.5 min-w-0">
                       <span
-                        className="w-2 h-2 rounded-full shrink-0"
+                        className="w-2 h-2 rounded-full shrink-0 shadow-2xs"
                         style={{ backgroundColor: cat.color }}
                       />
-                      <span className="truncate max-w-[120px] text-[11px]">
+                      <span className="font-semibold text-xs text-foreground truncate group-hover:text-primary transition-colors">
                         {cat.name}
                       </span>
-                    </span>
-                    <div className="flex items-center gap-1 font-mono text-[11px]">
-                      <span className="font-bold text-foreground">
+                      <span className="text-[9px] text-muted-foreground/75 font-medium">
+                        • {cat.count} {cat.count === 1 ? "txn" : "txns"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0 font-mono">
+                      <span className="font-bold text-xs text-foreground">
                         {formatAED(cat.value, true)}
                       </span>
-                      <span className="text-muted-foreground text-[10px]">
-                        ({cat.percentage}%)
+                      <span
+                        className="text-[8.5px] font-extrabold px-1 py-0.2 rounded"
+                        style={{
+                          backgroundColor: `${cat.color}18`,
+                          color: cat.color,
+                        }}
+                      >
+                        {cat.percentage}%
                       </span>
                     </div>
                   </div>
                   {/* Progress bar */}
-                  <div className="w-full bg-muted/50 h-1 rounded-full overflow-hidden">
+                  <div className="w-full bg-muted/60 h-1 rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
-                        width: `${cat.percentage}%`,
+                        width: `${Math.max(4, cat.percentage)}%`,
                         backgroundColor: cat.color,
                       }}
                     />
@@ -386,42 +422,19 @@ export function ExpensePieChartCard({
               ))}
             </div>
           </div>
-        ) : (
-          <div className="mt-1 space-y-1 pt-2 border-t border-border/60">
-            <div className="space-y-1 text-xs">
-              <div className="flex items-center justify-between p-1 rounded bg-muted/15 border border-dashed border-border/60">
-                <span className="text-muted-foreground flex items-center gap-1.5 text-[11px]">
-                  <span className="w-2 h-2 rounded-full bg-muted-foreground/30" />
-                  Primary Outflow Category
-                </span>
-                <span className="font-mono text-[11px] text-muted-foreground/60">
-                  0.00 AED (0%)
-                </span>
-              </div>
-              <div className="flex items-center justify-between p-1 rounded bg-muted/15 border border-dashed border-border/60">
-                <span className="text-muted-foreground flex items-center gap-1.5 text-[11px]">
-                  <span className="w-2 h-2 rounded-full bg-muted-foreground/30" />
-                  Secondary Outflow Category
-                </span>
-                <span className="font-mono text-[11px] text-muted-foreground/60">
-                  0.00 AED (0%)
-                </span>
-              </div>
-            </div>
-          </div>
         )}
       </div>
 
       {/* 4. Footer Navigation Link */}
-      <div className="mt-2 pt-2 border-t border-border/60">
+      <div className="mt-2 pt-1.5 border-t border-border/50">
         <Button
-          variant="ghost"
+          variant="outline"
           size="sm"
           onClick={handleNavigate}
-          className="w-full h-7 text-xs font-semibold text-primary hover:text-primary hover:bg-primary/8 transition-colors gap-1.5 justify-center rounded-lg"
+          className="w-full h-7 text-xs font-semibold text-cyan-700 dark:text-cyan-300 bg-cyan-500/5 hover:bg-cyan-500/10 border-cyan-500/20 hover:border-cyan-500/40 transition-all gap-1.5 justify-center rounded-lg shadow-2xs cursor-pointer"
         >
           <span>View All Expenses in Billing</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-3 h-3" />
         </Button>
       </div>
 

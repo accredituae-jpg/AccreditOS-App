@@ -100,7 +100,7 @@ export function StatsCard({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.04, duration: 0.25, ease: "easeOut" }}
         className={cn(
-          "bg-card rounded-xl border border-border border-l-3 sm:border-l-4 p-2.5 sm:p-4",
+          "bg-card rounded-xl border border-border border-l-3 sm:border-l-4 p-2.5 sm:p-4 h-full flex flex-col justify-between",
           "transition-all duration-200 cursor-default shadow-sm hover:shadow-md",
           borderAccentClasses[color],
         )}
@@ -127,7 +127,7 @@ export function StatsCard({
                 type="button"
                 aria-label={`Information guide for ${title}`}
                 onClick={handleInfoClick}
-                className="p-1 -mr-1 rounded-md text-muted-foreground/60 hover:text-foreground hover:bg-muted/80 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-ring"
+                className="p-1.5 -mr-1 rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-muted/80 active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-ring"
               >
                 <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
