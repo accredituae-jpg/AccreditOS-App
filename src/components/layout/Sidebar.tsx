@@ -20,6 +20,7 @@ import {
   LogOut,
   ChevronRight,
   ShieldAlert,
+  UserCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
@@ -101,6 +102,12 @@ const navItems: NavItem[] = [
     label: "Payroll",
     path: "/finance/payroll",
     featureKey: "view_payroll",
+  },
+  {
+    icon: UserCog,
+    label: "Staff & Users",
+    path: "/users",
+    featureKey: "users",
   },
   {
     icon: Settings,

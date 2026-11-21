@@ -17,6 +17,7 @@ import {
   Receipt,
   FileText,
   BadgeDollarSign,
+  UserCog,
 } from "lucide-react";
 import {
   CommandDialog,
@@ -197,6 +198,29 @@ export function QuickSearchDialog({
               Expenses
             </span>
           </CommandItem>
+
+          <CommandItem
+            value="add user new staff create employee register account add staff team"
+            onSelect={() => handleSelect(() => navigate("/users"))}
+            className="cursor-pointer flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-6 h-6 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                <Plus className="h-3.5 w-3.5" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs font-semibold text-foreground">
+                  Add Staff / User Account
+                </span>
+                <span className="text-[10px] text-muted-foreground">
+                  Create new employee or operator profile
+                </span>
+              </div>
+            </div>
+            <span className="text-[10px] font-mono text-muted-foreground bg-muted/50 px-2 py-0.5 rounded border border-border/60">
+              Users
+            </span>
+          </CommandItem>
         </CommandGroup>
 
         <CommandSeparator />
@@ -303,6 +327,15 @@ export function QuickSearchDialog({
           >
             <Clock className="mr-2.5 h-4 w-4 text-primary" />
             <span>Payroll Management</span>
+          </CommandItem>
+
+          <CommandItem
+            value="staff users user management team accounts employee profiles roles permissions"
+            onSelect={() => handleSelect(() => navigate("/users"))}
+            className="cursor-pointer"
+          >
+            <UserCog className="mr-2.5 h-4 w-4 text-primary" />
+            <span>Staff & Users</span>
           </CommandItem>
 
           <CommandItem
