@@ -346,7 +346,7 @@ export function AiAssistantDrawer() {
   return (
     <>
       {/* 1. Floating Sparkle Button (Developer Only) */}
-      <div className="fixed bottom-6 right-6 z-40 group">
+      <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 group">
         <button
           type="button"
           onClick={() => setIsOpen(true)}

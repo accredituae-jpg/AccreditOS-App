@@ -326,9 +326,9 @@
     @apply text-muted-foreground hover:text-foreground hover:bg-muted;
   }
 
-  /* Page Container - Desktop spacing */
+  /* Page Container - Responsive spacing */
   .page-container {
-    @apply p-4 md:p-6 lg:p-8 max-w-[1700px] mx-auto space-y-4 md:space-y-6;
+    @apply p-0 sm:p-2 md:p-4 lg:p-6 max-w-[1700px] mx-auto space-y-3.5 sm:space-y-4 md:space-y-6 w-full max-w-full;
   }
 
   /* Text Gradient Utility */

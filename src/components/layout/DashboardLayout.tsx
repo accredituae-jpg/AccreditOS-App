@@ -208,7 +208,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           onToggleSidebar={handleToggleSidebar}
           isMobileMenuButton={isMobile}
         />
-        <main className="flex-1 p-4 md:p-6 overflow-auto pb-24 md:pb-6">
+        <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-x-hidden overflow-y-auto pb-24 md:pb-6">
           <div className="relative z-10">
             {children ? (
               children

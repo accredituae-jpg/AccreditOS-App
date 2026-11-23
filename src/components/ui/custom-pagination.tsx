@@ -75,7 +75,15 @@ export function CustomPagination({
           <span className="hidden sm:inline">Previous</span>
         </Button>
 
-        <div className="flex items-center gap-1 mx-1">
+        {/* Mobile: Compact Page Indicator */}
+        <div className="flex sm:hidden items-center px-2 text-xs font-semibold text-muted-foreground whitespace-nowrap">
+          <span className="text-foreground font-bold">{normalizedCurrentPage}</span>
+          <span className="mx-1 opacity-50">/</span>
+          <span>{normalizedTotalPages}</span>
+        </div>
+
+        {/* Desktop / Tablet: Full page pills */}
+        <div className="hidden sm:flex items-center gap-1 mx-1">
           {getPageNumbers().map((page, index) => (
             typeof page === "number" ? (
               <Button

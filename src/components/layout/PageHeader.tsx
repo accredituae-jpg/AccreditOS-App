@@ -25,7 +25,7 @@ export function PageHeader({ title, description, actions, children }: PageHeader
         )}
       </div>
       {headerActions && (
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
           {headerActions}
         </div>
       )}

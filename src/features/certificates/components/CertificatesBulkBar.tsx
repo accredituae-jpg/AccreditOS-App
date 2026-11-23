@@ -106,7 +106,7 @@ export function CertificatesBulkBar({
         {/* Bottom Row: Actions */}
         <div className="flex items-center justify-between gap-3 flex-wrap">
           {/* Status Update Options */}
-          <div className="flex items-center gap-1.5 flex-wrap">
+          <div className="grid grid-cols-3 sm:flex items-center gap-1.5 w-full sm:w-auto">
             <span className="text-xs font-semibold text-muted-foreground mr-1 hidden sm:inline">
               Update Status:
             </span>
@@ -116,7 +116,7 @@ export function CertificatesBulkBar({
               variant="outline"
               disabled={!!updatingStatus || !!downloadingFormat}
               onClick={() => handleUpdate("sent")}
-              className="gap-1.5 text-xs h-8 px-3 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30 hover:bg-blue-500/20 font-medium"
+              className="gap-1.5 text-xs h-8 px-2 sm:px-3 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30 hover:bg-blue-500/20 font-medium justify-center"
             >
               {updatingStatus === "sent" ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -131,7 +131,7 @@ export function CertificatesBulkBar({
               variant="outline"
               disabled={!!updatingStatus || !!downloadingFormat}
               onClick={() => handleUpdate("digital")}
-              className="gap-1.5 text-xs h-8 px-3 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20 font-medium"
+              className="gap-1.5 text-xs h-8 px-2 sm:px-3 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20 font-medium justify-center"
             >
               {updatingStatus === "digital" ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -146,7 +146,7 @@ export function CertificatesBulkBar({
               variant="outline"
               disabled={!!updatingStatus || !!downloadingFormat}
               onClick={() => handleUpdate("created")}
-              className="gap-1.5 text-xs h-8 px-3 bg-muted text-muted-foreground border-border hover:bg-muted/80 font-medium"
+              className="gap-1.5 text-xs h-8 px-2 sm:px-3 bg-muted text-muted-foreground border-border hover:bg-muted/80 font-medium justify-center"
             >
               {updatingStatus === "created" ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
