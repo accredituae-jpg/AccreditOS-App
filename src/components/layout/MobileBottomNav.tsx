@@ -16,14 +16,26 @@ import {
   ArrowDownUp,
   FileText,
   X,
+  Sun,
+  Moon,
+  RotateCw,
+  LogOut,
+  KeyRound,
+  User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   getActiveRole,
+  getCurrentUser,
   checkFeaturePermission,
+  ROLE_LABELS,
   type UserRole,
   type PermissionKey,
 } from "@/lib/permissions";
+import { clearAuthToken } from "@/lib/api";
+import { hardRefreshApp } from "@/lib/hardRefresh";
+import { UserProfileDialog } from "@/features/users/dialogs";
+import { ChangePasswordDialog } from "@/features/auth/dialogs/ChangePasswordDialog";
 import { HelpCenterDialog } from "./HelpCenterDialog";
 
 interface MobileBottomNavProps {
@@ -51,11 +63,22 @@ export function MobileBottomNav({
   };
 
   const [role, setRole] = useState<UserRole>(getActiveRole());
+  const [currentUser, setCurrentUser] = useState(getCurrentUser());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+
+  const [darkMode, setDarkMode] = useState(() => {
+    const storedTheme = localStorage.getItem("theme");
+    return storedTheme === "dark" || (!storedTheme && true);
+  });
 
   useEffect(() => {
     const handleRoleChange = () => {
       setRole(getActiveRole());
+      setCurrentUser(getCurrentUser());
     };
     window.addEventListener("accreditOS_role_changed", handleRoleChange);
     window.addEventListener("auth_changed", handleRoleChange);
@@ -64,6 +87,28 @@ export function MobileBottomNav({
       window.removeEventListener("auth_changed", handleRoleChange);
     };
   }, []);
+
+  const toggleDarkMode = () => {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    localStorage.setItem("theme", newDarkMode ? "dark" : "light");
+    if (newDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
+
+  const handleHardRefreshClick = async () => {
+    setIsRefreshing(true);
+    await hardRefreshApp();
+  };
+
+  const handleSignOut = () => {
+    setQuickAccessOpen(false);
+    clearAuthToken();
+    navigate("/login");
+  };
 
   const canViewUsers = checkFeaturePermission(role, "users");
 
@@ -98,7 +143,7 @@ export function MobileBottomNav({
         },
   ];
 
-  // Quick Access feature modules only (no profile, refresh, lightmode, password, signout)
+  // Quick Access feature modules only (clean 4x2 grid)
   const quickAccessModules = useMemo(() => {
     const list: Array<{
       id: string;
@@ -228,11 +273,7 @@ export function MobileBottomNav({
                     <motion.div
                       layoutId="floatingNavPip"
                       className="absolute -top-0.5 w-5 h-0.5 rounded-full bg-primary shadow-[0_0_8px_rgba(4,160,219,0.7)]"
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 30,
-                      }}
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
                     />
                   )}
                 </div>
@@ -390,12 +431,102 @@ export function MobileBottomNav({
                   })}
                 </div>
               </div>
+
+              {/* 3. System & Account Utilities Footer Row (Sidebar parity on mobile) */}
+              <div className="pt-3 border-t border-border/70 flex items-center justify-between gap-2 mt-auto">
+                {/* User Profile Pill */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuickAccessOpen(false);
+                    setProfileOpen(true);
+                  }}
+                  className="flex items-center gap-2 px-2 py-1 rounded-xl hover:bg-muted/60 transition-colors cursor-pointer truncate text-left"
+                >
+                  <div className="w-7 h-7 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-xs shrink-0 ring-1 ring-primary/25">
+                    {currentUser.name ? currentUser.name[0]?.toUpperCase() : "U"}
+                  </div>
+                  <div className="flex flex-col truncate">
+                    <span className="text-xs font-semibold text-foreground truncate leading-none">
+                      {currentUser.name || "User"}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground truncate leading-tight mt-0.5">
+                      {ROLE_LABELS[currentUser.role] || currentUser.role}
+                    </span>
+                  </div>
+                </button>
+
+                {/* Quick Action Utilities */}
+                <div className="flex items-center gap-1 shrink-0">
+                  {/* Theme Toggle */}
+                  <button
+                    type="button"
+                    onClick={toggleDarkMode}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-colors cursor-pointer"
+                    title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                    aria-label="Toggle Theme"
+                  >
+                    {darkMode ? (
+                      <Sun className="w-4 h-4 text-amber-500" />
+                    ) : (
+                      <Moon className="w-4 h-4 text-slate-600" />
+                    )}
+                  </button>
+
+                  {/* Hard Refresh / Reload Cache */}
+                  <button
+                    type="button"
+                    onClick={handleHardRefreshClick}
+                    disabled={isRefreshing}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-colors cursor-pointer disabled:opacity-50"
+                    title="Hard Refresh & Reload Cache"
+                    aria-label="Hard Refresh"
+                  >
+                    <RotateCw
+                      className={cn(
+                        "w-4 h-4",
+                        isRefreshing && "animate-spin text-primary",
+                      )}
+                    />
+                  </button>
+
+                  {/* Change Password */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setQuickAccessOpen(false);
+                      setChangePasswordOpen(true);
+                    }}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-colors cursor-pointer"
+                    title="Change Password"
+                    aria-label="Change Password"
+                  >
+                    <KeyRound className="w-4 h-4" />
+                  </button>
+
+                  {/* Sign Out */}
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-rose-500 hover:text-rose-600 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                    title="Sign Out"
+                    aria-label="Sign Out"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
 
-      {/* Support Dialog */}
+      {/* Support Dialogs */}
+      <UserProfileDialog open={profileOpen} onOpenChange={setProfileOpen} />
+      <ChangePasswordDialog
+        open={changePasswordOpen}
+        onOpenChange={setChangePasswordOpen}
+      />
       <HelpCenterDialog open={helpOpen} onOpenChange={setHelpOpen} />
     </>
   );

@@ -30,11 +30,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 const CERT_STATUS_OPTIONS = [
   "created",
   "sent",
+  "digital",
 ] as const;
 
 const CERT_STATUS_STYLES: Record<string, string> = {
   created: "text-slate-500 hover:text-slate-600",
   sent: "text-blue-500 hover:text-blue-600",
+  digital: "text-emerald-500 hover:text-emerald-600",
   printed: "text-amber-500 hover:text-amber-600",
   distributed: "text-green-500 hover:text-green-600",
 };

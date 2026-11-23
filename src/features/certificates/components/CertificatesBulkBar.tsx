@@ -7,6 +7,7 @@ import {
   FileText,
   Download,
   Loader2,
+  Smartphone,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -123,6 +124,21 @@ export function CertificatesBulkBar({
                 <Send className="w-3.5 h-3.5 shrink-0" />
               )}
               <span>Sent</span>
+            </Button>
+
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={!!updatingStatus || !!downloadingFormat}
+              onClick={() => handleUpdate("digital")}
+              className="gap-1.5 text-xs h-8 px-3 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20 font-medium"
+            >
+              {updatingStatus === "digital" ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Smartphone className="w-3.5 h-3.5 shrink-0" />
+              )}
+              <span>Digital</span>
             </Button>
 
             <Button

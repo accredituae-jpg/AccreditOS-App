@@ -297,6 +297,7 @@ export function EditCertificateDialog({
           <SelectContent className="bg-card border border-border shadow-lg">
             <SelectItem value="created">Created</SelectItem>
             <SelectItem value="sent">Sent</SelectItem>
+            <SelectItem value="digital">Digital (No Print / Fee)</SelectItem>
           </SelectContent>
         </Select>
       </div>

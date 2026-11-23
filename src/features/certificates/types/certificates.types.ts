@@ -18,7 +18,7 @@ export interface Certificate {
   serviceType?: string;
   quantity?: number | null;
   invoiceIssued?: boolean;
-  status?: "created" | "sent" | "printed" | "distributed";
+  status?: "created" | "sent" | "digital" | "printed" | "distributed";
   awardingBodyFee?: number;
   awardingBodyId?: string;
   awardingBodyName?: string;

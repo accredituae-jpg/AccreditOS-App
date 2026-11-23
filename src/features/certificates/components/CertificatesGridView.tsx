@@ -26,11 +26,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { isTatweerCertificate } from "../utils/generateWordCertificate";
 import { getActiveRole } from "@/lib/permissions";
 
-const CERT_STATUS_OPTIONS = ["created", "sent"] as const;
+const CERT_STATUS_OPTIONS = ["created", "sent", "digital"] as const;
 
 const CERT_STATUS_STYLES: Record<string, string> = {
   created: "bg-muted/80 text-muted-foreground border-border",
   sent: "bg-blue-500/10 text-blue-400 border-blue-500/30",
+  digital: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/30",
   printed: "bg-amber-500/10 text-amber-400 border-amber-500/30",
   distributed: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
 };
@@ -321,6 +322,7 @@ export function CertificatesGridView(props: CertificatesGridViewProps) {
                                   className={cn(
                                     "inline-block w-2 h-2 rounded-full mr-2",
                                     s === "sent" && "bg-blue-500",
+                                    s === "digital" && "bg-emerald-500",
                                     s === "created" && "bg-slate-400",
                                   )}
                                 />

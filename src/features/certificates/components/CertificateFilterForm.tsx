@@ -161,6 +161,7 @@ export function CertificateFilterForm({
                 <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="created">Created</SelectItem>
                 <SelectItem value="sent">Sent</SelectItem>
+                <SelectItem value="digital">Digital</SelectItem>
               </SelectContent>
             </Select>
           </div>
