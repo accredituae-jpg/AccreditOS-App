@@ -758,7 +758,7 @@ export function ChartCalculationInfoDialog({
         {/* ========================================================================= */}
         {activeKey === "pie_chart" && (
           <>
-            <DialogHeader className="border-b border-border/60 pb-3">
+            <DialogHeader className="border-b border-border/60 pb-3 pr-8 sm:pr-10">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
                   <PieChartIcon className="w-4 h-4" />
@@ -841,7 +841,7 @@ export function ChartCalculationInfoDialog({
         {/* ========================================================================= */}
         {activeKey === "vendor_payables" && (
           <>
-            <DialogHeader className="border-b border-border/60 pb-3">
+            <DialogHeader className="border-b border-border/60 pb-3 pr-8 sm:pr-10">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
                   <Building2 className="w-4 h-4" />
@@ -933,7 +933,7 @@ export function ChartCalculationInfoDialog({
         {/* ========================================================================= */}
         {activeKey === "expense_operations" && (
           <>
-            <DialogHeader className="border-b border-border/60 pb-3">
+            <DialogHeader className="border-b border-border/60 pb-3 pr-8 sm:pr-10">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400 flex items-center justify-center shrink-0">
                   <TrendingUp className="w-4 h-4" />
@@ -1045,7 +1045,7 @@ export function ChartCalculationInfoDialog({
         {/* ========================================================================= */}
         {statusInfo && activeKey !== "pie_chart" && activeKey !== "vendor_payables" && activeKey !== "expense_operations" && (
           <>
-            <DialogHeader className="border-b border-border/60 pb-3">
+            <DialogHeader className="border-b border-border/60 pb-3 pr-8 sm:pr-10">
               <div className="flex items-center gap-2.5">
                 <div className={`w-8 h-8 rounded-lg ${statusInfo.iconBgClass} ${statusInfo.iconColorClass} flex items-center justify-center shrink-0`}>
                   <statusInfo.icon className="w-4 h-4" />
@@ -1151,7 +1151,7 @@ export function ChartCalculationInfoDialog({
         {/* Fallback for unmapped custom metric */}
         {!statusInfo && activeKey !== "pie_chart" && activeKey !== "vendor_payables" && activeKey !== "expense_operations" && (
           <>
-            <DialogHeader className="border-b border-border/60 pb-3">
+            <DialogHeader className="border-b border-border/60 pb-3 pr-8 sm:pr-10">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <HelpCircle className="w-4 h-4" />

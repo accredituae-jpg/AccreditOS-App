@@ -225,6 +225,28 @@ export function MobileBottomNav({
   );
   const isMoreActive = !isDirectActive || isQuickAccessOpen;
 
+  // Auto-hide bottom nav when any modal dialog is active
+  const [hasOpenDialog, setHasOpenDialog] = useState(false);
+
+  useEffect(() => {
+    const checkModal = () => {
+      const isLocked = document.body.hasAttribute("data-scroll-locked");
+      const hasModal = Boolean(
+        document.querySelector('[role="dialog"]:not([data-bottom-sheet])'),
+      );
+      setHasOpenDialog(isLocked || hasModal);
+    };
+
+    checkModal();
+    const observer = new MutationObserver(checkModal);
+    observer.observe(document.body, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+    });
+    return () => observer.disconnect();
+  }, []);
+
   const handleTileClick = (item: (typeof quickAccessModules)[number]) => {
     setQuickAccessOpen(false);
     if (item.action) {
@@ -239,7 +261,10 @@ export function MobileBottomNav({
       {/* 1. Floating Island Bottom Navigation Bar */}
       <nav
         aria-label="Mobile Bottom Navigation"
-        className="fixed bottom-3 inset-x-4 max-w-sm sm:max-w-md mx-auto z-40 md:hidden bg-card/95 dark:bg-card/90 backdrop-blur-2xl rounded-full border border-border/80 shadow-[0_12px_36px_rgba(0,0,0,0.15),0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_16px_45px_rgba(0,0,0,0.65)] select-none px-3 py-1.5"
+        className={cn(
+          "fixed bottom-3 inset-x-4 max-w-sm sm:max-w-md mx-auto z-40 md:hidden bg-card/95 dark:bg-card/90 backdrop-blur-2xl rounded-full border border-border/80 shadow-[0_12px_36px_rgba(0,0,0,0.15),0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_16px_45px_rgba(0,0,0,0.65)] select-none px-3 py-1.5 transition-all duration-200",
+          hasOpenDialog && "opacity-0 pointer-events-none translate-y-8",
+        )}
       >
         <div className="grid grid-cols-5 items-center w-full h-14">
           {primaryTabs.map((tab) => {

@@ -88,39 +88,39 @@ export function FinancialProfitabilityCard({
             </div>
           </div>
 
-          {/* Revenue & Margin Top Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
-            <div className="p-3.5 rounded-xl border border-border/70 bg-card/70 shadow-2xs">
-              <span className="text-xs text-muted-foreground font-semibold block mb-1">
+          {/* Revenue & Margin Top Cards - 2 in a row on mobile */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 my-4">
+            <div className="p-3 sm:p-3.5 rounded-xl border border-border/70 bg-card/70 shadow-2xs">
+              <span className="text-[11px] sm:text-xs text-muted-foreground font-semibold block mb-1 truncate">
                 Billed Revenue
               </span>
-              <div className="text-lg sm:text-xl font-bold font-mono text-foreground">
+              <div className="text-base sm:text-xl font-bold font-mono text-foreground truncate">
                 {formatAED(accrual.grossInvoicedRevenue ?? accrual.netInvoicedRevenueExVat, true)}
               </div>
-              <span className="text-[11px] text-muted-foreground mt-1 block">
-                Total client invoices issued
+              <span className="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5 sm:mt-1 block truncate">
+                Total invoices issued
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl border border-border/70 bg-card/70 shadow-2xs">
-              <span className="text-xs text-muted-foreground font-semibold block mb-1">
+            <div className="p-3 sm:p-3.5 rounded-xl border border-border/70 bg-card/70 shadow-2xs">
+              <span className="text-[11px] sm:text-xs text-muted-foreground font-semibold block mb-1 truncate">
                 Gross Profit
               </span>
-              <div className="text-lg sm:text-xl font-bold font-mono text-purple-600 dark:text-purple-400">
+              <div className="text-base sm:text-xl font-bold font-mono text-purple-600 dark:text-purple-400 truncate">
                 {formatAED(directGrossProfit, true)}
               </div>
-              <span className="text-[11px] text-muted-foreground mt-1 block">
+              <span className="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5 sm:mt-1 block truncate">
                 Billed minus Cert costs
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl border border-border/70 bg-card/70 shadow-2xs">
-              <span className="text-xs text-muted-foreground font-semibold block mb-1">
+            <div className="p-3 sm:p-3.5 rounded-xl border border-border/70 bg-card/70 shadow-2xs col-span-2 sm:col-span-1">
+              <span className="text-[11px] sm:text-xs text-muted-foreground font-semibold block mb-1 truncate">
                 Operating Profit
               </span>
               <div
                 className={cn(
-                  "text-lg sm:text-xl font-bold font-mono",
+                  "text-base sm:text-xl font-bold font-mono truncate",
                   isOperatingPositive
                     ? "text-emerald-600 dark:text-emerald-400"
                     : "text-destructive"
@@ -128,7 +128,7 @@ export function FinancialProfitabilityCard({
               >
                 {formatAED(directOperatingProfit, true)}
               </div>
-              <span className="text-[11px] text-muted-foreground mt-1 block">
+              <span className="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5 sm:mt-1 block truncate">
                 Gross profit minus Opex
               </span>
             </div>

@@ -252,32 +252,32 @@ export default function TrainingsPage() {
         description="Register, schedule, and view all active client training & inspection sessions"
         actions={
           canCreate && (
-            <div className="flex gap-2 w-full sm:w-auto">
+            <div className="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto">
               <Button
                 variant="outline"
                 onClick={() => {
                   setIssueDialogInitialIds(selectedTrainingIds);
                   setShowIssueCertDialog(true);
                 }}
-                className="gap-2 flex-1 sm:flex-none border-primary/40 text-primary hover:bg-primary/10 font-medium"
+                className="gap-1.5 border-primary/40 text-primary hover:bg-primary/10 font-semibold text-xs h-9 px-2.5 truncate"
               >
-                <Award className="w-4 h-4" />
-                Issue Certificates
+                <Award className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">Issue Certs</span>
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setShowBulkAdd(true)}
-                className="gap-2 flex-1 sm:flex-none"
+                className="gap-1.5 font-medium text-xs h-9 px-2.5 truncate"
               >
-                <Users className="w-4 h-4" />
-                Bulk Add
+                <Users className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">Bulk Add</span>
               </Button>
               <Button
                 onClick={handleOpenAdd}
-                className="gap-2 flex-1 sm:flex-none"
+                className="col-span-2 sm:col-span-1 gap-1.5 font-semibold text-xs h-9 px-3 truncate bg-primary text-primary-foreground shadow-xs"
               >
-                <Plus className="w-4 h-4" />
-                Add Training
+                <Plus className="w-3.5 h-3.5 shrink-0" />
+                <span>Add Training</span>
               </Button>
             </div>
           )

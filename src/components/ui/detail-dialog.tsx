@@ -60,7 +60,7 @@ export function DetailDialog({
               {icon}
             </div>
           )}
-          <div className="min-w-0 flex-1 pr-6">
+          <div className="min-w-0 flex-1 pr-9 sm:pr-10">
             <DialogHeader className="p-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <DialogTitle className="truncate text-sm font-semibold leading-tight text-foreground sm:text-base">

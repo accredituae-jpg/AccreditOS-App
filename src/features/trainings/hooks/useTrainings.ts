@@ -53,10 +53,10 @@ export function useTrainings() {
   useEffect(() => {
     fetchTab("today", 1, "", dateFilter, serviceTypeFilter, awardingBodyFilter);
     if (view === "grid") {
-      fetchTrainings(serviceTypeFilter, awardingBodyFilter);
+      fetchTrainings(serviceTypeFilter, awardingBodyFilter, calendarMonth);
     }
     fetchCourses();
-  }, [fetchTab, fetchTrainings, fetchCourses, view]);
+  }, [fetchTab, fetchTrainings, fetchCourses, view, calendarMonth]);
 
   // Pre-calculate permissions
   const canViewDetails = checkFeaturePermission(

@@ -624,105 +624,105 @@ export function TransactionsReportTab() {
 
   return (
     <div className="space-y-6">
-      {/* 1. THE 4 PRIMARY METRIC CARDS (Simple, Normal Names) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      {/* 1. THE 4 PRIMARY METRIC CARDS (Simple, Normal Names - 2 Col on Mobile) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
         {/* Card 1: Revenue (Total Invoiced) */}
-        <Card className="p-4 border-border/80 shadow-xs bg-card hover:border-blue-500/40 transition-colors">
+        <Card className="p-3 sm:p-4 border-border/80 shadow-xs bg-card hover:border-blue-500/40 transition-colors">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
-              <Receipt className="w-3.5 h-3.5" />
-              Revenue (Total Invoiced)
+            <span className="text-[11px] sm:text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider flex items-center gap-1 sm:gap-1.5 truncate">
+              <Receipt className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">Revenue</span>
             </span>
             <Badge
               variant="outline"
-              className="text-[10px] bg-blue-500/10 text-blue-600 border-blue-500/20 font-medium"
+              className="text-[9px] sm:text-[10px] bg-blue-500/10 text-blue-600 border-blue-500/20 font-medium hidden sm:inline-flex"
             >
               Sales Billed
             </Badge>
           </div>
-          <div className="mt-2.5">
-            <span className="text-2xl font-bold font-mono text-foreground">
+          <div className="mt-2 sm:mt-2.5">
+            <span className="text-base sm:text-2xl font-bold font-mono text-foreground truncate block">
               {formatAED(periodInvoicedRevenue.total)}
             </span>
           </div>
-          <p className="text-[10px] text-muted-foreground mt-1">
-            {periodInvoicedRevenue.count} invoices issued in this period
+          <p className="text-[10px] text-muted-foreground mt-0.5 sm:mt-1 truncate">
+            {periodInvoicedRevenue.count} invoices issued
           </p>
         </Card>
 
         {/* Card 2: Cash Received */}
-        <Card className="p-4 border-border/80 shadow-xs bg-card hover:border-emerald-500/40 transition-colors">
+        <Card className="p-3 sm:p-4 border-border/80 shadow-xs bg-card hover:border-emerald-500/40 transition-colors">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-              <TrendingUp className="w-3.5 h-3.5" />
-              Cash Received
+            <span className="text-[11px] sm:text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1 sm:gap-1.5 truncate">
+              <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">Cash Received</span>
             </span>
             <Badge
               variant="outline"
-              className="text-[10px] bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-medium"
+              className="text-[9px] sm:text-[10px] bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-medium hidden sm:inline-flex"
             >
-              Realized Cash
+              Realized
             </Badge>
           </div>
-          <div className="mt-2.5">
-            <span className="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
+          <div className="mt-2 sm:mt-2.5">
+            <span className="text-base sm:text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 truncate block">
               +{formatAED(typeMetrics.receiptsSum)}
             </span>
           </div>
-          <p className="text-[10px] text-muted-foreground mt-1">
-            {typeMetrics.receiptsCount} payments received from clients
+          <p className="text-[10px] text-muted-foreground mt-0.5 sm:mt-1 truncate">
+            {typeMetrics.receiptsCount} payments received
           </p>
         </Card>
 
         {/* Card 3: Total Expenses */}
-        <Card className="p-4 border-border/80 shadow-xs bg-card hover:border-rose-500/40 transition-colors">
+        <Card className="p-3 sm:p-4 border-border/80 shadow-xs bg-card hover:border-rose-500/40 transition-colors">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
-              <TrendingDown className="w-3.5 h-3.5" />
-              Total Expenses
+            <span className="text-[11px] sm:text-xs font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider flex items-center gap-1 sm:gap-1.5 truncate">
+              <TrendingDown className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">Expenses</span>
             </span>
             <Badge
               variant="outline"
-              className="text-[10px] bg-rose-500/10 text-rose-600 border-rose-500/20 font-medium"
+              className="text-[9px] sm:text-[10px] bg-rose-500/10 text-rose-600 border-rose-500/20 font-medium hidden sm:inline-flex"
             >
-              All Outflows
+              Outflows
             </Badge>
           </div>
-          <div className="mt-2.5">
-            <span className="text-2xl font-bold font-mono text-rose-600 dark:text-rose-400">
+          <div className="mt-2 sm:mt-2.5">
+            <span className="text-base sm:text-2xl font-bold font-mono text-rose-600 dark:text-rose-400 truncate block">
               -{formatAED(typeMetrics.totalBusinessExpenses)}
             </span>
           </div>
-          <p className="text-[10px] text-muted-foreground mt-1">
-            Salaries + vendor fees + office supplies
+          <p className="text-[10px] text-muted-foreground mt-0.5 sm:mt-1 truncate">
+            Salaries, fees, supplies
           </p>
         </Card>
 
         {/* Card 4: Net Profit / Cash Movement */}
-        <Card className="p-4 border-border/80 shadow-xs bg-card hover:border-primary/40 transition-colors">
+        <Card className="p-3 sm:p-4 border-border/80 shadow-xs bg-card hover:border-primary/40 transition-colors">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-primary uppercase tracking-wider flex items-center gap-1.5">
-              <Wallet className="w-3.5 h-3.5" />
-              Net Cash Movement
+            <span className="text-[11px] sm:text-xs font-semibold text-primary uppercase tracking-wider flex items-center gap-1 sm:gap-1.5 truncate">
+              <Wallet className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">Net Movement</span>
             </span>
             <Badge
               variant="outline"
               className={cn(
-                "text-[10px] font-medium",
+                "text-[9px] sm:text-[10px] font-medium hidden sm:inline-flex",
                 typeMetrics.netCashMovement >= 0
                   ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
                   : "bg-rose-500/10 text-rose-600 border-rose-500/20",
               )}
             >
               {typeMetrics.netCashMovement >= 0
-                ? "Cash Surplus"
-                : "Cash Deficit"}
+                ? "Surplus"
+                : "Deficit"}
             </Badge>
           </div>
-          <div className="mt-2.5">
+          <div className="mt-2 sm:mt-2.5">
             <span
               className={cn(
-                "text-2xl font-bold font-mono",
+                "text-base sm:text-2xl font-bold font-mono truncate block",
                 typeMetrics.netCashMovement >= 0
                   ? "text-emerald-600 dark:text-emerald-400"
                   : "text-rose-600 dark:text-rose-400",
@@ -732,8 +732,8 @@ export function TransactionsReportTab() {
               {formatAED(typeMetrics.netCashMovement)}
             </span>
           </div>
-          <p className="text-[10px] text-muted-foreground mt-1">
-            Operating Profit (Billed - Spent):{" "}
+          <p className="text-[10px] text-muted-foreground mt-0.5 sm:mt-1 truncate">
+            Operating:{" "}
             <span className="font-mono font-medium">
               {formatAED(
                 periodInvoicedRevenue.total - typeMetrics.totalBusinessExpenses,
@@ -824,21 +824,20 @@ export function TransactionsReportTab() {
             </div>
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold tracking-tight whitespace-nowrap leading-tight">
+                <span className="text-xs sm:text-sm font-semibold tracking-tight whitespace-nowrap leading-tight">
                   Passbook Filter Command
                 </span>
                 {activeFilterCount > 0 && (
                   <Badge
                     variant="secondary"
-                    className="text-[10px] font-semibold bg-primary/10 text-primary border-primary/20 px-1.5 py-0"
+                    className="hidden sm:inline-flex text-[10px] font-semibold bg-primary/10 text-primary border-primary/20 px-1.5 py-0"
                   >
                     {activeFilterCount} Active
                   </Badge>
                 )}
               </div>
-              <span className="text-[11px] text-muted-foreground font-medium truncate leading-tight mt-0.5">
-                Filter by date, stream, payment account, amount tier, and sort
-                order
+              <span className="text-[10px] sm:text-[11px] text-muted-foreground font-medium truncate leading-tight mt-0.5">
+                Filter by date, stream, payment account, amount tier, and sort order
               </span>
             </div>
           </div>
@@ -872,9 +871,17 @@ export function TransactionsReportTab() {
               variant="outline"
               size="sm"
               onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-              className="sm:hidden h-8 px-2 text-xs flex items-center gap-1 font-medium bg-muted/40"
+              className="sm:hidden h-8 px-2.5 text-xs flex items-center gap-1.5 font-medium bg-muted/40 shrink-0"
             >
               <span>{mobileFiltersOpen ? "Hide" : "Filters"}</span>
+              {activeFilterCount > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="text-[10px] px-1 py-0 h-4 font-bold bg-primary/20 text-primary border-0 rounded-full"
+                >
+                  {activeFilterCount}
+                </Badge>
+              )}
               <ChevronDown
                 className={`w-3.5 h-3.5 transition-transform duration-200 ${
                   mobileFiltersOpen ? "rotate-180" : ""

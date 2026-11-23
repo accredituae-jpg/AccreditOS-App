@@ -88,8 +88,8 @@ export function FinancialCashFlowCard({
               </div>
             </div>
 
-            {/* Core Metric Highlight: Net Cash Movement & Realized Inflow */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
+            {/* Core Metric Highlight: Net Cash Movement & Realized Inflow (2 in a row on mobile) */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 my-4">
               {/* Realized Inflow */}
               <div className="p-3.5 rounded-xl border border-border/70 bg-card/70 shadow-2xs">
                 <div className="flex items-center justify-between text-muted-foreground text-xs mb-1">
@@ -129,7 +129,7 @@ export function FinancialCashFlowCard({
               </div>
 
               {/* Net Cash Movement */}
-              <div className="p-3.5 rounded-xl border border-border/70 bg-card/70 shadow-2xs sm:col-span-3 lg:col-span-1">
+              <div className="p-3.5 rounded-xl border border-border/70 bg-card/70 shadow-2xs col-span-2 sm:col-span-1">
                 <div className="flex items-center justify-between text-muted-foreground text-xs mb-1">
                   <span className="font-semibold flex items-center gap-1.5 text-foreground">
                     <TrendingUp className="w-3.5 h-3.5 text-primary" />

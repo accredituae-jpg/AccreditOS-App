@@ -343,10 +343,36 @@ export function AiAssistantDrawer() {
     setMessages([]);
   };
 
+  const [hasOpenModal, setHasOpenModal] = useState(false);
+
+  useEffect(() => {
+    const checkModal = () => {
+      const isLocked = document.body.hasAttribute("data-scroll-locked");
+      const hasDialog = Boolean(
+        document.querySelector('[role="dialog"]:not([data-bottom-sheet])'),
+      );
+      setHasOpenModal(isLocked || hasDialog);
+    };
+
+    checkModal();
+    const observer = new MutationObserver(checkModal);
+    observer.observe(document.body, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+    });
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <>
       {/* 1. Floating Sparkle Button (Developer Only) */}
-      <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 group">
+      <div
+        className={cn(
+          "fixed bottom-24 right-4 sm:bottom-6 sm:right-6 z-40 group transition-all duration-200",
+          hasOpenModal && "opacity-0 pointer-events-none translate-y-4",
+        )}
+      >
         <button
           type="button"
           onClick={() => setIsOpen(true)}

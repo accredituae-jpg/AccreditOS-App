@@ -115,15 +115,15 @@ export default function ReportsPage() {
     <div className="space-y-6 pb-12">
       {/* PAGE HEADER */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-xs">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-xs shrink-0">
             <FileSpreadsheet className="w-5 h-5" />
           </div>
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground truncate">
               Reports & Analytics Center
             </h1>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 line-clamp-2">
               Authoritative reporting, compliance auditing, financial reconciliation, and enterprise data exports.
             </p>
           </div>

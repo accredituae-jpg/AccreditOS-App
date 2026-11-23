@@ -148,8 +148,8 @@ export function FinancialLiabilitiesCard({
                     </Badge>
                   </div>
 
-                  {/* 2 Symmetrical Micro-Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                  {/* 2 Symmetrical Micro-Cards - 2 in a row on mobile */}
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3 mt-3">
                     {/* All-Time AR */}
                     <div className="p-3.5 rounded-xl border border-border/70 bg-card/80 hover:border-rose-500/30 transition-colors shadow-2xs">
                       <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
@@ -262,8 +262,8 @@ export function FinancialLiabilitiesCard({
                     </Badge>
                   </div>
 
-                  {/* 2 Symmetrical Micro-Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                  {/* 2 Symmetrical Micro-Cards - 2 in a row on mobile */}
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3 mt-3">
                     {/* Billed Vendor AP */}
                     <div className="p-3.5 rounded-xl border border-border/70 bg-card/80 hover:border-purple-500/30 transition-colors shadow-2xs">
                       <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">

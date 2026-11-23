@@ -65,7 +65,7 @@ interface TrainingsState {
     serviceType?: string,
     awardingBody?: string
   ) => Promise<void>;
-  fetchTrainings: (serviceType?: string, awardingBody?: string) => Promise<void>;
+  fetchTrainings: (serviceType?: string, awardingBody?: string, month?: Date) => Promise<void>;
   addTraining: (trainingData: Omit<Training, "id">, options?: { silent?: boolean }) => Promise<void>;
   updateTraining: (updatedTraining: Training) => Promise<void>;
   deleteTraining: (id: string) => Promise<void>;
@@ -225,7 +225,12 @@ export const useTrainingsStore = create<TrainingsState>((set, get) => ({
       get().fetchTrainings(get().serviceTypeFilter, awardingBodyFilter);
     }
   },
-  setCalendarMonth: (calendarMonth) => set({ calendarMonth }),
+  setCalendarMonth: (calendarMonth) => {
+    set({ calendarMonth });
+    if (get().view === "grid") {
+      get().fetchTrainings(get().serviceTypeFilter, get().awardingBodyFilter, calendarMonth);
+    }
+  },
 
   // Fetch data for a specific tab
   fetchTab: async (
@@ -278,22 +283,36 @@ export const useTrainingsStore = create<TrainingsState>((set, get) => ({
     }
   },
 
-  // Legacy: fetch all trainings for calendar view
-  fetchTrainings: async (serviceType?: string, awardingBody?: string) => {
+  // Fetch trainings strictly for the calendar's current month
+  fetchTrainings: async (
+    serviceType?: string,
+    awardingBody?: string,
+    month?: Date
+  ) => {
     set({ loading: true });
     try {
       const activeServiceType =
         serviceType !== undefined ? serviceType : get().serviceTypeFilter;
       const activeAwardingBody =
         awardingBody !== undefined ? awardingBody : get().awardingBodyFilter;
+      const targetMonth = month || get().calendarMonth;
+
+      const year = targetMonth.getFullYear();
+      const m = targetMonth.getMonth(); // 0-indexed
+      const lastDay = new Date(year, m + 1, 0);
+
+      const fromDate = `${year}-${String(m + 1).padStart(2, "0")}-01`;
+      const toDate = `${year}-${String(m + 1).padStart(2, "0")}-${String(
+        lastDay.getDate()
+      ).padStart(2, "0")}`;
 
       const res = await apiGetTrainings(
         undefined,
         1,
         "",
-        1000,
-        undefined,
-        undefined,
+        500,
+        fromDate,
+        toDate,
         undefined,
         activeServiceType !== "all" ? activeServiceType : undefined,
         undefined,
