@@ -58,35 +58,37 @@ export function FinancialProfitabilityCard({
         <div className="flex-1 flex flex-col justify-between">
           <div>
             {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-border/60">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 border border-purple-500/20 shadow-xs">
-                <TrendingUp className="w-4 h-4" />
+            <div className="flex items-start justify-between gap-2.5 pb-3 sm:pb-4 border-b border-border/60">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 border border-purple-500/20 shadow-xs">
+                  <TrendingUp className="w-4 h-4" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-sm sm:text-base text-foreground tracking-tight truncate">
+                      Revenue & Profitability
+                    </h3>
+                    <Badge variant="outline" className="hidden sm:inline-flex text-[10px] font-semibold uppercase tracking-wider bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/25 shrink-0">
+                      Accrual / Management
+                    </Badge>
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                    Invoiced revenue, certificate COGS, and operating margins for {periodLabel}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold text-base text-foreground tracking-tight flex items-center gap-2">
-                  <span>Revenue & Profitability</span>
-                  <Badge variant="outline" className="text-[10px] font-semibold uppercase tracking-wider bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/25">
-                    Accrual / Management
-                  </Badge>
-                </h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Invoiced revenue, certificate COGS, and operating margins for {periodLabel}
-                </p>
-              </div>
-            </div>
 
-            <div className="flex items-center gap-2 self-start sm:self-auto">
-              <button
-                type="button"
-                onClick={() => setInfoOpen(true)}
-                aria-label="Information guide for Revenue & Profitability"
-                className="text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-lg hover:bg-muted/60 active:scale-95 focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer"
-              >
-                <Info className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-1.5 shrink-0 ml-auto">
+                <button
+                  type="button"
+                  onClick={() => setInfoOpen(true)}
+                  aria-label="Information guide for Revenue & Profitability"
+                  className="text-muted-foreground hover:text-foreground transition-colors p-1 sm:p-1.5 rounded-lg hover:bg-muted/60 active:scale-95 focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer"
+                >
+                  <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                </button>
+              </div>
             </div>
-          </div>
 
           {/* Revenue & Margin Top Cards - 2 in a row on mobile */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 my-4">

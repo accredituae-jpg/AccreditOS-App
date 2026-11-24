@@ -78,29 +78,31 @@ export function FinancialLiabilitiesCard({
         <div className="flex-1 flex flex-col justify-between">
           <div>
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border/60">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20 shadow-xs">
+            <div className="flex items-start justify-between gap-2.5 pb-3 sm:pb-4 border-b border-border/60">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20 shadow-xs">
                   <AlertCircle className="w-4 h-4" />
                 </div>
-                <div>
-                  <h3 className="font-bold text-base text-foreground tracking-tight flex items-center gap-2">
-                    <span>Money Owed & Unpaid</span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-sm sm:text-base text-foreground tracking-tight truncate">
+                      Money Owed & Unpaid
+                    </h3>
                     <Badge
                       variant="outline"
-                      className="text-[10px] font-semibold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25"
+                      className="hidden sm:inline-flex text-[10px] font-semibold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25 shrink-0"
                     >
                       Receivables & Payables
                     </Badge>
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 line-clamp-1">
                     Client balances owed and supplier awarding-body commitments
                   </p>
                 </div>
               </div>
 
               {/* Header Right: Quick Total Pills & Info */}
-              <div className="flex items-center gap-2 self-start sm:self-auto">
+              <div className="flex items-center gap-1.5 shrink-0 ml-auto">
                 <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-500/10 border border-rose-500/20 text-xs">
                   <span className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">
                     Client AR:
@@ -123,9 +125,9 @@ export function FinancialLiabilitiesCard({
                   type="button"
                   onClick={() => setInfoOpen(true)}
                   aria-label="Information guide for Receivables & Vendor Obligations"
-                  className="text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-lg hover:bg-muted/60 active:scale-95 focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer"
+                  className="text-muted-foreground hover:text-foreground transition-colors p-1 sm:p-1.5 rounded-lg hover:bg-muted/60 active:scale-95 focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer"
                 >
-                  <Info className="w-4 h-4" />
+                  <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
               </div>
             </div>
@@ -136,38 +138,35 @@ export function FinancialLiabilitiesCard({
               <div className="p-4 rounded-xl border border-border/70 bg-card/60 shadow-2xs flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between pb-3 border-b border-border/50 text-xs font-bold text-foreground">
-                    <div className="flex items-center gap-2">
-                      <Building2 className="w-4 h-4 text-rose-500" />
-                      <span className="text-sm">Money Owed by Clients (AR)</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Building2 className="w-4 h-4 text-rose-500 shrink-0" />
+                      <span className="text-xs sm:text-sm truncate">Money Owed by Clients (AR)</span>
                     </div>
-                    <Badge
-                      variant="outline"
-                      className="font-mono font-bold text-xs bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/25"
-                    >
-                      {formatAED(allTimeAr, true)} Total
-                    </Badge>
+                    <div className="px-2 py-0.5 rounded-md font-mono font-bold text-[11px] sm:text-xs bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/25 whitespace-nowrap shrink-0">
+                      {formatAED(allTimeAr, true)} <span className="text-[10px] font-sans font-normal opacity-80">Total</span>
+                    </div>
                   </div>
 
                   {/* 2 Symmetrical Micro-Cards - 2 in a row on mobile */}
                   <div className="grid grid-cols-2 gap-2 sm:gap-3 mt-3">
                     {/* All-Time AR */}
-                    <div className="p-3.5 rounded-xl border border-border/70 bg-card/80 hover:border-rose-500/30 transition-colors shadow-2xs">
+                    <div className="p-3 sm:p-3.5 rounded-xl border border-border/70 bg-card/80 hover:border-rose-500/30 transition-colors shadow-2xs">
                       <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                        <span className="font-semibold text-foreground flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-rose-500" />
-                          Total Uncollected
+                        <span className="font-semibold text-foreground flex items-center gap-1.5 truncate text-[11px] sm:text-xs">
+                          <Clock className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                          <span className="truncate">Total Uncollected</span>
                         </span>
                         <Badge
                           variant="outline"
-                          className="text-[9px] bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 px-1.5 py-0 font-semibold"
+                          className="hidden sm:inline-flex text-[9px] bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 px-1.5 py-0 font-semibold shrink-0"
                         >
                           All-Time
                         </Badge>
                       </div>
-                      <div className="text-xl sm:text-2xl font-bold font-mono text-rose-600 dark:text-rose-400 mt-1">
+                      <div className="text-lg sm:text-2xl font-bold font-mono text-rose-600 dark:text-rose-400 mt-1 truncate">
                         {formatAED(allTimeAr, true)}
                       </div>
-                      <p className="text-[11px] text-muted-foreground mt-1">
+                      <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-1 truncate">
                         All unpaid client invoice balances
                       </p>
 
@@ -195,23 +194,23 @@ export function FinancialLiabilitiesCard({
                     </div>
 
                     {/* In-Period AR */}
-                    <div className="p-3.5 rounded-xl border border-border/70 bg-card/80 hover:border-amber-500/30 transition-colors shadow-2xs">
+                    <div className="p-3 sm:p-3.5 rounded-xl border border-border/70 bg-card/80 hover:border-amber-500/30 transition-colors shadow-2xs">
                       <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                        <span className="font-semibold text-foreground flex items-center gap-1.5">
-                          <Calendar className="w-3.5 h-3.5 text-amber-500" />
-                          Unpaid This Period
+                        <span className="font-semibold text-foreground flex items-center gap-1.5 truncate text-[11px] sm:text-xs">
+                          <Calendar className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                          <span className="truncate">Unpaid This Period</span>
                         </span>
                         <Badge
                           variant="outline"
-                          className="text-[9px] bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 px-1.5 py-0 font-semibold"
+                          className="hidden sm:inline-flex text-[9px] bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 px-1.5 py-0 font-semibold shrink-0"
                         >
                           In-Period
                         </Badge>
                       </div>
-                      <div className="text-xl sm:text-2xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1">
+                      <div className="text-lg sm:text-2xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1 truncate">
                         {formatAED(inPeriodAr, true)}
                       </div>
-                      <p className="text-[11px] text-muted-foreground mt-1">
+                      <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-1 truncate">
                         Invoices issued in {periodLabel} still due
                       </p>
 
@@ -250,38 +249,35 @@ export function FinancialLiabilitiesCard({
               <div className="p-4 rounded-xl border border-border/70 bg-card/60 shadow-2xs flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between pb-3 border-b border-border/50 text-xs font-bold text-foreground">
-                    <div className="flex items-center gap-2">
-                      <Truck className="w-4 h-4 text-purple-500" />
-                      <span className="text-sm">Vendor & Awarding Body Dues</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Truck className="w-4 h-4 text-purple-500 shrink-0" />
+                      <span className="text-xs sm:text-sm truncate">Vendor & Awarding Body Dues</span>
                     </div>
-                    <Badge
-                      variant="outline"
-                      className="font-mono font-bold text-xs bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/25"
-                    >
-                      {formatAED(totalObligations, true)} Total
-                    </Badge>
+                    <div className="px-2 py-0.5 rounded-md font-mono font-bold text-[11px] sm:text-xs bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/25 whitespace-nowrap shrink-0">
+                      {formatAED(totalObligations, true)} <span className="text-[10px] font-sans font-normal opacity-80">Total</span>
+                    </div>
                   </div>
 
                   {/* 2 Symmetrical Micro-Cards - 2 in a row on mobile */}
                   <div className="grid grid-cols-2 gap-2 sm:gap-3 mt-3">
                     {/* Billed Vendor AP */}
-                    <div className="p-3.5 rounded-xl border border-border/70 bg-card/80 hover:border-purple-500/30 transition-colors shadow-2xs">
+                    <div className="p-3 sm:p-3.5 rounded-xl border border-border/70 bg-card/80 hover:border-purple-500/30 transition-colors shadow-2xs">
                       <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                        <span className="font-semibold text-foreground flex items-center gap-1.5">
-                          <Receipt className="w-3.5 h-3.5 text-purple-500" />
-                          Vendor Bills AP
+                        <span className="font-semibold text-foreground flex items-center gap-1.5 truncate text-[11px] sm:text-xs">
+                          <Receipt className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                          <span className="truncate">Vendor Bills AP</span>
                         </span>
                         <Badge
                           variant="outline"
-                          className="text-[9px] bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 px-1.5 py-0 font-semibold"
+                          className="hidden sm:inline-flex text-[9px] bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 px-1.5 py-0 font-semibold shrink-0"
                         >
                           Invoiced
                         </Badge>
                       </div>
-                      <div className="text-xl sm:text-2xl font-bold font-mono text-purple-600 dark:text-purple-400 mt-1">
+                      <div className="text-lg sm:text-2xl font-bold font-mono text-purple-600 dark:text-purple-400 mt-1 truncate">
                         {formatAED(billedAp, true)}
                       </div>
-                      <p className="text-[11px] text-muted-foreground mt-1">
+                      <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-1 truncate">
                         Received supplier bills to pay
                       </p>
 
@@ -303,23 +299,23 @@ export function FinancialLiabilitiesCard({
                     </div>
 
                     {/* Pending Certs Commitment */}
-                    <div className="p-3.5 rounded-xl border border-border/70 bg-card/80 hover:border-amber-500/30 transition-colors shadow-2xs">
+                    <div className="p-3 sm:p-3.5 rounded-xl border border-border/70 bg-card/80 hover:border-amber-500/30 transition-colors shadow-2xs">
                       <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                        <span className="font-semibold text-foreground flex items-center gap-1.5">
-                          <Award className="w-3.5 h-3.5 text-amber-500" />
-                          Pending Certs
+                        <span className="font-semibold text-foreground flex items-center gap-1.5 truncate text-[11px] sm:text-xs">
+                          <Award className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                          <span className="truncate">Pending Certs</span>
                         </span>
                         <Badge
                           variant="outline"
-                          className="text-[9px] bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 px-1.5 py-0 font-semibold"
+                          className="hidden sm:inline-flex text-[9px] bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 px-1.5 py-0 font-semibold shrink-0"
                         >
                           {unbilledCertsCount} Certs
                         </Badge>
                       </div>
-                      <div className="text-xl sm:text-2xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1">
+                      <div className="text-lg sm:text-2xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1 truncate">
                         {formatAED(unbilledCommitment, true)}
                       </div>
-                      <p className="text-[11px] text-muted-foreground mt-1">
+                      <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-1 truncate">
                         Completed sessions pending bill
                       </p>
 

@@ -89,54 +89,56 @@ export function CertificateDetailDialog({
             : "destructive",
       }}
       actions={
-        <div className="flex flex-wrap items-center gap-2">
-          {isSuperAdmin && certificate.isSystemIssued !== false && (
-            <>
-              {onDownload && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 gap-1.5 font-semibold text-xs rounded-lg"
-                  onClick={() => onDownload(certificate)}
-                  aria-label="Download Word (.docx) Certificate"
-                >
-                  <FileText className="w-3.5 h-3.5 text-blue-500" />
-                  <span>Word (.docx)</span>
-                </Button>
-              )}
+        <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 w-full">
+          <div className="flex flex-wrap items-center gap-1.5">
+            {isSuperAdmin && certificate.isSystemIssued !== false && (
+              <>
+                {onDownload && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 gap-1.5 font-semibold text-xs rounded-lg"
+                    onClick={() => onDownload(certificate)}
+                    aria-label="Download Word (.docx) Certificate"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-blue-500" />
+                    <span>Word (.docx)</span>
+                  </Button>
+                )}
 
-              {onDownloadPdf && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 gap-1.5 font-semibold text-xs rounded-lg"
-                  onClick={() => onDownloadPdf(certificate)}
-                  aria-label="Download PDF (.pdf) Certificate"
-                >
-                  <FileType className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>PDF (.pdf)</span>
-                </Button>
-              )}
-            </>
-          )}
+                {onDownloadPdf && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 gap-1.5 font-semibold text-xs rounded-lg"
+                    onClick={() => onDownloadPdf(certificate)}
+                    aria-label="Download PDF (.pdf) Certificate"
+                  >
+                    <FileType className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>PDF (.pdf)</span>
+                  </Button>
+                )}
+              </>
+            )}
 
-          {onEdit && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onEdit}
-              className="h-8 px-3 text-xs font-semibold gap-1.5 rounded-lg"
-            >
-              <Edit className="w-3.5 h-3.5" />
-              <span>Edit</span>
-            </Button>
-          )}
+            {onEdit && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onEdit}
+                className="h-8 px-3 text-xs font-semibold gap-1.5 rounded-lg"
+              >
+                <Edit className="w-3.5 h-3.5" />
+                <span>Edit</span>
+              </Button>
+            )}
+          </div>
 
           <Button
             variant="default"
             size="sm"
             onClick={handleClose}
-            className="h-8 px-5 text-xs font-semibold shadow-xs rounded-lg"
+            className="h-8 px-4 text-xs font-semibold shadow-xs rounded-lg ml-auto"
           >
             Close
           </Button>
