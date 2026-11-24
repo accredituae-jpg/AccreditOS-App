@@ -73,7 +73,7 @@ export function ExpensesTab({
           loading={loading}
         />
       ) : (
-        <div className="p-3 sm:p-4 md:p-6 grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
+        <div className="p-3 sm:p-4 md:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {expenses.map((expense, index) => (
             <ExpenseCard
               key={expense.id}
