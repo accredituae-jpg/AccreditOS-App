@@ -12,7 +12,7 @@ import {
   apiCreateSalaryProfile,
   apiUpdateSalaryProfile,
 } from "@/lib/api";
-import type { PayrollRecord, SalaryProfilePayload } from "../types/payroll.types";
+import type { PayrollRecord, SalaryProfilePayload, GeneratePayrollCustomOptions } from "../types/payroll.types";
 
 interface UsePayrollActionsProps {
   onRefresh: (silent?: boolean) => Promise<void> | void;
@@ -28,6 +28,7 @@ export function usePayrollActions({ onRefresh }: UsePayrollActionsProps) {
     year: number,
     userId?: string,
     notes?: string,
+    customOptions?: GeneratePayrollCustomOptions,
   ): Promise<boolean> => {
     if (!isOnline) {
       toast({
@@ -39,7 +40,13 @@ export function usePayrollActions({ onRefresh }: UsePayrollActionsProps) {
     }
 
     try {
-      const response = await apiGeneratePayroll({ month, year, userId, notes });
+      const response = await apiGeneratePayroll({
+        month,
+        year,
+        userId,
+        notes,
+        ...customOptions,
+      });
       if (response.success) {
         await onRefresh(true);
         toast({

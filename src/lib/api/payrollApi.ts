@@ -63,6 +63,20 @@ export async function apiGeneratePayroll(payload: {
   year: number;
   userId?: string;
   notes?: string;
+  basicSalary?: number;
+  housingAllowance?: number;
+  transportAllowance?: number;
+  foodAllowance?: number;
+  travelAllowance?: number;
+  otherEarnings?: number;
+  bonus?: number;
+  overtime?: number;
+  commission?: number;
+  reimbursement?: number;
+  leaveDeduction?: number;
+  loanInstallment?: number;
+  penalty?: number;
+  otherDeductions?: number;
 }): Promise<ApiResponse<any[]>> {
   return fetchApi("/api/payroll/records/generate", {
     method: "POST",

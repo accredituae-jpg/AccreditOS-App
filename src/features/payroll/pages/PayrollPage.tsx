@@ -179,33 +179,37 @@ export default function PayrollPage() {
     <div className="page-container">
       <PageHeader
         title="Payroll"
-        description="Manage payroll, salary profiles, adjustments, and advances."
+        description="Set basic employee salaries, issue monthly pay with leave adjustments, and manage records."
         actions={
           canManagePayroll ? (
             activeTab === "records" ? (
-              <Button
-                onClick={() => setGenerateDialogOpen(true)}
-                className="gap-2 w-full sm:w-auto bg-primary text-white"
-              >
-                Generate Payroll
-              </Button>
-            ) : activeTab === "profiles" ? (
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setAdvanceDialogOpen(true)}
+                  className="gap-1.5 text-xs font-semibold h-9 px-3 border-border/80 hover:bg-muted/60"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Record Advance</span>
+                </Button>
+                <Button
+                  onClick={() => setGenerateDialogOpen(true)}
+                  className="gap-1.5 text-xs font-semibold h-9 px-3.5 bg-primary text-white shadow-xs"
+                >
+                  <CreditCard className="w-3.5 h-3.5" />
+                  <span>Issue Salary</span>
+                </Button>
+              </div>
+            ) : (
               <Button
                 onClick={() => handleOpenProfileDialog(null)}
-                className="gap-2 w-full sm:w-auto bg-primary text-white"
+                className="gap-1.5 text-xs font-semibold h-9 px-3.5 bg-primary text-white shadow-xs w-full sm:w-auto"
               >
-                <Plus className="w-4 h-4" />
-                Add Profile
+                <Plus className="w-3.5 h-3.5" />
+                <span>Set Basic Salary</span>
               </Button>
-            ) : activeTab === "advances" ? (
-              <Button
-                onClick={() => setAdvanceDialogOpen(true)}
-                className="gap-2 w-full sm:w-auto bg-primary text-white"
-              >
-                <Plus className="w-4 h-4" />
-                Record Advance
-              </Button>
-            ) : null
+            )
           ) : null
         }
       />
@@ -349,30 +353,20 @@ export default function PayrollPage() {
           className="card-elevated overflow-hidden bg-card"
         >
           <div className="border-b border-border p-4 flex flex-col sm:flex-row gap-4 justify-between sm:items-center bg-card/50">
-            <TabsList className="bg-transparent p-0 gap-4 sm:gap-6 h-auto justify-start border-0 rounded-none w-full max-w-full overflow-x-auto scrollbar-none flex-nowrap shrink-0 pb-1">
+            <TabsList className="bg-muted/40 p-1 rounded-xl gap-1 h-auto justify-start border border-border/60">
               <TabsTrigger
                 value="records"
-                className="bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none px-1 pb-3 pt-1 shadow-none transition-all gap-2 text-muted-foreground data-[state=active]:text-foreground font-medium text-sm shrink-0 whitespace-nowrap"
+                className="rounded-lg px-4 py-2 text-xs font-semibold data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-xs transition-all gap-2"
               >
-                Payroll records
+                <FileText className="w-3.5 h-3.5 text-primary" />
+                <span>Payroll Records</span>
               </TabsTrigger>
               <TabsTrigger
                 value="profiles"
-                className="bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none px-1 pb-3 pt-1 shadow-none transition-all gap-2 text-muted-foreground data-[state=active]:text-foreground font-medium text-sm shrink-0 whitespace-nowrap"
+                className="rounded-lg px-4 py-2 text-xs font-semibold data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-xs transition-all gap-2"
               >
-                Salary profiles
-              </TabsTrigger>
-              <TabsTrigger
-                value="advances"
-                className="bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none px-1 pb-3 pt-1 shadow-none transition-all gap-2 text-muted-foreground data-[state=active]:text-foreground font-medium text-sm shrink-0 whitespace-nowrap"
-              >
-                Salary advances
-              </TabsTrigger>
-              <TabsTrigger
-                value="bulk"
-                className="bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none px-1 pb-3 pt-1 shadow-none transition-all gap-2 text-muted-foreground data-[state=active]:text-foreground font-medium text-sm shrink-0 whitespace-nowrap"
-              >
-                Bulk Entry Grid
+                <Users className="w-3.5 h-3.5 text-primary" />
+                <span>Basic Salary Profiles</span>
               </TabsTrigger>
             </TabsList>
 
@@ -646,6 +640,8 @@ export default function PayrollPage() {
             ? [{ id: profile.userId, name: profile.userName || profile.user?.name || "Unknown Employee" }]
             : []
         )}
+        salaryProfiles={salaryProfiles}
+        advances={advances}
       />
 
       <RecordPayrollPaymentDialog

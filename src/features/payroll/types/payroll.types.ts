@@ -67,6 +67,23 @@ export interface SalaryProfilePayload {
   isActive?: boolean;
 }
 
+export interface GeneratePayrollCustomOptions {
+  basicSalary?: number;
+  housingAllowance?: number;
+  transportAllowance?: number;
+  foodAllowance?: number;
+  travelAllowance?: number;
+  otherEarnings?: number;
+  bonus?: number;
+  overtime?: number;
+  commission?: number;
+  reimbursement?: number;
+  leaveDeduction?: number;
+  loanInstallment?: number;
+  penalty?: number;
+  otherDeductions?: number;
+}
+
 export interface PayrollActions {
   onGenerate: () => Promise<void>;
   onRefresh: () => Promise<void>;
