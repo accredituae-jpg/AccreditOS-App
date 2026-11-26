@@ -361,7 +361,7 @@ export function InvoiceCard({
                 <DollarSign className="w-4 h-4 mr-2 text-emerald-500" /> Record Payment
               </DropdownMenuItem>
             )}
-            {permissions.canEdit && invoice.status === "draft" && (
+            {permissions.canEdit && invoice.status !== "paid" && invoice.status !== "cancelled" && (
               <DropdownMenuItem onClick={() => actions.onEdit(invoice)}>
                 <Edit className="w-4 h-4 mr-2" /> Edit
               </DropdownMenuItem>

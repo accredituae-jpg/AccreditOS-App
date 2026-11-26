@@ -994,6 +994,10 @@ export default function BillingPage() {
         invoice={previewInvoice}
         open={!!previewInvoice}
         onOpenChange={(open) => !open && setPreviewInvoice(null)}
+        onEdit={(inv) => {
+          setPreviewInvoice(null);
+          setEditingInvoice(inv);
+        }}
       />
 
       <AddInvoiceDialog

@@ -34,6 +34,7 @@ import {
   Stamp,
   Settings2,
   SlidersHorizontal,
+  Edit,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { formatAED, cn } from "@/lib/utils";
@@ -55,6 +56,7 @@ interface InvoicePreviewDialogProps {
   invoice: Invoice | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onEdit?: (invoice: Invoice) => void;
 }
 
 import { amountToWords } from "../utils/billing.utils";
@@ -63,6 +65,7 @@ export function InvoicePreviewDialog({
   invoice,
   open,
   onOpenChange,
+  onEdit,
 }: InvoicePreviewDialogProps) {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
@@ -351,6 +354,23 @@ Branch: ${COMPANY_BANK_DETAILS.branch}`;
               )}
               <span>PDF</span>
             </Button>
+
+            {/* Edit Invoice Button */}
+            {onEdit && invoice.status !== "paid" && invoice.status !== "cancelled" && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  onOpenChange(false);
+                  onEdit(invoice);
+                }}
+                className="h-8 gap-1.5 mr-1 text-xs font-medium border-border hover:bg-muted/60"
+                title="Edit invoice notes, terms, or details"
+              >
+                <Edit className="w-3.5 h-3.5 text-primary" />
+                <span>Edit</span>
+              </Button>
+            )}
 
             {/* Actions & Document Options Popover */}
             <Popover>

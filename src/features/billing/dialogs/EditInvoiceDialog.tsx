@@ -27,6 +27,7 @@ import {
   User,
   ChevronDown,
   ChevronUp,
+  Info,
 } from "lucide-react";
 import { DiscountInputControl } from "../components/DiscountInputControl";
 import { apiGetInvoiceTypes } from "@/lib/api";
@@ -659,6 +660,11 @@ export function EditInvoiceDialog({
             sortOrder: index,
           }));
         }
+      } else {
+        delete payload.lineItems;
+        const origDisc = Number((invoice as any).discountAmount ?? (invoice as any).discount ?? 0);
+        payload.discount = origDisc;
+        payload.discountAmount = origDisc;
       }
 
       await onUpdate(payload);
@@ -683,6 +689,18 @@ export function EditInvoiceDialog({
       maxWidth="max-w-4xl"
     >
       <div className="space-y-4">
+        {!canEditLineItems && invoice && (
+          <div className="p-3 rounded-xl border border-blue-200/80 bg-blue-50/70 dark:border-blue-900/60 dark:bg-blue-950/30 text-xs text-blue-900 dark:text-blue-300 flex items-start gap-2.5">
+            <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+            <div className="space-y-0.5">
+              <span className="font-semibold block">Notice: Non-Draft Invoice ({invoice.status.replace("_", " ").toUpperCase()})</span>
+              <p className="text-[11px] text-blue-800/90 dark:text-blue-300/90 leading-relaxed">
+                Line items and amounts are locked to preserve accounting integrity. You can safely update <strong>Notes</strong>, <strong>Payment Terms</strong>, <strong>Due Date</strong>, and <strong>Client Contact Info</strong> below.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* 1. COMPACT CLIENT HEADER WITH EXPAND/COLLAPSE BUTTON */}
         <div className="p-3 rounded-xl border border-border/70 bg-muted/15 flex flex-col gap-2">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
