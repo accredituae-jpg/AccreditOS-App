@@ -272,47 +272,12 @@ export const InvoicePrintTemplate = React.forwardRef<
                     {invoice.vatAmount.toFixed(2)}
                   </td>
                 </tr>
-                <tr className="bg-[#004ba0] text-white font-bold">
-                  <td className="p-2 text-left">TOTAL</td>
-                  <td className="p-2 text-right text-sm">
-                    {invoice.totalAmount.toFixed(2)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Payment Received / Balance Due — shown only when partially or fully paid */}
-        {(invoice.status === "partially_paid" || invoice.status === "paid") &&
-          Number(invoice.paidAmount ?? 0) > 0 && (
-            <div className="grid grid-cols-5 gap-4 mb-2 items-start">
-              {/* Payment notice left */}
-              <div className="col-span-3 flex items-center">
-                {invoice.status === "paid" ? (
-                  <div className="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-300 rounded-lg px-3 py-1.5">
-                    <span className="text-emerald-700 font-bold text-[11px] uppercase tracking-wide">
-                      ✓ Fully Paid — Thank you!
-                    </span>
-                  </div>
-                ) : (
-                  <div className="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-300 rounded-lg px-3 py-1.5">
-                    <span className="text-amber-700 font-bold text-[11px] uppercase tracking-wide">
-                      ⚠ Partial Payment Received — Balance Due
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Payment summary right */}
-              <div className="col-span-2 border border-blue-200/80 rounded-xl overflow-hidden bg-white">
-                <table className="w-full border-collapse text-[10.5px]">
-                  <tbody>
-                    <tr>
-                      <td className="p-1.5 text-left font-semibold text-[#004ba0]/90 border-b border-blue-100">
-                        Invoice Total
-                      </td>
-                      <td className="p-1.5 text-right font-bold text-slate-900 w-32 border-b border-blue-100">
+                {((invoice.status === "partially_paid" || invoice.status === "paid") &&
+                  Number(invoice.paidAmount ?? 0) > 0) ? (
+                  <>
+                    <tr className="border-b border-blue-200 font-bold text-slate-900 bg-slate-50/70">
+                      <td className="p-1.5 text-left">TOTAL</td>
+                      <td className="p-1.5 text-right">
                         {invoice.totalAmount.toFixed(2)}
                       </td>
                     </tr>
@@ -324,7 +289,7 @@ export const InvoicePrintTemplate = React.forwardRef<
                         -{Number(invoice.paidAmount ?? 0).toFixed(2)}
                       </td>
                     </tr>
-                    <tr className={invoice.status === "paid" ? "bg-emerald-600 text-white font-bold" : "bg-amber-500 text-white font-bold"}>
+                    <tr className="bg-[#004ba0] text-white font-bold">
                       <td className="p-2 text-left">
                         {invoice.status === "paid" ? "PAID IN FULL" : "BALANCE DUE"}
                       </td>
@@ -332,11 +297,19 @@ export const InvoicePrintTemplate = React.forwardRef<
                         {Number(invoice.balance ?? 0).toFixed(2)}
                       </td>
                     </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+                  </>
+                ) : (
+                  <tr className="bg-[#004ba0] text-white font-bold">
+                    <td className="p-2 text-left">TOTAL</td>
+                    <td className="p-2 text-right text-sm">
+                      {invoice.totalAmount.toFixed(2)}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
 
         {/* Bank Details Box */}
         <div className="border border-blue-200/80 rounded-xl p-3 mb-2.5 bg-white">
