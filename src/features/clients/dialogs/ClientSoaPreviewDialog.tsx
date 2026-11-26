@@ -46,6 +46,7 @@ export function ClientSoaPreviewDialog({
 }: ClientSoaPreviewDialogProps) {
   const { toast } = useToast();
   const [isDownloading, setIsDownloading] = useState(false);
+  const [statementNote, setStatementNote] = useState("");
 
   if (!soaData) return null;
 
@@ -218,6 +219,29 @@ export function ClientSoaPreviewDialog({
               </Button>
             </div>
           </TooltipProvider>
+        </div>
+
+        {/* Optional Custom Note / Remarks Input Toolbar */}
+        <div className="bg-muted/30 px-3.5 py-2 border-b border-border flex items-center gap-2.5 text-xs flex-shrink-0">
+          <span className="font-semibold text-muted-foreground whitespace-nowrap text-[11px]">
+            Statement Note / Adjustment Remarks:
+          </span>
+          <input
+            type="text"
+            value={statementNote}
+            onChange={(e) => setStatementNote(e.target.value)}
+            placeholder="e.g. Adjusted with duplicate payment of AED 782.25 received on 30-10-2026 for Inv 5306"
+            className="flex-1 h-7 px-2.5 text-xs rounded-md bg-background border border-border/80 focus:outline-none focus:ring-1 focus:ring-primary font-sans placeholder:text-muted-foreground/60"
+          />
+          {statementNote && (
+            <button
+              type="button"
+              onClick={() => setStatementNote("")}
+              className="text-muted-foreground hover:text-foreground text-[11px] px-1.5 py-0.5 rounded cursor-pointer"
+            >
+              Clear
+            </button>
+          )}
         </div>
 
         {/* Scrollable Document Container */}
@@ -450,6 +474,14 @@ export function ClientSoaPreviewDialog({
                   </tbody>
                 </table>
               </div>
+
+              {/* Optional Custom Adjustment / Statement Note */}
+              {statementNote && (
+                <div className="mb-2.5 p-2 rounded-lg bg-blue-50/80 border border-blue-200 text-[10px] text-slate-800 flex items-start gap-1.5">
+                  <span className="font-bold text-[#004ba0] shrink-0">Note / Remarks:</span>
+                  <span className="italic">{statementNote}</span>
+                </div>
+              )}
             </div>
 
             {/* Bottom Section: Amount in Words, Totals, Bank Details, Combined Seal/Signature, and Footer */}
