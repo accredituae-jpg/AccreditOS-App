@@ -51,6 +51,7 @@ import {
   RecordVendorPaymentDialog,
   VendorBillDetailsDialog,
   PayVendorAccountDialog,
+  ReimburseExpenseDialog,
 } from "../dialogs";
 import { AwardingBodyDialog, type AwardingBodyFormData } from "@/features/settings/dialogs/AwardingBodyDialog";
 import { apiGetAwardingBodies, apiUpdateAwardingBody } from "@/lib/api/settingsApi";
@@ -192,6 +193,7 @@ export default function BillingPage() {
   const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const [viewExpense, setViewExpense] = useState<Expense | null>(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [reimbursingExpense, setReimbursingExpense] = useState<Expense | null>(null);
   const [viewReceipt, setViewReceipt] = useState<Receipt | null>(null);
   const [previewReceipt, setPreviewReceipt] = useState<Receipt | null>(null);
   const [editingReceipt, setEditingReceipt] = useState<Receipt | null>(null);
@@ -571,6 +573,7 @@ export default function BillingPage() {
     onEdit: setEditingExpense,
     onDelete: handleDeleteExpense,
     onReturn: handleReturnExpense,
+    onRequestReturn: (exp: Expense) => setReimbursingExpense(exp),
   };
 
   const expensePermissions = {
@@ -1213,6 +1216,16 @@ export default function BillingPage() {
         type="destructive"
         confirmText="Delete Bill"
         onConfirm={handleConfirmDeleteVendorBill}
+      />
+
+      <ReimburseExpenseDialog
+        open={!!reimbursingExpense}
+        onOpenChange={(open) => !open && setReimbursingExpense(null)}
+        expense={reimbursingExpense}
+        onConfirm={async (id, method) => {
+          await handleReturnExpense(id, method);
+          setReimbursingExpense(null);
+        }}
       />
 
 

@@ -1,6 +1,6 @@
-import React from 'react';
-import { useRegisterSW } from 'virtual:pwa-register/react';
-import { RefreshCw, CheckCircle2, X } from 'lucide-react';
+import React from "react";
+import { useRegisterSW } from "virtual:pwa-register/react";
+import { RefreshCw, CheckCircle2, X } from "lucide-react";
 
 export const PWAUpdateBanner: React.FC = () => {
   const [isUpdating, setIsUpdating] = React.useState(false);
@@ -10,23 +10,23 @@ export const PWAUpdateBanner: React.FC = () => {
     updateServiceWorker,
   } = useRegisterSW({
     onRegistered(r) {
-      console.log('SW Registered:', r);
+      console.log("SW Registered:", r);
     },
     onRegisterError(error) {
-      console.error('SW registration error', error);
+      console.error("SW registration error", error);
     },
   });
 
   const handleUpdate = async () => {
     setIsUpdating(true);
     try {
-      if ('serviceWorker' in navigator) {
+      if ("serviceWorker" in navigator) {
         navigator.serviceWorker.addEventListener(
-          'controllerchange',
+          "controllerchange",
           () => {
             window.location.reload();
           },
-          { once: true }
+          { once: true },
         );
       }
       await updateServiceWorker(true);
@@ -61,12 +61,14 @@ export const PWAUpdateBanner: React.FC = () => {
           )}
           <div>
             <h4 className="font-semibold text-sm">
-              {needRefresh ? 'AccreditOS Update Available' : 'AccreditOS Ready for Offline Use'}
+              {needRefresh
+                ? "AccreditOS Update Available"
+                : "AccreditOS Ready for Offline Use"}
             </h4>
             <p className="text-xs text-slate-300">
               {needRefresh
-                ? 'A new production version is available. Update to get the latest features.'
-                : 'App shell and assets have been cached for offline operation.'}
+                ? "A new production version is available. Update to get the latest features."
+                : "App shell and assets have been cached for offline operation."}
             </p>
           </div>
         </div>

@@ -39,6 +39,7 @@ interface ExpenseTableProps {
     onEdit: (expense: Expense) => void;
     onDelete: (id: string, category: string) => void;
     onReturn?: (id: string, method?: ExpensePaymentMethod) => void;
+    onRequestReturn?: (expense: Expense) => void;
   };
   loading?: boolean;
 }
@@ -205,13 +206,17 @@ export const ExpenseTable = memo(function ExpenseTable({ expenses, actions, perm
                   <td className="py-3 text-right" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center justify-end gap-1.5">
                       {/* Quick Return Button for Not Returned Employee Expenses */}
-                      {isNotReturned && actions.onReturn && permissions.canEdit && (
+                      {isNotReturned && (actions.onRequestReturn || actions.onReturn) && permissions.canEdit && (
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => actions.onReturn!(expense.id, "petty_cash")}
+                          onClick={() =>
+                            actions.onRequestReturn
+                              ? actions.onRequestReturn(expense)
+                              : actions.onReturn!(expense.id, "petty_cash")
+                          }
                           className="h-7 text-[11px] px-2 gap-1 text-amber-700 dark:text-amber-300 border-amber-500/40 hover:bg-amber-500/15 font-semibold"
-                          title="Mark as Returned (Reimbursed from Petty Cash)"
+                          title="Reimburse Employee (Select funding source)"
                         >
                           <RotateCcw className="w-3 h-3" /> Return
                         </Button>
@@ -241,25 +246,35 @@ export const ExpenseTable = memo(function ExpenseTable({ expenses, actions, perm
                           align="end"
                           className="bg-popover shadow-lg border border-border min-w-[150px]"
                         >
-                          {isNotReturned && actions.onReturn && permissions.canEdit && (
+                          {isNotReturned && (actions.onRequestReturn || actions.onReturn) && permissions.canEdit && (
                             <>
                               <DropdownMenuItem
-                                onClick={() => actions.onReturn!(expense.id, "petty_cash")}
+                                onClick={() =>
+                                  actions.onRequestReturn
+                                    ? actions.onRequestReturn(expense)
+                                    : actions.onReturn!(expense.id, "petty_cash")
+                                }
                                 className="cursor-pointer text-amber-600 font-semibold"
                               >
-                                <RotateCcw className="w-4 h-4 mr-2" /> Return via Petty Cash
+                                <RotateCcw className="w-4 h-4 mr-2" /> Reimburse Employee...
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => actions.onReturn!(expense.id, "petty_cash")}
+                                className="cursor-pointer text-xs text-muted-foreground hover:text-foreground"
+                              >
+                                <RotateCcw className="w-3.5 h-3.5 mr-2" /> Return via Petty Cash
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 onClick={() => actions.onReturn!(expense.id, "cash")}
-                                className="cursor-pointer text-amber-600 font-semibold"
+                                className="cursor-pointer text-xs text-muted-foreground hover:text-foreground"
                               >
-                                <RotateCcw className="w-4 h-4 mr-2" /> Return via Cash
+                                <RotateCcw className="w-3.5 h-3.5 mr-2" /> Return via Cash
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 onClick={() => actions.onReturn!(expense.id, "account")}
-                                className="cursor-pointer text-amber-600 font-semibold"
+                                className="cursor-pointer text-xs text-muted-foreground hover:text-foreground"
                               >
-                                <RotateCcw className="w-4 h-4 mr-2" /> Return via Bank
+                                <RotateCcw className="w-3.5 h-3.5 mr-2" /> Return via Bank
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                             </>

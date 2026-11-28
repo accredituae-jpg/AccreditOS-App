@@ -19,6 +19,7 @@ interface ExpensesTabProps {
     onEdit: (expense: Expense) => void;
     onDelete: (id: string, category: string) => void;
     onReturn?: (id: string, method?: ExpensePaymentMethod) => void;
+    onRequestReturn?: (expense: Expense) => void;
   };
   pagination: {
     currentPage: number;

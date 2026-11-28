@@ -333,7 +333,6 @@ export function TransactionsReportTab() {
         list = list.filter(
           (t) =>
             t.type !== "petty_cash_transfer" &&
-            !t.refNo?.startsWith("TRF-") &&
             ((t.paymentMethod || "").toLowerCase().includes("petty") ||
               t.type === "petty_cash_topup" ||
               t.type === "petty_cash_deposit"),

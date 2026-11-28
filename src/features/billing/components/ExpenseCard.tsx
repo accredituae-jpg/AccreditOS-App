@@ -39,6 +39,7 @@ interface ExpenseCardProps {
     onEdit: (expense: Expense) => void;
     onDelete: (id: string, category: string) => void;
     onReturn?: (id: string, method?: ExpensePaymentMethod) => void;
+    onRequestReturn?: (expense: Expense) => void;
   };
 }
 
@@ -168,12 +169,17 @@ export function ExpenseCard({
         className="mt-3 pt-3 border-t border-border flex items-center gap-2"
         onClick={(e) => e.stopPropagation()}
       >
-        {isNotReturned && actions.onReturn && permissions.canEdit && (
+        {isNotReturned && (actions.onRequestReturn || actions.onReturn) && permissions.canEdit && (
           <Button
             variant="outline"
             size="sm"
             className="flex-1 rounded-lg h-8 text-xs gap-1.5 text-amber-700 dark:text-amber-300 border-amber-500/40 hover:bg-amber-500/15 font-semibold"
-            onClick={() => actions.onReturn!(expense.id, "petty_cash")}
+            onClick={() =>
+              actions.onRequestReturn
+                ? actions.onRequestReturn(expense)
+                : actions.onReturn!(expense.id, "petty_cash")
+            }
+            title="Reimburse Employee (Select funding source)"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Mark Returned
@@ -218,25 +224,35 @@ export function ExpenseCard({
             align="end"
             className="bg-popover border border-border shadow-lg min-w-[150px]"
           >
-            {isNotReturned && actions.onReturn && permissions.canEdit && (
+            {isNotReturned && (actions.onRequestReturn || actions.onReturn) && permissions.canEdit && (
               <>
                 <DropdownMenuItem
-                  onClick={() => actions.onReturn!(expense.id, "petty_cash")}
+                  onClick={() =>
+                    actions.onRequestReturn
+                      ? actions.onRequestReturn(expense)
+                      : actions.onReturn!(expense.id, "petty_cash")
+                  }
                   className="cursor-pointer text-amber-600 font-semibold"
                 >
-                  <RotateCcw className="w-4 h-4 mr-2" /> Return (Petty Cash)
+                  <RotateCcw className="w-4 h-4 mr-2" /> Reimburse Employee...
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => actions.onReturn!(expense.id, "petty_cash")}
+                  className="cursor-pointer text-xs text-muted-foreground hover:text-foreground"
+                >
+                  <RotateCcw className="w-3.5 h-3.5 mr-2" /> Return via Petty Cash
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => actions.onReturn!(expense.id, "cash")}
-                  className="cursor-pointer text-amber-600 font-semibold"
+                  className="cursor-pointer text-xs text-muted-foreground hover:text-foreground"
                 >
-                  <RotateCcw className="w-4 h-4 mr-2" /> Return (Cash)
+                  <RotateCcw className="w-3.5 h-3.5 mr-2" /> Return via Cash
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => actions.onReturn!(expense.id, "account")}
-                  className="cursor-pointer text-amber-600 font-semibold"
+                  className="cursor-pointer text-xs text-muted-foreground hover:text-foreground"
                 >
-                  <RotateCcw className="w-4 h-4 mr-2" /> Return (Bank)
+                  <RotateCcw className="w-3.5 h-3.5 mr-2" /> Return via Bank
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
